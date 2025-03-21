@@ -44,7 +44,7 @@ LoggerBase::AddLogOutput(OutputType * output)
 }
 
 void
-LoggerBase::Write(PriorityLevelEnum level, std::string const & content)
+LoggerBase::Write(PriorityLevelEnum level, const std::string & content)
 {
   if (this->m_PriorityLevel >= level)
   {
@@ -69,11 +69,11 @@ LoggerBase::PrivateFlush()
 }
 
 std::string
-LoggerBase::BuildFormattedEntry(PriorityLevelEnum level, std::string const & content)
+LoggerBase::BuildFormattedEntry(PriorityLevelEnum level, const std::string & content)
 {
-  static std::string m_LevelString[] = { "(MUSTFLUSH) ", "(FATAL) ", "(CRITICAL) ", "(WARNING) ",
-                                         "(INFO) ",      "(DEBUG) ", "(NOTSET) " };
-  std::ostringstream s;
+  static const std::string levelString[] = { "(MUSTFLUSH) ", "(FATAL) ", "(CRITICAL) ", "(WARNING) ",
+                                             "(INFO) ",      "(DEBUG) ", "(NOTSET) " };
+  std::ostringstream       s;
 
   switch (this->m_TimeStampFormat)
   {
@@ -89,7 +89,7 @@ LoggerBase::BuildFormattedEntry(PriorityLevelEnum level, std::string const & con
       break;
     }
   }
-  s << "  :  " << this->GetName() << "  " << m_LevelString[static_cast<int>(level)] << content;
+  s << "  :  " << this->GetName() << "  " << levelString[static_cast<int>(level)] << content;
 
   return s.str();
 }

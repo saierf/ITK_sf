@@ -56,7 +56,11 @@ public:
   using ConstPointer = SmartPointer<const Self>;
 
   /** Type for representing coordinates. */
-  using CoordRepType = typename TInputMesh::CoordRepType;
+  using CoordinateType = typename TInputMesh::CoordinateType;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#endif
 
   using InputMeshType = TInputMesh;
   using OutputMeshType = TOutputMesh;

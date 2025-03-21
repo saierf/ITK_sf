@@ -129,34 +129,17 @@ TEST(SmartPointer, EmptyAndNull)
   cptr = nullptr;
   EXPECT_TRUE(cptr.IsNull());
 
-#if defined(__clang__) && defined(__has_warning)
-#  if __has_warning("-Wzero-as-null-pointer-constant")
-#    pragma clang diagnostic push
-#    pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-#  endif
-#endif
+  ITK_CLANG_PRAGMA_PUSH
+  ITK_CLANG_SUPPRESS_Wzero_as_null_pointer_constant
+
   // NOLINTNEXTLINE(modernize-use-nullptr)
   ptr = NULL; // Do not change NULL, null, Null in this file. This file intentionally contains usage of legacy NULL
-#if defined(__clang__) && defined(__has_warning)
-#  if __has_warning("-Wzero-as-null-pointer-constant")
-#    pragma clang diagnostic pop
-#  endif
-#endif
   EXPECT_TRUE(ptr.IsNull());
 
-#if defined(__clang__) && defined(__has_warning)
-#  if __has_warning("-Wzero-as-null-pointer-constant")
-#    pragma clang diagnostic push
-#    pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-#  endif
-#endif
   // NOLINTNEXTLINE(modernize-use-nullptr)
   cptr = NULL; // Do not change NULL, null, Null in this file. This file intentionally contains usage of legacy NULL
-#if defined(__clang__) && defined(__has_warning)
-#  if __has_warning("-Wzero-as-null-pointer-constant")
-#    pragma clang diagnostic pop
-#  endif
-#endif
+  ITK_CLANG_PRAGMA_POP
+
   EXPECT_TRUE(cptr.IsNull());
 
 
@@ -168,11 +151,11 @@ TEST(SmartPointer, EmptyAndNull)
   //  EXPECT_TRUE( 0 == ptr );
 
   // Exercise pointer assignment
-  auto                   p1 = Derived2::New();
-  Derived2::Pointer      p2 = p1;
-  Derived2::ConstPointer cp1 = p1;
-  Derived2::ConstPointer cp2(p1);
-  Derived2::ConstPointer cp3{ p1 };
+  auto                         p1 = Derived2::New();
+  const Derived2::Pointer      p2 = p1;
+  const Derived2::ConstPointer cp1 = p1;
+  const Derived2::ConstPointer cp2(p1);
+  const Derived2::ConstPointer cp3{ p1 };
 }
 
 
@@ -185,20 +168,20 @@ TEST(SmartPointer, Converting)
   using Derived1Pointer = itk::SmartPointer<Derived1>;
   using ConstDerived1Pointer = itk::SmartPointer<const Derived1>;
 
-  Derived1Pointer d1ptr = Derived1::New();
+  const Derived1Pointer d1ptr = Derived1::New();
   EXPECT_TRUE(d1ptr.IsNotNull());
   EXPECT_FALSE(d1ptr.IsNull());
   EXPECT_TRUE(static_cast<bool>(d1ptr));
   EXPECT_FALSE(d1ptr == nullptr);
   EXPECT_TRUE(d1ptr != nullptr);
 
-  ConstDerived1Pointer cd1ptr(d1ptr);
+  const ConstDerived1Pointer cd1ptr(d1ptr);
   EXPECT_TRUE(cd1ptr.GetPointer() == d1ptr.GetPointer());
   EXPECT_TRUE(cd1ptr == d1ptr);
 
-  BasePointer      ptr(d1ptr);
-  ConstBasePointer cptr1(d1ptr);
-  ConstBasePointer cptr2(cd1ptr);
+  BasePointer            ptr(d1ptr);
+  const ConstBasePointer cptr1(d1ptr);
+  const ConstBasePointer cptr2(cd1ptr);
 
   ptr = d1ptr;
 
@@ -236,27 +219,27 @@ TEST(SmartPointer, ConvertingRegisterCount)
 
   // Copy constructor to const
   {
-    Derived1Pointer d1ptr = Derived1::New();
+    const Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
-    ConstDerived1Pointer cd1ptr = d1ptr;
+    const ConstDerived1Pointer cd1ptr = d1ptr;
     EXPECT_EQ(2, d1ptr->GetRegisterCount());
     EXPECT_EQ(2, cd1ptr->GetRegisterCount());
   }
 
   // Copy constructor to base
   {
-    Derived1Pointer d1ptr = Derived1::New();
+    const Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
-    BasePointer bptr = d1ptr;
+    const BasePointer bptr = d1ptr;
     EXPECT_EQ(2, d1ptr->GetRegisterCount());
     EXPECT_EQ(2, static_cast<const Derived1 *>(bptr.GetPointer())->GetRegisterCount());
   }
 
   // Assignment operator
   {
-    Derived1Pointer d1ptr = Derived1::New();
+    const Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
     Derived1Pointer d1ptr2;
@@ -268,7 +251,7 @@ TEST(SmartPointer, ConvertingRegisterCount)
 
   // Assignment to const pointer
   {
-    Derived1Pointer d1ptr = Derived1::New();
+    const Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
     ConstDerived1Pointer cd1ptr;
@@ -280,7 +263,7 @@ TEST(SmartPointer, ConvertingRegisterCount)
 
   // Assignment to base pointer
   {
-    Derived1Pointer d1ptr = Derived1::New();
+    const Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
     BasePointer bptr;
@@ -292,24 +275,20 @@ TEST(SmartPointer, ConvertingRegisterCount)
 
   // Assignment to raw pointer
   {
-    Derived1Pointer d1ptr = Derived1::New();
+    const Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
-    Derived1 * rptr;
-
-    rptr = d1ptr;
+    Derived1 * rptr = d1ptr;
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
     EXPECT_TRUE(rptr != nullptr);
   }
 
   // Assignment to raw const pointer
   {
-    Derived1Pointer d1ptr = Derived1::New();
+    const Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
-    const Derived1 * rptr;
-
-    rptr = d1ptr;
+    const Derived1 * rptr = d1ptr;
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
     EXPECT_TRUE(rptr != nullptr);
   }
@@ -319,7 +298,7 @@ TEST(SmartPointer, ConvertingRegisterCount)
     Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
-    Derived1Pointer d1ptr2(std::move(d1ptr));
+    const Derived1Pointer d1ptr2(std::move(d1ptr));
     EXPECT_EQ(1, d1ptr2->GetRegisterCount());
     EXPECT_TRUE(d1ptr.IsNull());
   }
@@ -329,7 +308,7 @@ TEST(SmartPointer, ConvertingRegisterCount)
     Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
-    ConstDerived1Pointer cd1ptr(std::move(d1ptr));
+    const ConstDerived1Pointer cd1ptr(std::move(d1ptr));
     EXPECT_EQ(1, cd1ptr->GetRegisterCount());
     EXPECT_TRUE(d1ptr.IsNull());
   }
@@ -339,7 +318,7 @@ TEST(SmartPointer, ConvertingRegisterCount)
     Derived1Pointer d1ptr = Derived1::New();
     EXPECT_EQ(1, d1ptr->GetRegisterCount());
 
-    BasePointer bptr(std::move(d1ptr));
+    const BasePointer bptr(std::move(d1ptr));
     EXPECT_EQ(1, static_cast<const Derived1 *>(bptr.GetPointer())->GetRegisterCount());
     EXPECT_TRUE(d1ptr.IsNull());
   }

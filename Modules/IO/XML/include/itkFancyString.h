@@ -162,11 +162,11 @@ public:
   FancyString &
   TrimRight(const std::string & dislike = " \t\n\r");
 
-  /** Method to covert lower-case characters to upper cases in a string. */
+  /** Method to convert lower-case characters to upper cases in a string. */
   FancyString &
   ToUpperCase();
 
-  /** Method to covert upper-case characters to lower cases in a string. */
+  /** Method to convert upper-case characters to lower cases in a string. */
   FancyString &
   ToLowerCase();
 
@@ -213,18 +213,18 @@ private:
 /////////////////////////////////////////////////////////////////////////////
 
 bool ITKIOXML_EXPORT
-     operator!=(itk::FancyString & s, const std::string &);
+operator!=(itk::FancyString & s, const std::string &);
 bool ITKIOXML_EXPORT
-     operator!=(itk::FancyString & s, const char *);
+operator!=(itk::FancyString & s, const char *);
 bool ITKIOXML_EXPORT
-     operator!=(itk::FancyString & s, const itk::FancyString &);
+operator!=(itk::FancyString & s, const itk::FancyString &);
 
 bool ITKIOXML_EXPORT
-     operator==(itk::FancyString & s, const std::string &);
+operator==(itk::FancyString & s, const std::string &);
 bool ITKIOXML_EXPORT
-     operator==(itk::FancyString & s, const char *);
+operator==(itk::FancyString & s, const char *);
 bool ITKIOXML_EXPORT
-     operator==(itk::FancyString & s, const itk::FancyString &);
+operator==(itk::FancyString & s, const itk::FancyString &);
 
 namespace itk
 {

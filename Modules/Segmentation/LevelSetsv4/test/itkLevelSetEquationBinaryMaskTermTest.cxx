@@ -54,8 +54,7 @@ itkLevelSetEquationBinaryMaskTermTest(int, char *[])
   using InputImageIteratorType = itk::ImageRegionIteratorWithIndex<InputImageType>;
 
   // load binary mask
-  InputImageType::SizeType size;
-  size.Fill(50);
+  auto size = InputImageType::SizeType::Filled(50);
 
   InputImageType::PointType origin;
   origin[0] = 0.0;
@@ -65,8 +64,7 @@ itkLevelSetEquationBinaryMaskTermTest(int, char *[])
   spacing[0] = 1.0;
   spacing[1] = 1.0;
 
-  InputImageType::IndexType index;
-  index.Fill(0);
+  InputImageType::IndexType index{};
 
   InputImageType::RegionType region{ index, size };
 
@@ -98,7 +96,7 @@ itkLevelSetEquationBinaryMaskTermTest(int, char *[])
   adaptor1->Initialize();
   std::cout << "Finished converting levelset1 to sparse format" << std::endl;
 
-  SparseLevelSetType::Pointer level_set1 = adaptor1->GetModifiableLevelSet();
+  const SparseLevelSetType::Pointer level_set1 = adaptor1->GetModifiableLevelSet();
 
   IdListType list_ids;
   list_ids.push_back(1);
@@ -122,7 +120,7 @@ itkLevelSetEquationBinaryMaskTermTest(int, char *[])
   lscontainer->SetHeaviside(heaviside);
   lscontainer->SetDomainMapFilter(domainMapFilter);
 
-  bool LevelSetNotYetAdded = lscontainer->AddLevelSet(0, level_set1, false);
+  const bool LevelSetNotYetAdded = lscontainer->AddLevelSet(0, level_set1, false);
   if (!LevelSetNotYetAdded)
   {
     return EXIT_FAILURE;

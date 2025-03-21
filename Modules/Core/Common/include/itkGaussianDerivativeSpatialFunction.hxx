@@ -57,7 +57,7 @@ GaussianDerivativeSpatialFunction<TOutput, VImageDimension, TInput>::Evaluate(co
                  (2 * m_Sigma[m_Direction] * m_Sigma[m_Direction]);
   }
 
-  double value =
+  const double value =
     -2 * (position[m_Direction] - m_Mean[m_Direction]) * m_Scale * (1 / prefixDenom) * std::exp(-1 * suffixExp);
 
   return static_cast<TOutput>(value);
@@ -88,7 +88,7 @@ GaussianDerivativeSpatialFunction<TOutput, VImageDimension, TInput>::PrintSelf(s
   os << indent << "Sigma: " << m_Sigma << std::endl;
   os << indent << "Mean: " << m_Mean << std::endl;
   os << indent << "Scale: " << m_Scale << std::endl;
-  os << indent << "Normalized: " << (m_Normalized ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(Normalized);
   os << indent << "Direction: " << m_Direction << std::endl;
 }
 } // end namespace itk

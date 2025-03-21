@@ -190,11 +190,15 @@ public:
   using IndexSelectCasterType = itk::VectorIndexSelectionCastImageFilter<FieldType, FloatImageType>;
 
   /** Typedef support for the interpolation function */
-  using CoordRepType = double;
-  using InterpolatorType = VectorInterpolateImageFunction<FieldType, CoordRepType>;
+  using CoordinateType = double;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#endif
+  using InterpolatorType = VectorInterpolateImageFunction<FieldType, CoordinateType>;
   using InterpolatorPointer = typename InterpolatorType::Pointer;
 
-  using DefaultInterpolatorType = VectorLinearInterpolateImageFunction<FieldType, CoordRepType>;
+  using DefaultInterpolatorType = VectorLinearInterpolateImageFunction<FieldType, CoordinateType>;
 
   using InterpolationGridType = typename itk::Image<Element::ConstPointer, ImageDimension>;
   using InterpolationGridSizeType = typename InterpolationGridType::SizeType;

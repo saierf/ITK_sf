@@ -90,7 +90,7 @@ template <typename TInputImage, typename TOutputImage>
 void
 VoronoiPartitioningImageFilter<TInputImage, TOutputImage>::MakeSegmentBoundary()
 {
-  RegionType region = this->GetInput()->GetRequestedRegion();
+  const RegionType region = this->GetInput()->GetRequestedRegion();
 
   itk::ImageRegionIteratorWithIndex<OutputImageType> oit(this->GetOutput(), region);
   while (!oit.IsAtEnd())
@@ -118,7 +118,7 @@ template <typename TInputImage, typename TOutputImage>
 void
 VoronoiPartitioningImageFilter<TInputImage, TOutputImage>::MakeSegmentObject()
 {
-  RegionType region = this->GetInput()->GetRequestedRegion();
+  const RegionType region = this->GetInput()->GetRequestedRegion();
 
   itk::ImageRegionIteratorWithIndex<OutputImageType> oit(this->GetOutput(), region);
   while (!oit.IsAtEnd())
@@ -150,17 +150,15 @@ template <typename TInputImage, typename TOutputImage>
 bool
 VoronoiPartitioningImageFilter<TInputImage, TOutputImage>::TestHomogeneity(IndexList & Plist)
 {
-  auto          num = static_cast<SizeValueType>(Plist.size());
-  SizeValueType i;
-  double        getp;
-  double        addp = 0;
-  double        addpp = 0;
+  const auto num = static_cast<SizeValueType>(Plist.size());
+  double     addp = 0;
+  double     addpp = 0;
 
   const InputImageType * inputImage = this->GetInput();
 
-  for (i = 0; i < num; ++i)
+  for (SizeValueType i = 0; i < num; ++i)
   {
-    getp = static_cast<double>(inputImage->GetPixel(Plist[i]));
+    const auto getp = static_cast<double>(inputImage->GetPixel(Plist[i]));
     addp = addp + getp;
     addpp = addpp + getp * getp;
   }

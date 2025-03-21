@@ -242,26 +242,25 @@ itkTransformFactoryBaseTest(int, char *[])
   std::list<std::string> names = itk::TransformFactoryBase::GetFactory()->GetClassOverrideWithNames();
   names.sort();
   {
-    std::list<std::string>::iterator defaultsIt;
-    for (defaultsIt = defaultTransforms.begin(); defaultsIt != defaultTransforms.end(); ++defaultsIt)
+    for (auto & defaultTransform : defaultTransforms)
     {
-      if (std::find(names.begin(), names.end(), *defaultsIt) == names.end())
+      if (std::find(names.begin(), names.end(), defaultTransform) == names.end())
       {
-        std::cout << "[FAILED] " << *defaultsIt << " not registered properly with defaults" << std::endl;
+        std::cout << "[FAILED] " << defaultTransform << " not registered properly with defaults" << std::endl;
         testReturnStatus = EXIT_FAILURE;
       }
       else
       {
-        std::cout << "[SUCCESS] " << *defaultsIt << " registered properly" << std::endl;
+        std::cout << "[SUCCESS] " << defaultTransform << " registered properly" << std::endl;
       }
     }
   }
 
   // test other methods
-  itk::TransformFactoryBase::Pointer base = itk::TransformFactoryBase::New();
-  const char *                       itkVersion = base->GetITKSourceVersion();
-  const char *                       description = base->GetDescription();
-  const char *                       type = base->GetNameOfClass();
+  const itk::TransformFactoryBase::Pointer base = itk::TransformFactoryBase::New();
+  const char *                             itkVersion = base->GetITKSourceVersion();
+  const char *                             description = base->GetDescription();
+  const char *                             type = base->GetNameOfClass();
   if (strcmp(itkVersion, ITK_SOURCE_VERSION) != 0)
   {
     std::cout << "[FAILED] Did not report version correctly" << std::endl;

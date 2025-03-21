@@ -53,7 +53,7 @@ namespace itk
 class MultiThreaderBaseEnums
 {
 public:
-  /** \class Threader
+  /**
    * \ingroup ITKCommon
    * Currently supported types of multi-threader implementations.
    * Last will change with additional implementations.
@@ -68,7 +68,7 @@ public:
     Unknown = -1
   };
 
-  /** \class ThreadExitCode
+  /**
    * \ingroup ITKCommon
    */
   enum class ThreadExitCode : uint8_t
@@ -154,8 +154,8 @@ public:
    * starting threads.
    *
    * Deprecated: use Get/Set GlobalDefaultThreader. */
-  itkLegacyMacro(static void SetGlobalDefaultUseThreadPool(const bool GlobalDefaultUseThreadPool));
-  itkLegacyMacro(static bool GetGlobalDefaultUseThreadPool());
+  itkLegacyMacro(static void SetGlobalDefaultUseThreadPool(const bool GlobalDefaultUseThreadPool);)
+  itkLegacyMacro(static bool GetGlobalDefaultUseThreadPool();)
 
   using ThreaderEnum = MultiThreaderBaseEnums::Threader;
 #if !defined(ITK_LEGACY_REMOVE)
@@ -223,7 +223,10 @@ public:
     this->SetMaximumNumberOfThreads(numberOfThreads);
     this->SetNumberOfWorkUnits(this->GetMaximumNumberOfThreads()); // Might be clamped
   }
-  itkLegacyMacro(virtual ThreadIdType GetNumberOfThreads()) { return this->GetNumberOfWorkUnits(); }
+  itkLegacyMacro(virtual ThreadIdType GetNumberOfThreads())
+  {
+    return this->GetNumberOfWorkUnits();
+  }
 
   /** This is the structure that is passed to the thread that is
    * created from the SingleMethodExecute. It is passed in as a void *,
@@ -368,7 +371,7 @@ ITK_GCC_PRAGMA_DIAG_POP()
     if constexpr (VDimension <= 1) // Cannot split, no parallelization
     {
 
-      ProgressReporter progress(filter, 0, requestedRegion.GetNumberOfPixels());
+      const ProgressReporter progress(filter, 0, requestedRegion.GetNumberOfPixels());
       funcP(requestedRegion);
     }
     else // Can split, parallelize!

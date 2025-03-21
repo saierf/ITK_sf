@@ -79,7 +79,7 @@ FiniteDifferenceImageFilter<TInputImage, TOutputImage>::GenerateData()
                                  // global values, or otherwise setting up
                                  // for the next iteration
 
-    TimeStepType dt = this->CalculateChange();
+    const TimeStepType dt = this->CalculateChange();
 
     this->ApplyUpdate(dt);
     ++m_ElapsedIterations;
@@ -115,7 +115,7 @@ FiniteDifferenceImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRe
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input
-  typename Superclass::InputImagePointer inputPtr = const_cast<TInputImage *>(this->GetInput());
+  const typename Superclass::InputImagePointer inputPtr = const_cast<TInputImage *>(this->GetInput());
 
   if (!inputPtr)
   {
@@ -124,7 +124,7 @@ FiniteDifferenceImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRe
 
   // Get the size of the neighborhood on which we are going to operate.  This
   // radius is supplied by the difference function we are using.
-  RadiusType radius = this->GetDifferenceFunction()->GetRadius();
+  const RadiusType radius = this->GetDifferenceFunction()->GetRadius();
 
   // Try to set up a buffered region that will accommodate our
   // neighborhood operations.  This may not be possible and we
@@ -134,8 +134,7 @@ FiniteDifferenceImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRe
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(radius);
@@ -146,21 +145,19 @@ FiniteDifferenceImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRe
     inputPtr->SetRequestedRegion(inputRequestedRegion);
     return;
   }
-  else
-  {
-    // Couldn't crop the region (requested region is outside the largest
-    // possible region).  Throw an exception.
 
-    // store what we tried to request (prior to trying to crop)
-    inputPtr->SetRequestedRegion(inputRequestedRegion);
+  // Couldn't crop the region (requested region is outside the largest
+  // possible region).  Throw an exception.
 
-    // build an exception
-    InvalidRequestedRegionError e(__FILE__, __LINE__);
-    e.SetLocation(ITK_LOCATION);
-    e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
-    e.SetDataObject(inputPtr);
-    throw e;
-  }
+  // store what we tried to request (prior to trying to crop)
+  inputPtr->SetRequestedRegion(inputRequestedRegion);
+
+  // build an exception
+  InvalidRequestedRegionError e(__FILE__, __LINE__);
+  e.SetLocation(ITK_LOCATION);
+  e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
+  e.SetDataObject(inputPtr);
+  throw e;
 }
 
 template <typename TInputImage, typename TOutputImage>
@@ -226,7 +223,7 @@ FiniteDifferenceImageFilter<TInputImage, TOutputImage>::Halt()
   {
     return true;
   }
-  else if (this->GetElapsedIterations() == 0)
+  if (this->GetElapsedIterations() == 0)
   {
     return false;
   }
@@ -283,7 +280,7 @@ FiniteDifferenceImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream &
   Superclass::PrintSelf(os, indent);
 
   os << indent << "ElapsedIterations: " << m_ElapsedIterations << std::endl;
-  os << indent << "UseImageSpacing: " << (m_UseImageSpacing ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(UseImageSpacing);
   os << indent << "State: " << (m_IsInitialized ? "INITIALIZED" : "UNINITIALIZED") << std::endl;
   os << indent << "MaximumRMSError: " << m_MaximumRMSError << std::endl;
   os << indent << "NumberOfIterations: " << m_NumberOfIterations << std::endl;

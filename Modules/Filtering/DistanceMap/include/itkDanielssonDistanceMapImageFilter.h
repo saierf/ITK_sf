@@ -47,10 +47,7 @@ namespace itk
  *
  * This filter is N-dimensional and known to be efficient
  * in computational time. The algorithm is the N-dimensional version
- * of the 4SED algorithm given for two dimensions in:
- *
- * Danielsson, Per-Erik.  Euclidean Distance Mapping.  Computer
- * Graphics and Image Processing 14, 227-248 (1980).
+ * of the 4SED algorithm given for two dimensions in \cite danielsson1980.
  *
  * \ingroup ImageFeatureExtraction
  * \ingroup ITKDistanceMap
@@ -174,17 +171,13 @@ public:
   DataObjectPointer
   MakeOutput(DataObjectPointerArraySizeType idx) override;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
   static constexpr unsigned int OutputImageDimension = TOutputImage::ImageDimension;
   static constexpr unsigned int VoronoiImageDimension = TVoronoiImage::ImageDimension;
 
-  // Begin concept checking
   itkConceptMacro(InputOutputSameDimensionCheck, (Concept::SameDimension<InputImageDimension, OutputImageDimension>));
   itkConceptMacro(InputVoronoiSameDimensionCheck, (Concept::SameDimension<InputImageDimension, VoronoiImageDimension>));
   itkConceptMacro(DoubleConvertibleToOutputCheck, (Concept::Convertible<double, OutputPixelType>));
   itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<InputPixelType, OutputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   DanielssonDistanceMapImageFilter();

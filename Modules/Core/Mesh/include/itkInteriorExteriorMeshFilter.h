@@ -62,7 +62,11 @@ public:
   using OutputMeshPointer = typename OutputMeshType::Pointer;
 
   /** Type for representing coordinates. */
-  using CoordRepType = typename TInputMesh::CoordRepType;
+  using CoordinateType = typename TInputMesh::CoordinateType;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#endif
 
   /** Type of the  transform. */
   using SpatialFunctionType = TSpatialFunction;

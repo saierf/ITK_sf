@@ -34,11 +34,9 @@ public:
   {
     m_Image = ImageType::New();
 
-    typename ImageType::SizeType size;
-    size.Fill(100);
+    auto size = ImageType::SizeType::Filled(100);
 
-    typename ImageType::IndexType start;
-    start.Fill(0);
+    typename ImageType::IndexType start{};
 
     typename ImageType::RegionType region{ start, size };
 
@@ -83,9 +81,9 @@ public:
 
     while (!it.IsAtEnd())
     {
-      IndexType index = it.GetIndex();
+      const IndexType index = it.GetIndex();
       // Check to see if the index is within allowed bounds
-      bool isInside = region.IsInside(index);
+      const bool isInside = region.IsInside(index);
       if (!isInside)
       {
         std::cout << "Index is not inside region! - " << index << std::endl;

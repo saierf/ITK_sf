@@ -58,10 +58,8 @@ public:
     {
       return m_Value < b.m_Value;
     }
-    else
-    {
-      return m_Priority < b.m_Priority;
-    }
+
+    return m_Priority < b.m_Priority;
   }
 };
 
@@ -104,10 +102,8 @@ public:
       ostrm << "Error: RandomPermuation does not have " << i << " elements" << std::endl;
       throw std::runtime_error(ostrm.str());
     }
-    else
-    {
-      m_Permutation[i].m_Priority = priority;
-    }
+
+    m_Permutation[i].m_Priority = priority;
   }
 
   void
@@ -121,7 +117,11 @@ public:
     std::sort(m_Permutation, m_Permutation + m_Size);
   }
 
-  SizeValueType operator[](SizeValueType i) const { return m_Permutation[i].m_Index; }
+  SizeValueType
+  operator[](SizeValueType i) const
+  {
+    return m_Permutation[i].m_Index;
+  }
 
   ~RandomPermutation() { delete[] m_Permutation; }
 

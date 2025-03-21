@@ -42,7 +42,7 @@ OpeningByReconstructionImageFilter<TInputImage, TOutputImage, TKernel>::Generate
   Superclass::GenerateInputRequestedRegion();
 
   // We need all the input.
-  InputImagePointer input = const_cast<InputImageType *>(this->GetInput());
+  const InputImagePointer input = const_cast<InputImageType *>(this->GetInput());
   if (input)
   {
     input->SetRequestedRegion(input->GetLargestPossibleRegion());
@@ -69,15 +69,13 @@ OpeningByReconstructionImageFilter<TInputImage, TOutputImage, TKernel>::Generate
   this->AllocateOutputs();
 
   // Delegate to an erode filter.
-  typename GrayscaleErodeImageFilter<TInputImage, TInputImage, TKernel>::Pointer erode =
-    GrayscaleErodeImageFilter<TInputImage, TInputImage, TKernel>::New();
+  auto erode = GrayscaleErodeImageFilter<TInputImage, TInputImage, TKernel>::New();
 
   erode->SetInput(this->GetInput());
   erode->SetKernel(this->m_Kernel);
 
   // Delegate to a dilate filter.
-  typename ReconstructionByDilationImageFilter<TInputImage, TInputImage>::Pointer dilate =
-    ReconstructionByDilationImageFilter<TInputImage, TInputImage>::New();
+  auto dilate = ReconstructionByDilationImageFilter<TInputImage, TInputImage>::New();
 
   dilate->SetMarkerImage(erode->GetOutput());
   dilate->SetMaskImage(this->GetInput());
@@ -115,8 +113,7 @@ OpeningByReconstructionImageFilter<TInputImage, TOutputImage, TKernel>::Generate
       ++inputIt;
     }
 
-    typename ReconstructionByDilationImageFilter<TInputImage, TInputImage>::Pointer dilateAgain =
-      ReconstructionByDilationImageFilter<TInputImage, TInputImage>::New();
+    auto dilateAgain = ReconstructionByDilationImageFilter<TInputImage, TInputImage>::New();
     dilateAgain->SetMaskImage(this->GetInput());
     dilateAgain->SetMarkerImage(tempImage);
     dilateAgain->SetFullyConnected(m_FullyConnected);
@@ -141,7 +138,7 @@ OpeningByReconstructionImageFilter<TInputImage, TOutputImage, TKernel>::PrintSel
   Superclass::PrintSelf(os, indent);
 
   os << indent << "Kernel: " << m_Kernel << std::endl;
-  os << indent << "FullyConnected: " << (m_FullyConnected ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(FullyConnected);
   os << indent << "PreserveIntensities: " << m_PreserveIntensities << std::endl;
 }
 } // end namespace itk

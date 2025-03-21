@@ -162,7 +162,7 @@ protected:
 
   /* The following struct returns the string name of computation type */
   /* default implementation */
-  static inline const std::string
+  static inline std::string
   GetTypeNameString()
   {
     itkGenericExceptionMacro("Unknown ScalarType" << typeid(ScalarType).name());
@@ -203,17 +203,17 @@ TransformIOBaseTemplate<double>::CorrectTransformPrecisionType(std::string & inp
 }
 
 template <>
-inline const std::string
+inline std::string
 TransformIOBaseTemplate<float>::GetTypeNameString()
 {
-  return std::string("float");
+  return { "float" };
 }
 
 template <>
-inline const std::string
+inline std::string
 TransformIOBaseTemplate<double>::GetTypeNameString()
 {
-  return std::string("double");
+  return { "double" };
 }
 
 /** This helps to meet backward compatibility */

@@ -52,7 +52,7 @@ namespace itk
  *
  * \ingroup ITKMetricsv4
  */
-template <typename TInputPointSet, typename TOutput, typename TCoordRep = float>
+template <typename TInputPointSet, typename TOutput, typename TCoordinate = float>
 class ITK_TEMPLATE_EXPORT PointSetFunction : public FunctionBase<typename TInputPointSet::PointType, TOutput>
 {
 public:
@@ -83,8 +83,12 @@ public:
   /** OutputType type alias support */
   using OutputType = TOutput;
 
-  /** CoordRepType type alias support */
-  using CoordRepType = TCoordRep;
+  /** CoordinateType type alias support */
+  using CoordinateType = TCoordinate;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#endif
 
   /** Set the input point set.
    * \warning this method caches BufferedRegion information.

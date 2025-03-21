@@ -148,10 +148,8 @@ public:
     {
       return (TOutput)(A / B);
     }
-    else
-    {
-      return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
-    }
+
+    return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
   }
 };
 
@@ -169,7 +167,7 @@ public:
   {
     m_Threshold = 1e-5 * NumericTraits<TDenominator>::OneValue();
     m_Constant = TOutput{};
-  };
+  }
 
   ~DivideOrZeroOut() = default;
 
@@ -221,10 +219,8 @@ public:
     {
       return static_cast<TOutput>(A % B);
     }
-    else
-    {
-      return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
-    }
+
+    return NumericTraits<TOutput>::max(static_cast<TOutput>(A));
   }
 };
 
@@ -303,10 +299,8 @@ public:
       {
         return NumericTraits<TOutput>::max(A);
       }
-      else
-      {
-        return NumericTraits<TOutput>::NonpositiveMin(A);
-      }
+
+      return NumericTraits<TOutput>::NonpositiveMin(A);
     }
     return static_cast<TOutput>(temp);
   }

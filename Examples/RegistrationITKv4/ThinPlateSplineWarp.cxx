@@ -58,11 +58,8 @@ main(int argc, char * argv[])
 
   using PixelType = unsigned char;
   using InputImageType = itk::Image<PixelType, ImageDimension>;
-  using ReaderType = itk::ImageFileReader<InputImageType>;
-  using DeformedImageWriterType = itk::ImageFileWriter<InputImageType>;
   using FieldVectorType = itk::Vector<float, ImageDimension>;
   using DisplacementFieldType = itk::Image<FieldVectorType, ImageDimension>;
-  using FieldWriterType = itk::ImageFileWriter<DisplacementFieldType>;
   using CoordinateRepType = double;
   using TransformType =
     itk::ThinPlateSplineKernelTransform<CoordinateRepType, ImageDimension>;
@@ -74,12 +71,10 @@ main(int argc, char * argv[])
   using InterpolatorType =
     itk::LinearInterpolateImageFunction<InputImageType, double>;
 
-  auto reader = ReaderType::New();
-  reader->SetFileName(argv[2]);
-
+  InputImageType::ConstPointer inputImage;
   try
   {
-    reader->Update();
+    inputImage = itk::ReadImage<InputImageType>(argv[2]);
   }
   catch (const itk::ExceptionObject & excp)
   {
@@ -104,9 +99,9 @@ main(int argc, char * argv[])
   auto      targetLandMarks = PointSetType::New();
   PointType p1;
   PointType p2;
-  PointSetType::PointsContainer::Pointer sourceLandMarkContainer =
+  const PointSetType::PointsContainer::Pointer sourceLandMarkContainer =
     sourceLandMarks->GetPoints();
-  PointSetType::PointsContainer::Pointer targetLandMarkContainer =
+  const PointSetType::PointsContainer::Pointer targetLandMarkContainer =
     targetLandMarks->GetPoints();
   // Software Guide : EndCodeSnippet
 
@@ -141,15 +136,14 @@ main(int argc, char * argv[])
   // Software Guide : EndLatex
 
   // Set the resampler params
-  InputImageType::ConstPointer inputImage = reader->GetOutput();
-  auto                         resampler = ResamplerType::New();
-  auto                         interpolator = InterpolatorType::New();
+  auto resampler = ResamplerType::New();
+  auto interpolator = InterpolatorType::New();
   resampler->SetInterpolator(interpolator);
-  InputImageType::SpacingType   spacing = inputImage->GetSpacing();
-  InputImageType::PointType     origin = inputImage->GetOrigin();
-  InputImageType::DirectionType direction = inputImage->GetDirection();
-  InputImageType::RegionType    region = inputImage->GetBufferedRegion();
-  InputImageType::SizeType      size = region.GetSize();
+  const InputImageType::SpacingType   spacing = inputImage->GetSpacing();
+  const InputImageType::PointType     origin = inputImage->GetOrigin();
+  const InputImageType::DirectionType direction = inputImage->GetDirection();
+  const InputImageType::RegionType region = inputImage->GetBufferedRegion();
+  const InputImageType::SizeType   size = region.GetSize();
 
   // Software Guide : BeginCodeSnippet
   resampler->SetOutputSpacing(spacing);
@@ -160,16 +154,12 @@ main(int argc, char * argv[])
   // Software Guide : EndCodeSnippet
 
   resampler->SetOutputStartIndex(region.GetIndex());
-  resampler->SetInput(reader->GetOutput());
+  resampler->SetInput(inputImage);
 
   // Set and write deformed image
-  auto deformedImageWriter = DeformedImageWriterType::New();
-  deformedImageWriter->SetInput(resampler->GetOutput());
-  deformedImageWriter->SetFileName(argv[3]);
-
   try
   {
-    deformedImageWriter->Update();
+    itk::WriteImage(resampler->GetOutput(), argv[3]);
   }
   catch (const itk::ExceptionObject & excp)
   {
@@ -216,12 +206,9 @@ main(int argc, char * argv[])
   }
 
   // Write computed deformation field
-  auto fieldWriter = FieldWriterType::New();
-  fieldWriter->SetFileName(argv[4]);
-  fieldWriter->SetInput(field);
   try
   {
-    fieldWriter->Update();
+    itk::WriteImage(field, argv[4]);
   }
   catch (const itk::ExceptionObject & excp)
   {

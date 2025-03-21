@@ -102,7 +102,7 @@ template <typename TInternalComputationValueType>
 void
 MultiStartOptimizerv4Template<TInternalComputationValueType>::InstantiateLocalOptimizer()
 {
-  LocalOptimizerPointer optimizer = LocalOptimizerType::New();
+  const LocalOptimizerPointer optimizer = LocalOptimizerType::New();
   optimizer->SetLearningRate(static_cast<TInternalComputationValueType>(1.e-1));
   optimizer->SetNumberOfIterations(25);
   this->m_LocalOptimizer = optimizer;
@@ -111,7 +111,7 @@ MultiStartOptimizerv4Template<TInternalComputationValueType>::InstantiateLocalOp
 template <typename TInternalComputationValueType>
 auto
 MultiStartOptimizerv4Template<TInternalComputationValueType>::GetStopConditionDescription() const
-  -> const StopConditionReturnStringType
+  -> StopConditionReturnStringType
 {
   return this->m_StopConditionDescription.str();
 }

@@ -95,11 +95,15 @@ public:
   using typename Superclass::TimeStepType;
 
   /** Interpolator type. */
-  using CoordRepType = double;
-  using InterpolatorType = InterpolateImageFunction<MovingImageType, CoordRepType>;
+  using CoordinateType = double;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#endif
+  using InterpolatorType = InterpolateImageFunction<MovingImageType, CoordinateType>;
   using InterpolatorPointer = typename InterpolatorType::Pointer;
   using PointType = typename InterpolatorType::PointType;
-  using DefaultInterpolatorType = LinearInterpolateImageFunction<MovingImageType, CoordRepType>;
+  using DefaultInterpolatorType = LinearInterpolateImageFunction<MovingImageType, CoordinateType>;
 
   /** Covariant vector type. */
   using CovariantVectorType = CovariantVector<double, Self::ImageDimension>;
@@ -109,7 +113,7 @@ public:
   using GradientCalculatorPointer = typename GradientCalculatorType::Pointer;
 
   /** Moving image gradient calculator type. */
-  using MovingImageGradientCalculatorType = CentralDifferenceImageFunction<MovingImageType, CoordRepType>;
+  using MovingImageGradientCalculatorType = CentralDifferenceImageFunction<MovingImageType, CoordinateType>;
   using MovingImageGradientCalculatorPointer = typename MovingImageGradientCalculatorType::Pointer;
 
   /** Set the moving image interpolator. */

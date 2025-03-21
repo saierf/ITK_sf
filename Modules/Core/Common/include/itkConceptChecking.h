@@ -140,7 +140,8 @@ struct UniqueType_bool
  * warning. (BOOST)
  */
 template <typename T>
-inline void IgnoreUnusedVariable(T)
+inline void
+IgnoreUnusedVariable(T)
 {}
 
 /**
@@ -152,7 +153,7 @@ template <typename T>
 void
 RequireBooleanExpression(const T & t)
 {
-  bool x = t;
+  const bool x = t;
 
   IgnoreUnusedVariable(x);
 }
@@ -648,7 +649,7 @@ struct Signed
     void
     constraints()
     {
-      SignedT a = TrueT();
+      const SignedT a = TrueT();
 
       Detail::IgnoreUnusedVariable(a);
     }
@@ -666,7 +667,7 @@ struct SameType
     void
     constraints()
     {
-      Detail::UniqueType<T1> a = Detail::UniqueType<T2>();
+      const Detail::UniqueType<T1> a = Detail::UniqueType<T2>();
       Detail::IgnoreUnusedVariable(a);
     }
   };
@@ -684,7 +685,7 @@ struct SameDimension
     void
     constraints()
     {
-      DT1 a = DT2();
+      DT1 const a = DT2();
 
       Detail::IgnoreUnusedVariable(a);
     }
@@ -701,6 +702,7 @@ struct HasNumericTraits
     void
     constraints()
     {
+      // This is here to cause compile-time failures, if a provided custom type is missing some methods.
       Detail::UniqueType<typename NumericTraits<T>::ValueType>();
       Detail::UniqueType<typename NumericTraits<T>::PrintType>();
       Detail::UniqueType<typename NumericTraits<T>::AbsType>();
@@ -708,6 +710,7 @@ struct HasNumericTraits
       Detail::UniqueType<typename NumericTraits<T>::RealType>();
       Detail::UniqueType<typename NumericTraits<T>::ScalarRealType>();
       Detail::UniqueType<typename NumericTraits<T>::FloatType>();
+
       T a{};
 
       // Test these methods that take an instance of T to
@@ -738,7 +741,7 @@ struct HasPixelTraits
     constraints()
     {
       Detail::UniqueType<typename PixelTraits<T>::ValueType>();
-      unsigned int a = PixelTraits<T>::Dimension;
+      const unsigned int a = PixelTraits<T>::Dimension;
       Detail::IgnoreUnusedVariable(a);
     }
   };
@@ -806,7 +809,9 @@ struct SameDimensionOrMinusOne
     using Type1 = Detail::UniqueType_unsigned_int<D1>;
     using Type2 = Detail::UniqueType_unsigned_int<D1 - 1>;
 
-    void f(Type1) {}
+    void
+    f(Type1)
+    {}
     void
     f(Type2, int = 0)
     {}
@@ -814,7 +819,7 @@ struct SameDimensionOrMinusOne
     void
     constraints()
     {
-      Detail::UniqueType_unsigned_int<D2> tt;
+      const Detail::UniqueType_unsigned_int<D2> tt;
       this->f(tt);
     }
   };
@@ -831,7 +836,9 @@ struct SameDimensionOrMinusOneOrTwo
     using Type2 = Detail::UniqueType_unsigned_int<D1 - 1>;
     using Type3 = Detail::UniqueType_unsigned_int<D1 - 2>;
 
-    void f(Type1) {}
+    void
+    f(Type1)
+    {}
     void
     f(Type2, int = 0)
     {}
@@ -842,7 +849,7 @@ struct SameDimensionOrMinusOneOrTwo
     void
     constraints()
     {
-      Detail::UniqueType_unsigned_int<D2> tt;
+      constexpr Detail::UniqueType_unsigned_int<D2> tt;
       this->f(tt);
     }
   };
@@ -862,7 +869,7 @@ struct IsInteger
     void
     constraints()
     {
-      IntegralT a = TrueT();
+      const IntegralT a = TrueT();
 
       Detail::IgnoreUnusedVariable(a);
     }
@@ -885,7 +892,7 @@ struct IsUnsignedInteger
     void
     constraints()
     {
-      UnsignedT a = TrueT();
+      const UnsignedT a = TrueT();
 
       Detail::IgnoreUnusedVariable(a);
     }
@@ -932,8 +939,8 @@ struct IsFloatingPoint
     void
     constraints()
     {
-      IntegralT a = FalseT();
-      ExactT    b = FalseT();
+      const IntegralT a = FalseT();
+      const ExactT    b = FalseT();
 
       Detail::IgnoreUnusedVariable(a);
       Detail::IgnoreUnusedVariable(b);

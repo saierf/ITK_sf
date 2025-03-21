@@ -74,7 +74,7 @@ static constexpr RGBColormapFilterEnum OverUnder = RGBColormapFilterEnum::OverUn
 #endif
 /** Define how to print enumerations */
 extern ITKColormap_EXPORT std::ostream &
-                          operator<<(std::ostream & out, const ScalarToRGBColormapImageFilterEnums::RGBColormapFilter value);
+operator<<(std::ostream & out, const ScalarToRGBColormapImageFilterEnums::RGBColormapFilter value);
 /**
  * \class ScalarToRGBColormapImageFilter
  * \brief Implements pixel-wise intensity->rgb mapping operation on one image.
@@ -113,7 +113,7 @@ extern ITKColormap_EXPORT std::ostream &
  * This code was contributed in the Insight Journal paper:
  * "Meeting Andy Warhol Somewhere Over the Rainbow: RGB Colormapping and ITK"
  * by Tustison N., Zhang H., Lehmann G., Yushkevich P., Gee J.
- * https://www.insight-journal.org/browse/publication/285
+ * https://doi.org/10.54294/tmojbk
  *
  * \sa BinaryFunctionImageFilter TernaryFunctionImageFilter
  *

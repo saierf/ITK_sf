@@ -29,7 +29,7 @@ MetaConverterBase<VDimension>::MetaObjectToSpatialObjectBase(const MetaObjectTyp
 {
   rval->SetId(mo->ID());
   rval->SetParentId(mo->ParentID());
-  typename SpatialObject<VDimension>::TransformType::Pointer    tfm = SpatialObject<VDimension>::TransformType::New();
+  auto                                                          tfm = SpatialObject<VDimension>::TransformType::New();
   typename SpatialObject<VDimension>::TransformType::OffsetType off;
   typename SpatialObject<VDimension>::TransformType::MatrixType mat;
   typename SpatialObject<VDimension>::TransformType::CenterType cen;
@@ -64,10 +64,11 @@ MetaConverterBase<VDimension>::SpatialObjectToMetaObjectBase(SpatialObjectConstP
   if (spatialObject->GetParent())
   {
     mo->ParentID(spatialObject->GetParent()->GetId());
-    typename SpatialObject<VDimension>::TransformType::ConstPointer tfm = spatialObject->GetObjectToParentTransform();
-    double                                                          mo_off[10];
-    double                                                          mo_mat[100];
-    double                                                          mo_cen[10];
+    const typename SpatialObject<VDimension>::TransformType::ConstPointer tfm =
+      spatialObject->GetObjectToParentTransform();
+    double mo_off[10];
+    double mo_mat[100];
+    double mo_cen[10];
     for (unsigned int i = 0; i < VDimension; ++i)
     {
       mo_off[i] = tfm->GetOffset()[i];

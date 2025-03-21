@@ -49,7 +49,7 @@ ExtractImageFilter<TInputImage, TOutputImage>::CallCopyOutputRegionToInputRegion
   InputImageRegionType &        destRegion,
   const OutputImageRegionType & srcRegion)
 {
-  ExtractImageFilterRegionCopierType extractImageRegionCopier;
+  const ExtractImageFilterRegionCopierType extractImageRegionCopier;
 
   extractImageRegionCopier(destRegion, srcRegion, m_ExtractionRegion);
 }
@@ -62,11 +62,9 @@ ExtractImageFilter<TInputImage, TOutputImage>::SetExtractionRegion(InputImageReg
                 "InputImageDimension must be greater than OutputImageDimension");
   m_ExtractionRegion = extractRegion;
 
-  InputImageSizeType  inputSize = extractRegion.GetSize();
-  OutputImageSizeType outputSize;
-  outputSize.Fill(0);
-  OutputImageIndexType outputIndex;
-  outputIndex.Fill(0);
+  InputImageSizeType   inputSize = extractRegion.GetSize();
+  OutputImageSizeType  outputSize{};
+  OutputImageIndexType outputIndex{};
 
   /**
    * check to see if the number of non-zero entries in the extraction region
@@ -107,8 +105,8 @@ ExtractImageFilter<TInputImage, TOutputImage>::GenerateOutputInformation()
   // this filter allows the input and the output to be of different dimensions
 
   // get pointers to the input and output
-  typename Superclass::OutputImagePointer     outputPtr = this->GetOutput();
-  typename Superclass::InputImageConstPointer inputPtr = this->GetInput();
+  const typename Superclass::OutputImagePointer     outputPtr = this->GetOutput();
+  const typename Superclass::InputImageConstPointer inputPtr = this->GetInput();
 
   if (!outputPtr || !inputPtr)
   {
@@ -131,8 +129,7 @@ ExtractImageFilter<TInputImage, TOutputImage>::GenerateOutputInformation()
 
     typename OutputImageType::SpacingType   outputSpacing;
     typename OutputImageType::DirectionType outputDirection;
-    typename OutputImageType::PointType     outputOrigin;
-    outputOrigin.Fill(0.0);
+    typename OutputImageType::PointType     outputOrigin{};
 
     if (static_cast<unsigned int>(OutputImageDimension) > static_cast<unsigned int>(InputImageDimension))
     {

@@ -29,21 +29,10 @@ template <typename TImage>
 void
 ExtractOrthogonalSwath2DImageFilter<TImage>::SetSpacing(const double * spacing)
 {
-  unsigned int i;
 
-  for (i = 0; i < ImageDimension; ++i)
+  if (ContainerCopyWithCheck(m_Spacing, spacing, Self::ImageDimension))
   {
-    if (Math::NotExactlyEquals(spacing[i], m_Spacing[i]))
-    {
-      break;
-    }
-  }
-  if (i < ImageDimension)
-  {
-    for (i = 0; i < ImageDimension; ++i)
-    {
-      m_Spacing[i] = spacing[i];
-    }
+    this->Modified();
   }
 }
 
@@ -51,21 +40,9 @@ template <typename TImage>
 void
 ExtractOrthogonalSwath2DImageFilter<TImage>::SetSpacing(const float * spacing)
 {
-  unsigned int i;
-
-  for (i = 0; i < ImageDimension; ++i)
+  if (ContainerCopyWithCheck(m_Spacing, spacing, Self::ImageDimension))
   {
-    if (Math::NotExactlyEquals(static_cast<double>(spacing[i]), m_Spacing[i]))
-    {
-      break;
-    }
-  }
-  if (i < ImageDimension)
-  {
-    for (i = 0; i < ImageDimension; ++i)
-    {
-      m_Spacing[i] = spacing[i];
-    }
+    this->Modified();
   }
 }
 
@@ -81,21 +58,9 @@ template <typename TImage>
 void
 ExtractOrthogonalSwath2DImageFilter<TImage>::SetOrigin(const double * origin)
 {
-  unsigned int i;
-
-  for (i = 0; i < ImageDimension; ++i)
+  if (ContainerCopyWithCheck(m_Origin, origin, Self::ImageDimension))
   {
-    if (Math::NotExactlyEquals(origin[i], m_Origin[i]))
-    {
-      break;
-    }
-  }
-  if (i < ImageDimension)
-  {
-    for (i = 0; i < ImageDimension; ++i)
-    {
-      m_Origin[i] = origin[i];
-    }
+    this->Modified();
   }
 }
 
@@ -103,21 +68,9 @@ template <typename TImage>
 void
 ExtractOrthogonalSwath2DImageFilter<TImage>::SetOrigin(const float * origin)
 {
-  unsigned int i;
-
-  for (i = 0; i < ImageDimension; ++i)
+  if (ContainerCopyWithCheck(m_Origin, origin, Self::ImageDimension))
   {
-    if (Math::NotExactlyEquals(static_cast<double>(origin[i]), m_Origin[i]))
-    {
-      break;
-    }
-  }
-  if (i < ImageDimension)
-  {
-    for (i = 0; i < ImageDimension; ++i)
-    {
-      m_Origin[i] = origin[i];
-    }
+    this->Modified();
   }
 }
 
@@ -134,7 +87,7 @@ template <typename TImage>
 void
 ExtractOrthogonalSwath2DImageFilter<TImage>::GenerateOutputInformation()
 {
-  ImagePointer outputPtr = this->GetOutput(0);
+  const ImagePointer outputPtr = this->GetOutput(0);
 
   const ImageRegionType outputRegion(this->m_Size);
   outputPtr->SetLargestPossibleRegion(outputRegion);
@@ -149,12 +102,12 @@ template <typename TImage>
 void
 ExtractOrthogonalSwath2DImageFilter<TImage>::GenerateData()
 {
-  ImageConstPointer inputImagePtr = this->GetImageInput();
-  PathConstPointer  inputPathPtr = this->GetPathInput();
-  ImagePointer      outputPtr = this->GetOutput(0);
+  const ImageConstPointer inputImagePtr = this->GetImageInput();
+  const PathConstPointer  inputPathPtr = this->GetPathInput();
+  const ImagePointer      outputPtr = this->GetOutput(0);
 
   // Generate the output image
-  ImageRegionType outputRegion = outputPtr->GetRequestedRegion();
+  const ImageRegionType outputRegion = outputPtr->GetRequestedRegion();
 
   outputPtr->SetBufferedRegion(outputRegion);
   outputPtr->Allocate();
@@ -163,7 +116,7 @@ ExtractOrthogonalSwath2DImageFilter<TImage>::GenerateData()
   ProgressReporter progress(this, 0, outputRegion.GetNumberOfPixels());
 
   using OutputIterator = ImageRegionIteratorWithIndex<ImageType>;
-  using InterpolatorType = LinearInterpolateImageFunction<ImageType, double>;
+  using InterpolatorType = LinearInterpolateImageFunction<ImageType, itk::SpacePrecisionType>;
 
   ImageIndexType                      index;
   double                              orthogonalOffset;

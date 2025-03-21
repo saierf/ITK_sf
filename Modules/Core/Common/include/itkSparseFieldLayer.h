@@ -37,9 +37,17 @@ template <typename TNodeType>
 class ITK_TEMPLATE_EXPORT ConstSparseFieldLayerIterator
 {
 public:
-  const TNodeType & operator*() const { return *m_Pointer; }
+  const TNodeType &
+  operator*() const
+  {
+    return *m_Pointer;
+  }
 
-  const TNodeType * operator->() const { return m_Pointer; }
+  const TNodeType *
+  operator->() const
+  {
+    return m_Pointer;
+  }
 
   const TNodeType *
   GetPointer() const
@@ -54,10 +62,8 @@ public:
     {
       return true;
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
   ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(ConstSparseFieldLayerIterator);
@@ -104,9 +110,17 @@ public:
     : Superclass(p)
   {}
 
-  TNodeType & operator*() { return *this->m_Pointer; }
+  TNodeType &
+  operator*()
+  {
+    return *this->m_Pointer;
+  }
 
-  TNodeType * operator->() { return this->m_Pointer; }
+  TNodeType *
+  operator->()
+  {
+    return this->m_Pointer;
+  }
 
   TNodeType *
   GetPointer()
@@ -280,10 +294,8 @@ public:
     {
       return true;
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
   /** Returns the number of elements in the list. Size() executes in constant

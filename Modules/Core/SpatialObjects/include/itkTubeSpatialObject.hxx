@@ -60,8 +60,7 @@ TubeSpatialObject<TDimension, TTubePointType>::CopyInformation(const DataObject 
   Superclass::CopyInformation(data);
 
   // Attempt to cast data to an ImageBase
-  const TubeSpatialObject<TDimension> * soData;
-  soData = dynamic_cast<const TubeSpatialObject<TDimension> *>(data);
+  const auto * soData = dynamic_cast<const TubeSpatialObject<TDimension> *>(data);
 
   if (soData == nullptr)
   {
@@ -92,7 +91,7 @@ TubeSpatialObject<TDimension, TTubePointType>::InternalClone() const
 {
   typename LightObject::Pointer loPtr = Superclass::InternalClone();
 
-  typename Self::Pointer rval = dynamic_cast<Self *>(loPtr.GetPointer());
+  const typename Self::Pointer rval = dynamic_cast<Self *>(loPtr.GetPointer());
   if (rval.IsNull())
   {
     itkExceptionMacro("downcast to type " << this->GetNameOfClass() << " failed.");
@@ -112,8 +111,8 @@ TubeSpatialObject<TDimension, TTubePointType>::PrintSelf(std::ostream & os, Inde
   Superclass::PrintSelf(os, indent);
 
   os << indent << "ParentPoint : " << m_ParentPoint << std::endl;
-  os << indent << "EndRounded: " << (m_EndRounded ? "On" : "Off") << std::endl;
-  os << indent << "Root: " << (m_Root ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(EndRounded);
+  itkPrintSelfBooleanMacro(Root);
 }
 
 template <unsigned int TDimension, typename TTubePointType>
@@ -127,8 +126,7 @@ TubeSpatialObject<TDimension, TTubePointType>::ComputeMyBoundingBox()
 
   if (it == end)
   {
-    typename BoundingBoxType::PointType pnt;
-    pnt.Fill(typename BoundingBoxType::PointType::ValueType{});
+    const typename BoundingBoxType::PointType pnt{};
     this->GetModifiableMyBoundingBoxInObjectSpace()->SetMinimum(pnt);
     this->GetModifiableMyBoundingBoxInObjectSpace()->SetMaximum(pnt);
     return;
@@ -189,10 +187,10 @@ TubeSpatialObject<TDimension, TTubePointType>::IsInsideInObjectSpace(const Point
     auto last = end;
     --last;
 
-    PointType firstP = first->GetPositionInObjectSpace();
-    double    firstR = first->GetRadiusInObjectSpace();
-    PointType lastP = last->GetPositionInObjectSpace();
-    double    lastR = last->GetRadiusInObjectSpace();
+    const PointType firstP = first->GetPositionInObjectSpace();
+    const double    firstR = first->GetRadiusInObjectSpace();
+    const PointType lastP = last->GetPositionInObjectSpace();
+    const double    lastR = last->GetRadiusInObjectSpace();
 
     bool withinEndCap = false;
     while (it2 != end)
@@ -235,10 +233,10 @@ TubeSpatialObject<TDimension, TTubePointType>::IsInsideInObjectSpace(const Point
         double lambda = A / B;
         B = std::sqrt(B);
 
-        double lambdaMin = 0;
-        double lambdaMax = 1;
-        double lambdaMinR = it->GetRadiusInObjectSpace();
-        double lambdaMaxR = it2->GetRadiusInObjectSpace();
+        double       lambdaMin = 0;
+        double       lambdaMax = 1;
+        const double lambdaMinR = it->GetRadiusInObjectSpace();
+        const double lambdaMaxR = it2->GetRadiusInObjectSpace();
         if (m_EndRounded || !withinEndCap)
         {
           lambdaMin = -(lambdaMinR / B);
@@ -264,7 +262,7 @@ TubeSpatialObject<TDimension, TTubePointType>::IsInsideInObjectSpace(const Point
             lambda = 1;
           }
 
-          double lambdaR = lambdaMinR + lambda * (lambdaMaxR - lambdaMinR);
+          const double lambdaR = lambdaMinR + lambda * (lambdaMaxR - lambdaMinR);
 
           PointType p;
           for (unsigned int i = 0; i < TDimension; ++i)
@@ -296,12 +294,12 @@ TubeSpatialObject<TDimension, TTubePointType>::RemoveDuplicatePointsInObjectSpac
   auto it = this->m_Points.begin();
   while (it != this->m_Points.end())
   {
-    PointType pnt = it->GetPositionInObjectSpace();
+    const PointType pnt = it->GetPositionInObjectSpace();
     ++it;
     if (it != this->m_Points.end())
     {
-      PointType pnt2 = it->GetPositionInObjectSpace();
-      double    dist = pnt.EuclideanDistanceTo(pnt2);
+      const PointType pnt2 = it->GetPositionInObjectSpace();
+      const double    dist = pnt.EuclideanDistanceTo(pnt2);
       if (dist <= minSpacingInObjectSpace)
       {
         it = this->m_Points.erase(it);
@@ -405,11 +403,9 @@ TubeSpatialObject<TDimension, TTubePointType>::ComputeTangentsAndNormals()
     ((TubePointType *)(this->GetPoint(it1)))->SetTangentInObjectSpace(tb);
   }
 
-  CovariantVectorType prevN1;
-  prevN1.Fill(0);
+  CovariantVectorType prevN1{};
   prevN1[TDimension - 1] = 1;
-  CovariantVectorType prevN2;
-  prevN2.Fill(0);
+  CovariantVectorType prevN2{};
   prevN2[TDimension - 2] = 1;
 
   it1 = 0;

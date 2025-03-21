@@ -42,7 +42,7 @@ namespace itk
  *
  * This work was originally described in the Insight Journal article:
  * P. Yushkevich, N. Tustison, J. Gee, Gaussian interpolation.
- * \sa{https://www.insight-journal.org/browse/publication/705}
+ * \sa{https://doi.org/10.54294/n8k79e}
  *
  * \author Paul Yushkevich
  * \author Nick Tustison
@@ -50,15 +50,15 @@ namespace itk
  * \ingroup ITKImageFunction
  */
 
-template <typename TInputImage, typename TCoordRep = double>
-class ITK_TEMPLATE_EXPORT GaussianInterpolateImageFunction : public InterpolateImageFunction<TInputImage, TCoordRep>
+template <typename TInputImage, typename TCoordinate = double>
+class ITK_TEMPLATE_EXPORT GaussianInterpolateImageFunction : public InterpolateImageFunction<TInputImage, TCoordinate>
 {
 public:
   ITK_DISALLOW_COPY_AND_MOVE(GaussianInterpolateImageFunction);
 
   /** Standard class type aliases. */
   using Self = GaussianInterpolateImageFunction;
-  using Superclass = InterpolateImageFunction<TInputImage, TCoordRep>;
+  using Superclass = InterpolateImageFunction<TInputImage, TCoordinate>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 

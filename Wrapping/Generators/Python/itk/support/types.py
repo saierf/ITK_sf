@@ -18,7 +18,7 @@
 
 import importlib
 from importlib.metadata import metadata
-from typing import Union, Optional, Tuple, TYPE_CHECKING
+from typing import Union, TYPE_CHECKING
 import os
 
 try:
@@ -28,27 +28,28 @@ except ImportError:
 
 _HAVE_XARRAY = False
 try:
-    metadata('xarray')
+    metadata("xarray")
 
     _HAVE_XARRAY = True
 except importlib.metadata.PackageNotFoundError:
     pass
 _HAVE_TORCH = False
 try:
-    metadata('torch')
+    metadata("torch")
 
     _HAVE_TORCH = True
 except importlib.metadata.PackageNotFoundError:
     pass
 
+
 # noinspection PyPep8Naming
 class itkCType:
     # import locally to facilitate dynamic loading in itk/__init__.py
     import numpy as np
-    from typing import Any, Dict, Optional, Tuple
+    from typing import Optional
 
-    __c_types__: Dict[str, "itkCType"] = {}
-    __c_types_for_dtype__: Dict[str, np.dtype] = {}
+    __c_types__: dict[str, "itkCType"] = {}
+    __c_types_for_dtype__: dict[str, np.dtype] = {}
 
     def __init__(self, name: str, short_name: str, np_dtype: np.dtype = None) -> None:
         # Remove potential white space around type names
@@ -72,10 +73,9 @@ class itkCType:
     @staticmethod
     def GetCType(name: str) -> Optional["itkCType"]:
         # import locally to facilitate dynamic loading in itk/__init__.py
-        from typing import Dict
 
         """Get the type corresponding to the provided C primitive type name."""
-        aliases: Dict[str, str] = {
+        aliases: dict[str, str] = {
             "short": "signed short",
             "int": "signed int",
             "long": "signed long",
@@ -255,9 +255,9 @@ Matrix = "itk.Matrix"
 # When there is a single indexed output, it is returned directly.
 # When there are multiple indexed outputs, a tuple of the indexed outputs is
 # returned.
-ImageSourceReturn = Union[ImageLike, Tuple[ImageLike, ...]]
-MeshSourceReturn = Union[Mesh, Tuple[Mesh, ...]]
-PathSourceReturn = Union[Path, Tuple[Path, ...]]
+ImageSourceReturn = Union[ImageLike, tuple[ImageLike, ...]]
+MeshSourceReturn = Union[Mesh, tuple[Mesh, ...]]
+PathSourceReturn = Union[Path, tuple[Path, ...]]
 
 InterpolateImageFunction = "itk.InterpolateImageFunction"
 ExtrapolateImageFunction = "itk.ExtrapolateImageFunction"

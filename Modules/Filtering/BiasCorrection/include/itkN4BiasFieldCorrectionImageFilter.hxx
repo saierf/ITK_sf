@@ -110,7 +110,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Generat
   }
 
   // Calculate the log of the input image.
-  RealImagePointer logInputImage = RealImageType::New();
+  const RealImagePointer logInputImage = RealImageType::New();
   logInputImage->CopyInformation(inputImage);
   logInputImage->SetRegions(inputRegion);
   logInputImage->Allocate(false);
@@ -160,7 +160,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Generat
   logBiasField->SetRegions(inputImage->GetLargestPossibleRegion());
   logBiasField->AllocateInitialized();
 
-  RealImagePointer logSharpenedImage = RealImageType::New();
+  const RealImagePointer logSharpenedImage = RealImageType::New();
   logSharpenedImage->CopyInformation(inputImage);
   logSharpenedImage->SetRegions(inputImage->GetLargestPossibleRegion());
   logSharpenedImage->Allocate(false);
@@ -196,13 +196,13 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Generat
       subtracter1->SetInput1(logUncorrectedImage);
       subtracter1->SetInput2(logSharpenedImage);
 
-      RealImagePointer residualBiasField = subtracter1->GetOutput();
+      const RealImagePointer residualBiasField = subtracter1->GetOutput();
       residualBiasField->Update();
 
       // Smooth the residual bias field estimate and add the resulting
       // control point grid to get the new total bias field estimate.
 
-      RealImagePointer newLogBiasField = this->UpdateBiasFieldEstimate(residualBiasField, numberOfIncludedPixels);
+      const RealImagePointer newLogBiasField = this->UpdateBiasFieldEstimate(residualBiasField, numberOfIncludedPixels);
 
       this->m_CurrentConvergenceMeasurement = this->CalculateConvergenceMeasurement(logBiasField, newLogBiasField);
       logBiasField = newLogBiasField;
@@ -227,8 +227,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Generat
     reconstructer->SetSplineOrder(this->m_SplineOrder);
     reconstructer->Update();
 
-    typename BSplineReconstructerType::ArrayType numberOfLevels;
-    numberOfLevels.Fill(1);
+    auto numberOfLevels = MakeFilled<typename BSplineReconstructerType::ArrayType>(1);
     for (unsigned int d = 0; d < ImageDimension; ++d)
     {
       if (this->m_NumberOfFittingLevels[d] + 1 >= this->m_CurrentLevel &&
@@ -243,10 +242,10 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Generat
   using CustomBinaryFilter = itk::BinaryGeneratorImageFilter<InputImageType, RealImageType, OutputImageType>;
   auto expAndDivFilter = CustomBinaryFilter::New();
   auto expAndDivLambda = [](const typename InputImageType::PixelType & input,
-                            const typename RealImageType::PixelType &  biasField) -> typename OutputImageType::PixelType
-  {
-    return static_cast<typename OutputImageType::PixelType>(input / std::exp(biasField));
-  };
+                            const typename RealImageType::PixelType &  biasField) ->
+    typename OutputImageType::PixelType {
+      return static_cast<typename OutputImageType::PixelType>(input / std::exp(biasField));
+    };
   expAndDivFilter->SetFunctor(expAndDivLambda);
   expAndDivFilter->SetInput1(inputImage);
   expAndDivFilter->SetInput2(logBiasField);
@@ -283,7 +282,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Sharpen
          (!useMaskLabel && maskImageBufferRange[indexValue] != MaskPixelType{})) &&
         (confidenceImageBufferRange.empty() || confidenceImageBufferRange[indexValue] > 0.0))
     {
-      RealType pixel = unsharpenedImageBufferRange[indexValue];
+      const RealType pixel = unsharpenedImageBufferRange[indexValue];
       if (pixel > binMaximum)
       {
         binMaximum = pixel;
@@ -294,7 +293,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Sharpen
       }
     }
   }
-  RealType histogramSlope = (binMaximum - binMinimum) / static_cast<RealType>(this->m_NumberOfHistogramBins - 1);
+  const RealType histogramSlope = (binMaximum - binMinimum) / static_cast<RealType>(this->m_NumberOfHistogramBins - 1);
 
   // Create the intensity profile (within the masked region, if applicable)
   // using a triangular parzen windowing scheme.
@@ -307,11 +306,11 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Sharpen
          (!useMaskLabel && maskImageBufferRange[indexValue] != MaskPixelType{})) &&
         (confidenceImageBufferRange.empty() || confidenceImageBufferRange[indexValue] > 0.0))
     {
-      RealType pixel = unsharpenedImageBufferRange[indexValue];
+      const RealType pixel = unsharpenedImageBufferRange[indexValue];
 
-      RealType     cidx = (static_cast<RealType>(pixel) - binMinimum) / histogramSlope;
-      unsigned int idx = itk::Math::floor(cidx);
-      RealType     offset = cidx - static_cast<RealType>(idx);
+      const RealType     cidx = (static_cast<RealType>(pixel) - binMinimum) / histogramSlope;
+      const unsigned int idx = itk::Math::floor(cidx);
+      const RealType     offset = cidx - static_cast<RealType>(idx);
 
       if (offset == 0.0)
       {
@@ -328,9 +327,10 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Sharpen
   // Determine information about the intensity histogram and zero-pad
   // histogram to a power of 2.
 
-  RealType exponent = std::ceil(std::log(static_cast<RealType>(this->m_NumberOfHistogramBins)) / std::log(2.0)) + 1;
-  auto     paddedHistogramSize = static_cast<unsigned int>(std::pow(static_cast<RealType>(2.0), exponent) + 0.5);
-  auto     histogramOffset = static_cast<unsigned int>(0.5 * (paddedHistogramSize - this->m_NumberOfHistogramBins));
+  const RealType exponent =
+    std::ceil(std::log(static_cast<RealType>(this->m_NumberOfHistogramBins)) / std::log(2.0)) + 1;
+  auto paddedHistogramSize = static_cast<unsigned int>(std::pow(static_cast<RealType>(2.0), exponent) + 0.5);
+  auto histogramOffset = static_cast<unsigned int>(0.5 * (paddedHistogramSize - this->m_NumberOfHistogramBins));
 
   using FFTComputationType = double;
   using FFTComplexType = std::complex<FFTComputationType>;
@@ -352,9 +352,9 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Sharpen
 
   // Create the Gaussian filter.
 
-  RealType scaledFWHM = this->m_BiasFieldFullWidthAtHalfMaximum / histogramSlope;
-  RealType expFactor = 4.0 * std::log(2.0) / itk::Math::sqr(scaledFWHM);
-  RealType scaleFactor = 2.0 * std::sqrt(std::log(2.0) / itk::Math::pi) / scaledFWHM;
+  const RealType scaledFWHM = this->m_BiasFieldFullWidthAtHalfMaximum / histogramSlope;
+  const RealType expFactor = 4.0 * std::log(2.0) / itk::Math::sqr(scaledFWHM);
+  const RealType scaleFactor = 2.0 * std::sqrt(std::log(2.0) / itk::Math::pi) / scaledFWHM;
 
   vnl_vector<FFTComplexType> F(paddedHistogramSize, FFTComplexType(0.0, 0.0));
 
@@ -382,7 +382,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Sharpen
   const auto wienerNoiseValue = static_cast<FFTComputationType>(this->m_WienerFilterNoise);
   for (unsigned int n = 0; n < paddedHistogramSize; ++n)
   {
-    FFTComplexType c = vnl_complex_traits<FFTComplexType>::conjugate(Ff[n]);
+    const FFTComplexType c = vnl_complex_traits<FFTComplexType>::conjugate(Ff[n]);
     Gf[n] = c / (c * Ff[n] + wienerNoiseValue);
   }
 
@@ -455,8 +455,8 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Sharpen
          (!useMaskLabel && maskImageBufferRange[indexValue] != MaskPixelType{})) &&
         (confidenceImageBufferRange.empty() || confidenceImageBufferRange[indexValue] > 0.0))
     {
-      RealType     cidx = (unsharpenedImageBufferRange[indexValue] - binMinimum) / histogramSlope;
-      unsigned int idx = itk::Math::floor(cidx);
+      const RealType     cidx = (unsharpenedImageBufferRange[indexValue] - binMinimum) / histogramSlope;
+      const unsigned int idx = itk::Math::floor(cidx);
 
       RealType correctedPixel = 0;
       if (idx < E.size() - 1)
@@ -499,15 +499,13 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::UpdateB
 
   const typename ImporterType::OutputImageType * parametricFieldEstimate = importer->GetOutput();
 
-  PointSetPointer fieldPoints = PointSetType::New();
-  fieldPoints->Initialize();
-  auto & pointSTLContainer = fieldPoints->GetPoints()->CastToSTLContainer();
+  const PointSetPointer fieldPoints = PointSetType::New();
+  auto &                pointSTLContainer = fieldPoints->GetPoints()->CastToSTLContainer();
   pointSTLContainer.reserve(numberOfIncludedPixels);
   auto & pointDataSTLContainer = fieldPoints->GetPointData()->CastToSTLContainer();
   pointDataSTLContainer.reserve(numberOfIncludedPixels);
 
-  typename BSplineFilterType::WeightsContainerType::Pointer weights = BSplineFilterType::WeightsContainerType::New();
-  weights->Initialize();
+  auto   weights = BSplineFilterType::WeightsContainerType::New();
   auto & weightSTLContainer = weights->CastToSTLContainer();
   weightSTLContainer.reserve(numberOfIncludedPixels);
 
@@ -546,8 +544,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::UpdateB
   auto bspliner = BSplineFilterType::New();
 
   typename BSplineFilterType::ArrayType numberOfControlPoints;
-  typename BSplineFilterType::ArrayType numberOfFittingLevels;
-  numberOfFittingLevels.Fill(1);
+  auto                                  numberOfFittingLevels = MakeFilled<typename BSplineFilterType::ArrayType>(1);
   for (unsigned int d = 0; d < ImageDimension; ++d)
   {
     if (!this->m_LogBiasFieldControlPointLattice)
@@ -577,7 +574,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::UpdateB
   bspliner->SetPointWeights(weights);
   bspliner->Update();
 
-  typename BiasFieldControlPointLatticeType::Pointer phiLattice = bspliner->GetPhiLattice();
+  const typename BiasFieldControlPointLatticeType::Pointer phiLattice = bspliner->GetPhiLattice();
 
   // Add the bias field control points to the current estimate.
 
@@ -624,7 +621,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Reconst
   reconstructer->SetSplineOrder(this->m_SplineOrder);
   reconstructer->SetSize(inputImage->GetLargestPossibleRegion().GetSize());
 
-  typename ScalarImageType::Pointer biasFieldBsplineImage = reconstructer->GetOutput();
+  const typename ScalarImageType::Pointer biasFieldBsplineImage = reconstructer->GetOutput();
   biasFieldBsplineImage->Update();
 
   using SelectorType = VectorIndexSelectionCastImageFilter<ScalarImageType, RealImageType>;
@@ -672,7 +669,7 @@ N4BiasFieldCorrectionImageFilter<TInputImage, TMaskImage, TOutputImage>::Calcula
          (!useMaskLabel && maskImageBufferRange[indexValue] != MaskPixelType{})) &&
         (confidenceImageBufferRange.empty() || confidenceImageBufferRange[indexValue] > 0.0))
     {
-      RealType pixel = std::exp(subtracterImageBufferRange[indexValue]);
+      const RealType pixel = std::exp(subtracterImageBufferRange[indexValue]);
       N += 1.0;
 
       if (N > 1.0)

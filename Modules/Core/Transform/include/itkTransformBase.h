@@ -39,7 +39,7 @@ namespace itk
 class TransformBaseTemplateEnums
 {
 public:
-  /** \class TransformCategory
+  /**
    * \ingroup ITKTransform
    * */
   enum class TransformCategory : uint8_t
@@ -179,18 +179,8 @@ public:
   GetTransformCategory() const = 0;
 
 protected:
-#if defined(__GNUC__)
-  // A bug in some versions of the GCC and Clang compilers
-  // result in an ICE or linker error when "= default" is requested.
-  // This was observed in at least gcc 4.8 and 5.4.0, and
-  // AppleClang 7.0.2 and 8.0.0. Probably others too.
-  // "= default" doesn't gain us much, so just don't use it here.
-  TransformBaseTemplate(){};
-  ~TransformBaseTemplate() override{};
-#else
   TransformBaseTemplate() = default;
   ~TransformBaseTemplate() override = default;
-#endif
 
 private:
   std::string m_InputSpaceName{};

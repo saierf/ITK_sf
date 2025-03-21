@@ -40,7 +40,7 @@ HMinimaImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
   Superclass::GenerateInputRequestedRegion();
 
   // We need all the input.
-  InputImagePointer input = const_cast<InputImageType *>(this->GetInput());
+  const InputImagePointer input = const_cast<InputImageType *>(this->GetInput());
   if (input)
   {
     input->SetRequestedRegion(input->GetLargestPossibleRegion());
@@ -72,8 +72,7 @@ HMinimaImageFilter<TInputImage, TOutputImage>::GenerateData()
   // Delegate to a geodesic erosion filter.
   //
   //
-  typename ReconstructionByErosionImageFilter<TInputImage, TInputImage>::Pointer erode =
-    ReconstructionByErosionImageFilter<TInputImage, TInputImage>::New();
+  auto erode = ReconstructionByErosionImageFilter<TInputImage, TInputImage>::New();
 
   // Create a process accumulator for tracking the progress of this minipipeline
   auto progress = ProgressAccumulator::New();
@@ -87,7 +86,7 @@ HMinimaImageFilter<TInputImage, TOutputImage>::GenerateData()
   erode->SetFullyConnected(m_FullyConnected);
 
   // Must cast to the output type
-  typename CastImageFilter<TInputImage, TOutputImage>::Pointer cast = CastImageFilter<TInputImage, TOutputImage>::New();
+  auto cast = CastImageFilter<TInputImage, TOutputImage>::New();
   cast->SetInput(erode->GetOutput());
   cast->InPlaceOn();
 
@@ -113,7 +112,7 @@ HMinimaImageFilter<TInputImage, TOutputImage>::PrintSelf(std::ostream & os, Inde
   os << indent << "Depth of local maxima (contrast): "
      << static_cast<typename NumericTraits<InputImagePixelType>::PrintType>(m_Height) << std::endl;
   os << indent << "Number of iterations used to produce current output: " << m_NumberOfIterationsUsed << std::endl;
-  os << indent << "FullyConnected: " << (m_FullyConnected ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(FullyConnected);
 }
 } // end namespace itk
 #endif

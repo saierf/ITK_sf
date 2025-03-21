@@ -146,7 +146,6 @@ public:
   }
 };
 
-
 } // namespace itk
 
 #endif

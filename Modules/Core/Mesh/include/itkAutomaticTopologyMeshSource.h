@@ -125,7 +125,7 @@ public:
   using PointType = typename MeshType::PointType;
   using CellType = typename MeshType::CellType;
   using MeshPointer = typename MeshType::Pointer;
-  using CoordinateType = typename PointType::CoordRepType;
+  using CoordinateType = typename PointType::CoordinateType;
   using CellAutoPointer = typename CellType::CellAutoPointer;
 
   /** Different kinds of cells. */
@@ -384,8 +384,8 @@ public:
     {
       using IdType = IdentifierType;
 
-      IdType size1 = identifierArray1.Size();
-      IdType size2 = identifierArray2.Size();
+      const IdType size1 = identifierArray1.Size();
+      const IdType size2 = identifierArray2.Size();
 
       if (size1 != size2)
       {

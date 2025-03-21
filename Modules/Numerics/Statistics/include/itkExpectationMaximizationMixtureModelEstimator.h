@@ -34,7 +34,7 @@ namespace Statistics
 class ExpectationMaximizationMixtureModelEstimatorEnums
 {
 public:
-  /** \class TERMINATION_CODE
+  /**
    * \ingroup ITKStatistics
    * Termination status after running optimization */
   enum class TERMINATION_CODE : uint8_t
@@ -45,7 +45,7 @@ public:
 };
 // Define how to print enumeration
 extern ITKStatistics_EXPORT std::ostream &
-                            operator<<(std::ostream & out, const ExpectationMaximizationMixtureModelEstimatorEnums::TERMINATION_CODE value);
+operator<<(std::ostream & out, const ExpectationMaximizationMixtureModelEstimatorEnums::TERMINATION_CODE value);
 
 /**
  * \class ExpectationMaximizationMixtureModelEstimator

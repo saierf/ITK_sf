@@ -36,7 +36,7 @@ namespace itk
  * is propagated outwards (or inwards) until it ''sticks'' to the shape boundaries.
  * This is done by using a level set speed function based on a user supplied
  * edge potential map. This approach for segmentation follows that of
- * Malladi et al (1995).
+ * Malladi et al (1995) \cite malladi1995.
  *
  * \par INPUTS
  * This filter requires two inputs.  The first input is a initial level set.
@@ -88,12 +88,7 @@ namespace itk
  * See SparseFieldLevelSetImageFilter and
  * SegmentationLevelSetImageFilter for more information.
  *
- * \par REFERENCES
- * \par
- *    "Shape Modeling with Front Propagation: A Level Set Approach",
- *    R. Malladi, J. A. Sethian and B. C. Vermuri.
- *    IEEE Trans. on Pattern Analysis and Machine Intelligence,
- *    Vol 17, No. 2, pp 158-174, February 1995
+ * For algorithmic details see \cite malladi1995.
  *
  * \sa SegmentationLevelSetImageFilter
  * \sa ShapeDetectionLevelSetFunction

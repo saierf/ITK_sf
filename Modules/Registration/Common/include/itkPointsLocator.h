@@ -38,7 +38,7 @@ namespace itk
  *
  * \ingroup ITKRegistrationCommon
  */
-template <typename TPointsContainer = VectorContainer<IdentifierType, Point<float, 3>>>
+template <typename TPointsContainer = VectorContainer<Point<float, 3>>>
 class ITK_TEMPLATE_EXPORT PointsLocator : public Object
 {
 public:
@@ -74,7 +74,7 @@ public:
   using SampleAdaptorType = Statistics::VectorContainerToListSampleAdaptor<PointsContainer>;
   using SampleAdaptorPointer = typename SampleAdaptorType::Pointer;
 
-  /** Types fo the KdTreeGenerator */
+  /** Types of the KdTreeGenerator */
   using TreeGeneratorType = Statistics::KdTreeGenerator<SampleAdaptorType>;
   using TreeGeneratorPointer = typename TreeGeneratorType::Pointer;
   using TreeType = typename TreeGeneratorType::KdTreeType;

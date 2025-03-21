@@ -140,7 +140,7 @@ GradientDescentLineSearchOptimizerv4Template<TInternalComputationValueType>::Gol
     // scope before we call recursively below. With dense transforms
     // we would otherwise eat up a lot of memory unnecessarily.
     TInternalComputationValueType baseLearningRate = this->m_LearningRate;
-    DerivativeType                baseGradient(this->m_Gradient);
+    const DerivativeType          baseGradient(this->m_Gradient);
     ParametersType                baseParameters(this->GetCurrentPosition());
 
     this->m_LearningRate = x;
@@ -174,10 +174,8 @@ GradientDescentLineSearchOptimizerv4Template<TInternalComputationValueType>::Gol
     {
       return this->GoldenSectionSearch(b, x, c, metricx);
     }
-    else
-    {
-      return this->GoldenSectionSearch(a, x, b, metricx);
-    }
+
+    return this->GoldenSectionSearch(a, x, b, metricx);
   }
   else
   {
@@ -185,7 +183,7 @@ GradientDescentLineSearchOptimizerv4Template<TInternalComputationValueType>::Gol
     {
       return this->GoldenSectionSearch(a, b, x, metricb);
     }
-    else if (metricx == NumericTraits<TInternalComputationValueType>::max())
+    if (metricx == NumericTraits<TInternalComputationValueType>::max())
     {
       // Keep the lower bounds when metricx and metricb are both max,
       // likely due to no valid sample points, from too large of a

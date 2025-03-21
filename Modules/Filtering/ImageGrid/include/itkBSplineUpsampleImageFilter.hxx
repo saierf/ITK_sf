@@ -48,8 +48,8 @@ BSplineUpsampleImageFilter<TInputImage, TOutputImage, ResamplerType>::GenerateDa
   itkDebugMacro("Actually executing");
 
   // Get the input and output pointers
-  InputImagePointer  inputPtr = const_cast<TInputImage *>(this->GetInput());
-  OutputImagePointer outputPtr = this->GetOutput();
+  const InputImagePointer  inputPtr = const_cast<TInputImage *>(this->GetInput());
+  const OutputImagePointer outputPtr = this->GetOutput();
 
   // Since we are providing a GenerateData() method, we need to allocate the
   // output buffer memory (if we provided a ThreadedGenerateData(), then
@@ -76,8 +76,8 @@ BSplineUpsampleImageFilter<TInputImage, TOutputImage, ResamplerType>::GenerateIn
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  InputImagePointer  inputPtr = const_cast<TInputImage *>(this->GetInput());
-  OutputImagePointer outputPtr = this->GetOutput();
+  const InputImagePointer  inputPtr = const_cast<TInputImage *>(this->GetInput());
+  const OutputImagePointer outputPtr = this->GetOutput();
 
   if (!outputPtr || !inputPtr)
   {
@@ -116,8 +116,8 @@ BSplineUpsampleImageFilter<TInputImage, TOutputImage, ResamplerType>::GenerateOu
   Superclass::GenerateOutputInformation();
 
   // get pointers to the input and output
-  InputImagePointer  inputPtr = const_cast<TInputImage *>(this->GetInput());
-  OutputImagePointer outputPtr = this->GetOutput();
+  const InputImagePointer  inputPtr = const_cast<TInputImage *>(this->GetInput());
+  const OutputImagePointer outputPtr = this->GetOutput();
 
   if (!outputPtr || !inputPtr)
   {
@@ -160,9 +160,7 @@ BSplineUpsampleImageFilter<TInputImage, TOutputImage, ResamplerType>::EnlargeOut
 {
   // this filter requires the all of the output image to be in
   // the buffer
-  TOutputImage * imgData;
-
-  imgData = dynamic_cast<TOutputImage *>(output);
+  auto * imgData = dynamic_cast<TOutputImage *>(output);
   if (imgData)
   {
     imgData->SetRequestedRegionToLargestPossibleRegion();
@@ -170,9 +168,8 @@ BSplineUpsampleImageFilter<TInputImage, TOutputImage, ResamplerType>::EnlargeOut
   else
   {
     // pointer could not be cast to TLevelSet *
-    itkWarningMacro("itk::BSplineUpsampleImageFilter"
-                    << "::EnlargeOutputRequestedRegion cannot cast " << typeid(output).name() << " to "
-                    << typeid(TOutputImage *).name());
+    itkWarningMacro("itk::BSplineUpsampleImageFilter::EnlargeOutputRequestedRegion cannot cast "
+                    << typeid(output).name() << " to " << typeid(TOutputImage *).name());
   }
 }
 } // namespace itk

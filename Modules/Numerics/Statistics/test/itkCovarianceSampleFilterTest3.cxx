@@ -43,7 +43,7 @@ public:
   void
   CreateInvalidOutput()
   {
-    unsigned int index = 3;
+    constexpr unsigned int index = 3;
     Superclass::MakeOutput(index);
   }
   unsigned int
@@ -120,8 +120,8 @@ itkCovarianceSampleFilterTest3(int, char *[])
   memberFunction->SetMean(mean);
   memberFunction->SetCovariance(covariance);
 
-  HistogramType::Iterator itr = histogram->Begin();
-  HistogramType::Iterator end = histogram->End();
+  HistogramType::Iterator       itr = histogram->Begin();
+  const HistogramType::Iterator end = histogram->End();
 
   using AbsoluteFrequencyType = HistogramType::AbsoluteFrequencyType;
 
@@ -198,8 +198,8 @@ itkCovarianceSampleFilterTest3(int, char *[])
     {
       if (itk::Math::abs(covariance[i][j] - covarianceOutput[i][j]) > epsilon)
       {
-        std::cerr << "Computed covariance matrix value is incorrrect:" << i << ',' << j << '=' << covariance[i][j]
-                  << ',' << covarianceOutput[i][j] << std::endl;
+        std::cerr << "Computed covariance matrix value is incorrect:" << i << ',' << j << '=' << covariance[i][j] << ','
+                  << covarianceOutput[i][j] << std::endl;
         return EXIT_FAILURE;
       }
     }

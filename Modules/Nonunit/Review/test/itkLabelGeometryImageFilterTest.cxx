@@ -153,10 +153,9 @@ LabelGeometryImageFilterTest(std::string labelImageName,
   using MatrixType = WriterType::vnlMatrixType;
   MatrixType matrix(numberOfLabels, numberOfColumns);
 
-  int                                              rowIndex = 0;
-  typename LabelGeometryType::LabelsType           allLabels = labelGeometryFilter->GetLabels();
-  typename LabelGeometryType::LabelsType::iterator allLabelsIt;
-  for (allLabelsIt = allLabels.begin(); allLabelsIt != allLabels.end(); ++allLabelsIt)
+  int                                    rowIndex = 0;
+  typename LabelGeometryType::LabelsType allLabels = labelGeometryFilter->GetLabels();
+  for (auto allLabelsIt = allLabels.begin(); allLabelsIt != allLabels.end(); ++allLabelsIt)
   {
     int columnIndex = 0;
     labelValue = *allLabelsIt;
@@ -219,8 +218,7 @@ LabelGeometryImageFilterTest(std::string labelImageName,
   writer->SetFileName(outputFileName);
   writer->SetInput(&matrix);
   writer->SetColumnHeaders(columnName);
-  MatrixType * matrixPointer;
-  matrixPointer = new MatrixType(matrix.data_block(), numberOfLabels, numberOfColumns);
+  MatrixType * matrixPointer = new MatrixType(matrix.data_block(), numberOfLabels, numberOfColumns);
   writer->SetInput(matrixPointer);
 
   ITK_TRY_EXPECT_NO_EXCEPTION(writer->Write());

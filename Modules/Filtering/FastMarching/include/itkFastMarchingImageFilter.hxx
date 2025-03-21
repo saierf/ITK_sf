@@ -85,7 +85,7 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::GenerateOutputInformation()
   // use user-specified output information
   if (this->GetInput() == nullptr || m_OverrideOutputInformation)
   {
-    LevelSetPointer output = this->GetOutput();
+    const LevelSetPointer output = this->GetOutput();
     output->SetLargestPossibleRegion(m_OutputRegion);
     output->SetOrigin(m_OutputOrigin);
     output->SetSpacing(m_OutputSpacing);
@@ -99,9 +99,7 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::EnlargeOutputRequestedRegion(Da
 {
   // enlarge the requested region of the output
   // to the whole data set
-  TLevelSet * imgData;
-
-  imgData = dynamic_cast<TLevelSet *>(output);
+  auto * imgData = dynamic_cast<TLevelSet *>(output);
   if (imgData)
   {
     imgData->SetRequestedRegionToLargestPossibleRegion();
@@ -109,9 +107,8 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::EnlargeOutputRequestedRegion(Da
   else
   {
     // Pointer could not be cast to TLevelSet *
-    itkWarningMacro("itk::FastMarchingImageFilter"
-                    << "::EnlargeOutputRequestedRegion cannot cast " << typeid(output).name() << " to "
-                    << typeid(TLevelSet *).name());
+    itkWarningMacro("itk::FastMarchingImageFilter::EnlargeOutputRequestedRegion cannot cast "
+                    << typeid(output).name() << " to " << typeid(TLevelSet *).name());
   }
 }
 
@@ -127,8 +124,7 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::Initialize(LevelSetImageType * 
   m_BufferedRegion = output->GetBufferedRegion();
   m_StartIndex = m_BufferedRegion.GetIndex();
   m_LastIndex = m_StartIndex + m_BufferedRegion.GetSize();
-  typename LevelSetImageType::OffsetType offset;
-  offset.Fill(1);
+  constexpr auto offset = MakeFilled<typename LevelSetImageType::OffsetType>(1);
   m_LastIndex -= offset;
 
   // allocate memory for the PointTypeImage
@@ -139,8 +135,7 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::Initialize(LevelSetImageType * 
   // set all output value to infinity
   using OutputIterator = ImageRegionIterator<LevelSetImageType>;
 
-  PixelType outputPixel;
-  outputPixel = m_LargeValue;
+  PixelType outputPixel = m_LargeValue;
 
   for (OutputIterator outIt(output, output->GetBufferedRegion()); !outIt.IsAtEnd(); ++outIt)
   {
@@ -164,8 +159,8 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::Initialize(LevelSetImageType * 
 
   if (m_AlivePoints)
   {
-    typename NodeContainer::ConstIterator pointsIter = m_AlivePoints->Begin();
-    typename NodeContainer::ConstIterator pointsEnd = m_AlivePoints->End();
+    typename NodeContainer::ConstIterator       pointsIter = m_AlivePoints->Begin();
+    const typename NodeContainer::ConstIterator pointsEnd = m_AlivePoints->End();
 
     while (pointsIter != pointsEnd)
     {
@@ -189,8 +184,8 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::Initialize(LevelSetImageType * 
 
   if (m_OutsidePoints)
   {
-    typename NodeContainer::ConstIterator pointsIter = m_OutsidePoints->Begin();
-    typename NodeContainer::ConstIterator pointsEnd = m_OutsidePoints->End();
+    typename NodeContainer::ConstIterator       pointsIter = m_OutsidePoints->Begin();
+    const typename NodeContainer::ConstIterator pointsEnd = m_OutsidePoints->End();
 
     while (pointsIter != pointsEnd)
     {
@@ -221,8 +216,8 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::Initialize(LevelSetImageType * 
   // process the input trial points
   if (m_TrialPoints)
   {
-    typename NodeContainer::ConstIterator pointsIter = m_TrialPoints->Begin();
-    typename NodeContainer::ConstIterator pointsEnd = m_TrialPoints->End();
+    typename NodeContainer::ConstIterator       pointsIter = m_TrialPoints->Begin();
+    const typename NodeContainer::ConstIterator pointsEnd = m_TrialPoints->End();
 
     while (pointsIter != pointsEnd)
     {
@@ -258,8 +253,8 @@ FastMarchingImageFilter<TLevelSet, TSpeedImage>::GenerateData()
     throw err;
   }
 
-  LevelSetPointer        output = this->GetOutput();
-  SpeedImageConstPointer speedImage = this->GetInput();
+  const LevelSetPointer        output = this->GetOutput();
+  const SpeedImageConstPointer speedImage = this->GetInput();
 
   this->Initialize(output);
 

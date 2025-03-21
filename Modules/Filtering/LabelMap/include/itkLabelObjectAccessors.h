@@ -25,7 +25,7 @@
  * This code was contributed in the Insight Journal paper:
  * "Label object representation and manipulation with ITK"
  * by Lehmann G.
- * https://www.insight-journal.org/browse/publication/176
+ * https://doi.org/10.54294/q6auw4
  *
  */
 
@@ -74,7 +74,7 @@ public:
   }
 
   LabelObjectComparator() = default;
-  LabelObjectComparator(LabelObjectComparator const & from) { m_Accessor = from.m_Accessor; }
+  LabelObjectComparator(const LabelObjectComparator & from) { m_Accessor = from.m_Accessor; }
 
 private:
   AttributeAccessorType m_Accessor;
@@ -93,7 +93,7 @@ public:
   }
 
   LabelObjectReverseComparator() = default;
-  LabelObjectReverseComparator(LabelObjectReverseComparator const & from) { m_Accessor = from.m_Accessor; }
+  LabelObjectReverseComparator(const LabelObjectReverseComparator & from) { m_Accessor = from.m_Accessor; }
 
 private:
   AttributeAccessorType m_Accessor;

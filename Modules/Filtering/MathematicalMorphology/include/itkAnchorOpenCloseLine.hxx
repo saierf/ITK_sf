@@ -62,7 +62,8 @@ AnchorOpenCloseLine<TInputPix, TCompare>::DoLine(std::vector<InputImagePixelType
 
   // start the real work - everything here will be done with index
   // arithmetic rather than pointer arithmetic
-  unsigned int outLeftP = 0, outRightP = bufflength - 1;
+  unsigned int outLeftP = 0;
+  unsigned int outRightP = bufflength - 1;
   // left side
   while ((outLeftP < outRightP) && Compare1(buffer[outLeftP], buffer[outLeftP + 1]))
   {
@@ -120,7 +121,7 @@ AnchorOpenCloseLine<TInputPix, TCompare>::StartLine(std::vector<InputImagePixelT
   // code, and false to indicate finishLine
   Extreme = buffer[outLeftP];
   unsigned int currentP = outLeftP + 1;
-  unsigned int sentinel, endP;
+
 
   while ((currentP < outRightP) && Compare2(buffer[currentP], Extreme))
   {
@@ -128,8 +129,7 @@ AnchorOpenCloseLine<TInputPix, TCompare>::StartLine(std::vector<InputImagePixelT
     ++outLeftP;
     ++currentP;
   }
-
-  sentinel = outLeftP + m_Size;
+  const unsigned int sentinel = outLeftP + m_Size;
   if (sentinel > outRightP)
   {
     // finish
@@ -141,7 +141,7 @@ AnchorOpenCloseLine<TInputPix, TCompare>::StartLine(std::vector<InputImagePixelT
   {
     if (Compare2(buffer[currentP], Extreme))
     {
-      endP = currentP;
+      const unsigned int endP = currentP;
       for (unsigned int PP = outLeftP + 1; PP < endP; ++PP)
       {
         buffer[PP] = Extreme;
@@ -157,7 +157,7 @@ AnchorOpenCloseLine<TInputPix, TCompare>::StartLine(std::vector<InputImagePixelT
   HistogramType histo;
   if (Compare2(buffer[currentP], Extreme))
   {
-    endP = currentP;
+    const unsigned int endP = currentP;
     for (unsigned int PP = outLeftP + 1; PP < endP; ++PP)
     {
       buffer[PP] = Extreme;
@@ -165,24 +165,23 @@ AnchorOpenCloseLine<TInputPix, TCompare>::StartLine(std::vector<InputImagePixelT
     outLeftP = currentP;
     return (true);
   }
-  else
+
+  // Now we need a histogram
+  // Initialise it
+  ++outLeftP;
+  for (unsigned int aux = outLeftP; aux <= currentP; ++aux)
   {
-    // Now we need a histogram
-    // Initialise it
-    ++outLeftP;
-    for (unsigned int aux = outLeftP; aux <= currentP; ++aux)
-    {
-      histo.AddPixel(buffer[aux]);
-    }
-    // find the minimum value. The version
-    // in the paper assumes integer pixel types and initializes the
-    // search to the current extreme. Hopefully the latter is an
-    // optimization step.
-    Extreme = histo.GetValue();
-    histo.RemovePixel(buffer[outLeftP]);
-    buffer[outLeftP] = Extreme;
-    histo.AddPixel(Extreme);
+    histo.AddPixel(buffer[aux]);
   }
+  // find the minimum value. The version
+  // in the paper assumes integer pixel types and initializes the
+  // search to the current extreme. Hopefully the latter is an
+  // optimization step.
+  Extreme = histo.GetValue();
+  histo.RemovePixel(buffer[outLeftP]);
+  buffer[outLeftP] = Extreme;
+  histo.AddPixel(Extreme);
+
 
   while (currentP < outRightP)
   {
@@ -190,7 +189,7 @@ AnchorOpenCloseLine<TInputPix, TCompare>::StartLine(std::vector<InputImagePixelT
     if (Compare2(buffer[currentP], Extreme))
     {
       // Found a new extreme
-      endP = currentP;
+      const unsigned int endP = currentP;
       for (unsigned int PP = outLeftP + 1; PP < endP; ++PP)
       {
         buffer[PP] = Extreme;
@@ -198,17 +197,15 @@ AnchorOpenCloseLine<TInputPix, TCompare>::StartLine(std::vector<InputImagePixelT
       outLeftP = currentP;
       return (true);
     }
-    else
-    {
-      /* histogram update */
-      histo.AddPixel(buffer[currentP]);
-      histo.RemovePixel(buffer[outLeftP]);
-      Extreme = histo.GetValue();
-      ++outLeftP;
-      histo.RemovePixel(buffer[outLeftP]);
-      buffer[outLeftP] = Extreme;
-      histo.AddPixel(Extreme);
-    }
+
+    /* histogram update */
+    histo.AddPixel(buffer[currentP]);
+    histo.RemovePixel(buffer[outLeftP]);
+    Extreme = histo.GetValue();
+    ++outLeftP;
+    histo.RemovePixel(buffer[outLeftP]);
+    buffer[outLeftP] = Extreme;
+    histo.AddPixel(Extreme);
   }
   // Finish the line
   while (outLeftP < outRightP)

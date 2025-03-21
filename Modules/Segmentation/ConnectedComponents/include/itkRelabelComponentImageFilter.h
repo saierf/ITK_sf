@@ -209,14 +209,12 @@ public:
   ObjectSizeType
   GetSizeOfObjectInPixels(LabelType obj) const
   {
-    if (obj > 0 && obj <= m_NumberOfObjects)
+    if (obj > 0 && static_cast<SizeValueType>(obj) <= m_NumberOfObjects)
     {
       return m_SizeOfObjectsInPixels[obj - 1];
     }
-    else
-    {
-      return 0;
-    }
+
+    return 0;
   }
 
   /** Get the size of a particular object in physical space (in units of pixel
@@ -225,25 +223,19 @@ public:
   float
   GetSizeOfObjectInPhysicalUnits(LabelType obj) const
   {
-    if (obj > 0 && obj <= m_NumberOfObjects)
+    if (obj > 0 && static_cast<SizeValueType>(obj) <= m_NumberOfObjects)
     {
       return m_SizeOfObjectsInPhysicalUnits[obj - 1];
     }
-    else
-    {
-      return 0;
-    }
+
+    return 0;
   }
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputEqualityComparableCheck, (Concept::EqualityComparable<InputPixelType>));
   itkConceptMacro(UnsignedLongConvertibleToInputCheck, (Concept::Convertible<LabelType, InputPixelType>));
   itkConceptMacro(OutputLongConvertibleToUnsignedLongCheck, (Concept::Convertible<OutputPixelType, LabelType>));
   itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<InputPixelType, OutputPixelType>));
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<InputImageDimension, ImageDimension>));
-  // End concept checking
-#endif
 
 protected:
   RelabelComponentImageFilter();

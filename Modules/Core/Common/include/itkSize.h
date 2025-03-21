@@ -138,7 +138,8 @@ public:
   }
 
   /** Multiply two sizes (elementwise product).  */
-  const Self operator*(const Self & vec) const
+  const Self
+  operator*(const Self & vec) const
   {
     Self result;
 
@@ -267,7 +268,7 @@ public:
   }
 
   void
-  swap(Size & other)
+  swap(Size & other) noexcept
   {
     std::swap(m_InternalArray, other.m_InternalArray);
   }
@@ -350,9 +351,17 @@ public:
     return false;
   }
 
-  constexpr reference operator[](size_type pos) { return m_InternalArray[pos]; }
+  constexpr reference
+  operator[](size_type pos)
+  {
+    return m_InternalArray[pos];
+  }
 
-  constexpr const_reference operator[](size_type pos) const { return m_InternalArray[pos]; }
+  constexpr const_reference
+  operator[](size_type pos) const
+  {
+    return m_InternalArray[pos];
+  }
 
   reference
   at(size_type pos)
@@ -490,7 +499,7 @@ operator>=(const Size<VDimension> & one, const Size<VDimension> & two)
 // Specialized algorithms [6.2.2.2].
 template <unsigned int VDimension>
 inline void
-swap(Size<VDimension> & one, Size<VDimension> & two)
+swap(Size<VDimension> & one, Size<VDimension> & two) noexcept
 {
   std::swap(one.m_InternalArray, two.m_InternalArray);
 }

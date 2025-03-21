@@ -38,20 +38,20 @@ const TValueType *
 GetPointerToMatrixData(const vnl_matrix_fixed<TValueType, VRows, VColumns> & inputMatrix)
 {
   return inputMatrix.data_block();
-};
+}
 template <typename TValueType>
 const TValueType *
 GetPointerToMatrixData(const vnl_matrix<TValueType> & inputMatrix)
 {
   return inputMatrix.data_block();
-};
+}
 
 template <typename TValueType, unsigned int VRows, unsigned int VColumns>
 const TValueType *
 GetPointerToMatrixData(const itk::Matrix<TValueType, VRows, VColumns> & inputMatrix)
 {
   return inputMatrix.GetVnlMatrix().data_block();
-};
+}
 
 /** Sort input to be ordered by magnitude, and returns container with the
  * permutations required for the sorting.
@@ -110,6 +110,7 @@ permuteColumnsWithSortIndices(QMatrix & eigenVectors, const std::vector<int> & i
   // Apply it
   eigenVectors = eigenVectors * perm;
 }
+
 } // end namespace detail
 
 /** \class SymmetricEigenAnalysisEnums
@@ -119,7 +120,7 @@ permuteColumnsWithSortIndices(QMatrix & eigenVectors, const std::vector<int> & i
 class SymmetricEigenAnalysisEnums
 {
 public:
-  /** \class EigenValueOrder
+  /**
    * \ingroup ITKCommon
    * Order of eigen values
    * OrderByValue:      lambda_1 < lambda_2 < ....
@@ -191,10 +192,9 @@ static constexpr EigenValueOrderEnum DoNotOrder = EigenValueOrderEnum::DoNotOrde
  * netlib/tred1.c
  * netlib/tred2.c
  *
- * Reference:
- *     num. math. 11, 293-306(1968) by bowdler, martin, reinsch, and
- *     wilkinson.
- *     handbook for auto. comp., vol.ii-linear algebra, 227-240(1971).
+ * For algorithmic descriptions see \cite bowdler1968 and
+ * \cite bowdler1971.
+ *
  * \ingroup ITKCommon
  */
 
@@ -385,9 +385,8 @@ private:
    *  Function adapted from netlib/tred1.c.
    *  [Changed: remove static vars, enforce const correctness.
    *            Use vnl routines as necessary].
-   *  Reference:
-   *  num. math. 11, 181-195(1968) by martin, reinsch, and wilkinson.
-   *    handbook for auto. comp., vol.ii-linear algebra, 212-226(1971).    */
+   *  For algorithmic descriptions see \cite martin1968 and
+   *  \cite martin1971. */
   void
   ReduceToTridiagonalMatrix(double * a, double * d, double * e, double * e2) const;
 
@@ -409,9 +408,8 @@ private:
    *  Function adapted from netlib/tred2.c.
    *  [Changed: remove static vars, enforce const correctness.
    *            Use vnl routines as necessary].
-   *  Reference:
-   *  num. math. 11, 181-195(1968) by martin, reinsch, and wilkinson.
-   *    handbook for auto. comp., vol.ii-linear algebra, 212-226(1971).    */
+   *  For algorithmic descriptions see \cite martin1968 and
+   *  \cite martin1971. */
   void
   ReduceToTridiagonalMatrixAndGetTransformation(const double * a, double * d, double * e, double * z) const;
 
@@ -433,9 +431,7 @@ private:
    *
    * Reference
    *  This subroutine is a translation of the algol procedure tql1,
-   *  num. math. 11, 293-306(1968) by bowdler, martin, reinsch, and
-   *  wilkinson.
-   *  handbook for auto. comp., vol.ii-linear algebra, 227-240(1971).
+   *  \cite bowdler1968 and \cite bowdler1971.
    *
    *  Questions and comments should be directed to Burton s. Garbow,
    *  Mathematics and Computer Science Div., Argonne National Laboratory.
@@ -472,9 +468,7 @@ private:
    *
    * Reference
    *  This subroutine is a translation of the algol procedure tql1,
-   *  num. math. 11, 293-306(1968) by bowdler, martin, reinsch, and
-   *  wilkinson.
-   *  handbook for auto. comp., vol.ii-linear algebra, 227-240(1971).
+   *  \cite bowdler1968 and \cite bowdler1971.
    *
    *  Questions and comments should be directed to Burton s. Garbow,
    *  Mathematics and Computer Science Div., Argonne National Laboratory.
@@ -556,8 +550,8 @@ private:
       }
     }
     using EigenSolverType = Eigen::SelfAdjointEigenSolver<EigenLibMatrixType>;
-    EigenSolverType solver(inputMatrix); // Computes EigenValues and EigenVectors
-    const auto &    eigenValues = solver.eigenvalues();
+    const EigenSolverType solver(inputMatrix); // Computes EigenValues and EigenVectors
+    const auto &          eigenValues = solver.eigenvalues();
     /* Column  k  of the returned matrix is an eigenvector corresponding to
      * eigenvalue number $ k $ as returned by eigenvalues().
      * The eigenvectors are normalized to have (Euclidean) norm equal to one. */
@@ -683,8 +677,8 @@ private:
       }
     }
     using EigenSolverType = Eigen::SelfAdjointEigenSolver<EigenLibMatrixType>;
-    EigenSolverType solver(inputMatrix, Eigen::EigenvaluesOnly);
-    auto            eigenValues = solver.eigenvalues();
+    const EigenSolverType solver(inputMatrix, Eigen::EigenvaluesOnly);
+    auto                  eigenValues = solver.eigenvalues();
     if (m_OrderEigenValues == EigenValueOrderEnum::OrderByMagnitude)
     {
       detail::sortEigenValuesByMagnitude(eigenValues, m_Dimension);
@@ -971,8 +965,8 @@ private:
       }
     }
     using EigenSolverType = Eigen::SelfAdjointEigenSolver<EigenLibMatrixType>;
-    EigenSolverType solver(inputMatrix); // Computes EigenValues and EigenVectors
-    const auto &    eigenValues = solver.eigenvalues();
+    const EigenSolverType solver(inputMatrix); // Computes EigenValues and EigenVectors
+    const auto &          eigenValues = solver.eigenvalues();
     /* Column  k  of the returned matrix is an eigenvector corresponding to
      * eigenvalue number $ k $ as returned by eigenvalues().
      * The eigenvectors are normalized to have (Euclidean) norm equal to one. */
@@ -1030,8 +1024,8 @@ private:
       }
     }
     using EigenSolverType = Eigen::SelfAdjointEigenSolver<EigenLibMatrixType>;
-    EigenSolverType solver(inputMatrix, Eigen::EigenvaluesOnly);
-    auto            eigenValues = solver.eigenvalues();
+    const EigenSolverType solver(inputMatrix, Eigen::EigenvaluesOnly);
+    auto                  eigenValues = solver.eigenvalues();
     if (m_OrderEigenValues == EigenValueOrderEnum::OrderByMagnitude)
     {
       detail::sortEigenValuesByMagnitude(eigenValues, VDimension);

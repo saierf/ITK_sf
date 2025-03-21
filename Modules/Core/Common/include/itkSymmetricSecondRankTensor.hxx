@@ -136,8 +136,8 @@ SymmetricSecondRankTensor<T, VDimension>::operator/=(const RealValueType & r)
  * Performs multiplication with a scalar
  */
 template <typename T, unsigned int VDimension>
-SymmetricSecondRankTensor<T, VDimension> SymmetricSecondRankTensor<T, VDimension>::operator*(
-  const RealValueType & r) const
+SymmetricSecondRankTensor<T, VDimension>
+SymmetricSecondRankTensor<T, VDimension>::operator*(const RealValueType & r) const
 {
   Self result;
 
@@ -256,7 +256,7 @@ template <typename T, unsigned int VDimension>
 void
 SymmetricSecondRankTensor<T, VDimension>::ComputeEigenValues(EigenValuesArrayType & eigenValues) const
 {
-  SymmetricEigenAnalysisType symmetricEigenSystem;
+  const SymmetricEigenAnalysisType symmetricEigenSystem;
 
   MatrixType tensorMatrix;
 
@@ -280,7 +280,7 @@ void
 SymmetricSecondRankTensor<T, VDimension>::ComputeEigenAnalysis(EigenValuesArrayType &   eigenValues,
                                                                EigenVectorsMatrixType & eigenVectors) const
 {
-  SymmetricEigenAnalysisType symmetricEigenSystem;
+  const SymmetricEigenAnalysisType symmetricEigenSystem;
 
   MatrixType tensorMatrix;
 

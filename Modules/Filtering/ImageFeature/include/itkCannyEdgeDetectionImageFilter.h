@@ -44,9 +44,7 @@ public:
  * \brief This filter is an implementation of a Canny edge detector for
  * scalar-valued images.
  *
- *  Based on John Canny's paper "A Computational Approach
- * to Edge Detection"(IEEE Transactions on Pattern Analysis and Machine
- * Intelligence, Vol. PAMI-8, No.6, November 1986),  there are four major steps
+ * Based on John Canny's paper \cite canny1986 there are four major steps
  * used in the edge-detection scheme:
  * (1) Smooth the input image with Gaussian filter.
  * (2) Calculate the second directional derivatives of the smoothed image.
@@ -195,15 +193,11 @@ public:
     return this->m_MultiplyImageFilter->GetOutput();
   }
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputImagePixelType>));
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputImagePixelType>));
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<ImageDimension, OutputImageDimension>));
   itkConceptMacro(InputIsFloatingPointCheck, (Concept::IsFloatingPoint<InputImagePixelType>));
   itkConceptMacro(OutputIsFloatingPointCheck, (Concept::IsFloatingPoint<OutputImagePixelType>));
-  // End concept checking
-#endif
 
 protected:
   CannyEdgeDetectionImageFilter();

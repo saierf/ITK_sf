@@ -35,7 +35,7 @@ namespace itk
  * \brief Implementation of the N4  bias field correction algorithm.
  *
  * The nonparametric nonuniform intensity normalization (N3) algorithm, as
- * introduced by Sled et al. in 1998 is a method for correcting nonuniformity
+ * introduced by Sled et al. in 1998 \cite sled1998 is a method for correcting nonuniformity
  * associated with MR images. The algorithm assumes a simple parametric model
  * (Gaussian) for the bias field and does not require tissue class segmentation.
  * In addition, there are only a couple of parameters to tune with the default
@@ -65,7 +65,7 @@ namespace itk
  *  4. The filter returns the corrected image.  If the bias field is wanted, one
  *     can reconstruct it using the class itkBSplineControlPointImageFilter.
  *     See the IJ article and the test file for an example.
- *  5. The 'Z' parameter in Sled's 1998 paper is the square root
+ *  5. The 'Z' parameter in Sled's 1998 paper \cite sled1998 is the square root
  *     of the class variable 'm_WienerFilterNoise'.
  *
  * The basic algorithm iterates between sharpening the intensity histogram of
@@ -75,17 +75,9 @@ namespace itk
  * \author Nicholas J. Tustison
  *
  * Contributed by Nicholas J. Tustison, James C. Gee in the Insight Journal
- * paper: https://www.insight-journal.org/browse/publication/640
+ * paper: https://doi.org/10.54294/jculxw
  *
- * \par REFERENCE
- *
- * J.G. Sled, A.P. Zijdenbos and A.C. Evans.  "A Nonparametric Method for
- * Automatic Correction of Intensity Nonuniformity in  Data"
- * IEEE Transactions on Medical Imaging, Vol 17, No 1. Feb 1998.
- *
- * N.J. Tustison, B.B. Avants, P.A. Cook, Y. Zheng, A. Egan, P.A. Yushkevich,
- * and J.C. Gee. "N4ITK:  Improved N3 Bias Correction"
- * IEEE Transactions on Medical Imaging, 29(6):1310-1320, June 2010.
+ * Algorithmic details can be found in \cite sled1998 and \cite tustison2010.
  *
  * \ingroup ITKBiasCorrection
  */
@@ -301,9 +293,7 @@ public:
   void
   SetNumberOfFittingLevels(unsigned int n)
   {
-    ArrayType nlevels;
-
-    nlevels.Fill(n);
+    auto nlevels = MakeFilled<ArrayType>(n);
     this->SetNumberOfFittingLevels(nlevels);
   }
 

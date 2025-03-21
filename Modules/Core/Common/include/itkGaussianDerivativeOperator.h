@@ -35,7 +35,6 @@ class GaussianDerivativeOperatorEnums
 {
 public:
   /**
-   * \class InterpolationMode
    * \ingroup ITKCommon
    * Interpolation modes
    */
@@ -76,15 +75,13 @@ extern ITKCommon_EXPORT std::ostream &
  * lest the operator size become unreasonably large.
  *
  * References:
- * The Gaussian kernel contained in this operator was described
- * by Tony Lindeberg  (Discrete Scale-Space Theory and the Scale-Space
- * Primal Sketch. Dissertation. Royal Institute of Technology, Stockholm,
- * Sweden. May 1991.).
+ * The Gaussian kernel contained in this operator was described in
+ * \cite lindeberg1991.
  *
  * \author Ivan Macia, Vicomtech, Spain, https://www.vicomtech.org/en
  *
  * This implementation is derived from the Insight Journal paper:
- * https://www.insight-journal.org/browse/publication/179
+ * https://doi.org/10.54294/mrg5is
  *
  * \note GaussianDerivativeOperator does not have any user-declared "special member function",
  * following the C++ Rule of Zero: the compiler will generate them if necessary.

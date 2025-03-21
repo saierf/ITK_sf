@@ -51,7 +51,7 @@ public:
 };
 // Define how to print enumeration
 extern ITKDiffusionTensorImage_EXPORT std::ostream &
-                                      operator<<(std::ostream & out, const DiffusionTensor3DReconstructionImageFilterEnums::GradientImageFormat value);
+operator<<(std::ostream & out, const DiffusionTensor3DReconstructionImageFilterEnums::GradientImageFormat value);
 
 /** \class DiffusionTensor3DReconstructionImageFilter
  * \brief This class takes as input one or more reference image (acquired in the
@@ -104,13 +104,7 @@ extern ITKDiffusionTensorImage_EXPORT std::ostream &
  * images (expected to be scalar data types) and the internal representation
  * of the DiffusionTensor3D pixel (double, float etc).
  *
- * \par References:
- * \li<a href="http://lmi.bwh.harvard.edu/papers/pdfs/2002/westinMEDIA02.pdf">[1]</a>
- * <em>C.F.Westin, S.E.Maier, H.Mamata, A.Nabavi, F.A.Jolesz, R.Kikinis,
- * "Processing and visualization for Diffusion tensor MRI", Medical image
- * Analysis, 2002, pp 93-108.</em>
- * \li<a href="splweb.bwh.harvard.edu:8000/pages/papers/westin/ISMRM2002.pdf">[2]</a>
- * <em>A Dual Tensor Basis Solution to the Stejskal-Tanner Equations for DT-MRI</em>
+ * For additional details see \cite westin2002 and \cite westin2002a.
  *
  * \warning
  * Although this filter has been written to support multiple threads, please
@@ -226,8 +220,8 @@ public:
     if (m_GradientImageTypeEnumeration ==
         DiffusionTensor3DReconstructionImageFilterEnums::GradientImageFormat::GradientIsInASingleImage)
     {
-      itkExceptionMacro("Cannot call both methods:"
-                        << "AddGradientImage and SetGradientImage. Please call only one of them.");
+      itkExceptionMacro(
+        "Cannot call both methods:AddGradientImage and SetGradientImage. Please call only one of them.");
     }
 
     this->ProcessObject::SetNthInput(0, referenceImage);
@@ -280,8 +274,6 @@ public:
 #endif
   itkGetConstReferenceMacro(BValue, TTensorPixelType);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(ReferenceEqualityComparableCheck, (Concept::EqualityComparable<ReferencePixelType>));
   itkConceptMacro(TensorEqualityComparableCheck, (Concept::EqualityComparable<TensorPixelType>));
   itkConceptMacro(GradientConvertibleToDoubleCheck, (Concept::Convertible<GradientPixelType, double>));
@@ -293,8 +285,6 @@ public:
 
   itkConceptMacro(ReferenceOStreamWritableCheck, (Concept::OStreamWritable<ReferencePixelType>));
   itkConceptMacro(TensorOStreamWritableCheck, (Concept::OStreamWritable<TensorPixelType>));
-  // End concept checking
-#endif
 
 protected:
   DiffusionTensor3DReconstructionImageFilter();

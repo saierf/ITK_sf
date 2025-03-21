@@ -54,8 +54,7 @@ public:
     double max = scoreVector[0];
 
     unsigned int maxIndex = 0;
-    unsigned int i;
-    for (i = 1; i < scoreVector.size(); ++i)
+    for (unsigned int i = 1; i < scoreVector.size(); ++i)
     {
       if (scoreVector[i] > max)
       {
@@ -86,16 +85,13 @@ itkDecisionRuleTest(int, char *[])
 
   MembershipVectorType membershipScoreVector;
 
-  double membershipScore1;
-  membershipScore1 = 0.1;
+  constexpr double membershipScore1 = 0.1;
   membershipScoreVector.push_back(membershipScore1);
 
-  double membershipScore2;
-  membershipScore2 = 0.5;
+  constexpr double membershipScore2 = 0.5;
   membershipScoreVector.push_back(membershipScore2);
 
-  double membershipScore3;
-  membershipScore3 = 1.9;
+  constexpr double membershipScore3 = 1.9;
   membershipScoreVector.push_back(membershipScore3);
 
   // the maximum score is the third component. The decision rule should

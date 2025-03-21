@@ -40,16 +40,6 @@ SpatialObjectPoint<TPointDimension>::SpatialObjectPoint()
 }
 
 template <unsigned int TPointDimension>
-SpatialObjectPoint<TPointDimension>::SpatialObjectPoint(const SpatialObjectPoint & other)
-{
-  this->SetId(other.GetId());
-  this->SetPositionInObjectSpace(other.GetPositionInObjectSpace());
-  this->SetColor(other.GetColor());
-  this->SetSpatialObject(other.GetSpatialObject());
-  this->SetTagScalarDictionary(other.GetTagScalarDictionary());
-}
-
-template <unsigned int TPointDimension>
 void
 SpatialObjectPoint<TPointDimension>::SetPositionInWorldSpace(const PointType & point)
 {
@@ -84,21 +74,6 @@ SpatialObjectPoint<TPointDimension>::SetColor(double r, double g, double b, doub
 }
 
 template <unsigned int TPointDimension>
-auto
-SpatialObjectPoint<TPointDimension>::operator=(const SpatialObjectPoint & rhs) -> Self &
-{
-  if (this != &rhs)
-  {
-    this->SetId(rhs.GetId());
-    this->SetPositionInObjectSpace(rhs.GetPositionInObjectSpace());
-    this->SetColor(rhs.GetColor());
-    this->SetTagScalarDictionary(rhs.GetTagScalarDictionary());
-    this->SetSpatialObject(rhs.GetSpatialObject());
-  }
-  return *this;
-}
-
-template <unsigned int TPointDimension>
 void
 SpatialObjectPoint<TPointDimension>::SetTagScalarValue(const std::string & tag, double value)
 {
@@ -115,10 +90,8 @@ SpatialObjectPoint<TPointDimension>::GetTagScalarValue(const std::string & tag, 
     value = iter->second;
     return true;
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 template <unsigned int TPointDimension>

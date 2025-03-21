@@ -32,10 +32,8 @@ itkExpectationBasedPointSetMetricTestRun()
   using PointType = typename PointSetType::PointType;
 
   auto fixedPoints = PointSetType::New();
-  fixedPoints->Initialize();
 
   auto movingPoints = PointSetType::New();
-  movingPoints->Initialize();
 
   // Produce two simple point sets of 1) a circle and 2) the same circle with an offset;
   PointType offset;
@@ -46,8 +44,8 @@ itkExpectationBasedPointSetMetricTestRun()
   unsigned long count = 0;
   for (float theta = 0; theta < 2.0 * itk::Math::pi; theta += 0.1)
   {
-    PointType fixedPoint;
-    float     radius = 100.0;
+    PointType       fixedPoint;
+    constexpr float radius = 100.0;
     fixedPoint[0] = radius * std::cos(theta);
     fixedPoint[1] = radius * std::sin(theta);
     if constexpr (Dimension > 2)
@@ -79,11 +77,11 @@ itkExpectationBasedPointSetMetricTestRun()
 
   ITK_EXERCISE_BASIC_OBJECT_METHODS(metric, ExpectationBasedPointSetToPointSetMetricv4, PointSetToPointSetMetricv4);
 
-  typename PointSetMetricType::CoordRepType pointSetSigma = 1.0;
+  const typename PointSetMetricType::CoordinateType pointSetSigma = 1.0;
   metric->SetPointSetSigma(pointSetSigma);
   ITK_TEST_SET_GET_VALUE(pointSetSigma, metric->GetPointSetSigma());
 
-  unsigned int evaluationKNeighborhood = 50;
+  constexpr unsigned int evaluationKNeighborhood = 50;
   metric->SetEvaluationKNeighborhood(evaluationKNeighborhood);
   ITK_TEST_SET_GET_VALUE(evaluationKNeighborhood, metric->GetEvaluationKNeighborhood());
 
@@ -92,9 +90,12 @@ itkExpectationBasedPointSetMetricTestRun()
   metric->SetMovingTransform(translationTransform);
   metric->Initialize();
 
-  typename PointSetMetricType::MeasureType    value = metric->GetValue(), value2;
-  typename PointSetMetricType::DerivativeType derivative, derivative2;
+  const typename PointSetMetricType::MeasureType value = metric->GetValue();
+  typename PointSetMetricType::DerivativeType    derivative;
   metric->GetDerivative(derivative);
+
+  typename PointSetMetricType::MeasureType    value2;
+  typename PointSetMetricType::DerivativeType derivative2;
   metric->GetValueAndDerivative(value2, derivative2);
 
   int result = EXIT_SUCCESS;

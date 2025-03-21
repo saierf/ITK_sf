@@ -86,17 +86,12 @@ GE4ImageIO::ReadHeader(const char * FileNameToRead)
     RAISE_EXCEPTION();
   }
   auto * hdr = new GEImageHeader;
-  if (hdr == nullptr)
-  {
-    RAISE_EXCEPTION();
-  }
   // Set modality to UNKNOWN
   strcpy(hdr->modality, "UNK");
 
   char  tmpStr[IOCommon::ITK_MAXPATHLEN + 1];
   int   intTmp;
   short tmpShort;
-  float tmpFloat;
 
   //
   // save off the name of the current file...
@@ -137,7 +132,7 @@ GE4ImageIO::ReadHeader(const char * FileNameToRead)
   IOCHECK();
   f.read((char *)&intTmp, sizeof(intTmp));
   IOCHECK();
-  tmpFloat = MvtSunf(intTmp);
+  const float tmpFloat = MvtSunf(intTmp);
 
   hdr->xFOV = tmpFloat;
   hdr->yFOV = hdr->xFOV;
@@ -148,37 +143,27 @@ GE4ImageIO::ReadHeader(const char * FileNameToRead)
 
   if (strstr(tmpStr, "CORONAL") != nullptr)
   {
-    // hdr->imagePlane =
-    // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_CORONAL;
-    // hdr->origin = itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ORIGIN_SRP;
-    // hdr->origin was SLA in the brains2 filter.
-    hdr->coordinateOrientation =
-      itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSP;
+    hdr->coordinateOrientation = AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::RightToLeft,
+                                                       AnatomicalOrientation::CoordinateEnum::SuperiorToInferior,
+                                                       AnatomicalOrientation::CoordinateEnum::PosteriorToAnterior);
   }
   else if (strstr(tmpStr, "SAGITTAL") != nullptr)
   {
-    // hdr->imagePlane =
-    // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_SAGITTAL;
-    // hdr->origin = itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ORIGIN_SRA;
-    // hdr->origin was SLP in the brains2 filter.
-    hdr->coordinateOrientation =
-      itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_AIR;
+    hdr->coordinateOrientation = AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::AnteriorToPosterior,
+                                                       AnatomicalOrientation::CoordinateEnum::InferiorToSuperior,
+                                                       AnatomicalOrientation::CoordinateEnum::RightToLeft);
   }
   else if (strstr(tmpStr, "AXIAL") != nullptr)
   {
-    // hdr->imagePlane =
-    // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_TRANSVERSE;
-    // hdr->origin = itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ORIGIN_SRA; // was SLP
-    hdr->coordinateOrientation =
-      itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RAI;
+    hdr->coordinateOrientation = AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::RightToLeft,
+                                                       AnatomicalOrientation::CoordinateEnum::AnteriorToPosterior,
+                                                       AnatomicalOrientation::CoordinateEnum::InferiorToSuperior);
   }
   else
   {
-    // hdr->imagePlane =
-    // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_CORONAL;
-    // hdr->origin = itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ORIGIN_SRP; // was SLA
-    hdr->coordinateOrientation =
-      itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSP;
+    hdr->coordinateOrientation = AnatomicalOrientation(AnatomicalOrientation::CoordinateEnum::RightToLeft,
+                                                       AnatomicalOrientation::CoordinateEnum::SuperiorToInferior,
+                                                       AnatomicalOrientation::CoordinateEnum::PosteriorToAnterior);
   }
 
   /* Get the Scan Matrix from the IMAGE Header */
@@ -298,7 +283,7 @@ GE4ImageIO::ReadHeader(const char * FileNameToRead)
   //    hdr->offset = statBuf.st_size - (hdr->imageXsize * hdr->imageYsize * 2);
   //
   // find file length in line ...
-  SizeValueType file_length = itksys::SystemTools::FileLength(FileNameToRead);
+  const SizeValueType file_length = itksys::SystemTools::FileLength(FileNameToRead);
 
   hdr->offset = file_length - (hdr->imageXsize * hdr->imageYsize * 2);
   return hdr;
@@ -313,10 +298,10 @@ GE4ImageIO::MvtSunf(int numb)
   constexpr auto smantissa = 037777777U;
   constexpr auto smantlen = 23U;
   ByteSwapper<int>::SwapFromSystemToBigEndian(&numb);
-  unsigned int dg_exp = (numb >> 24) & dexponent;
-  unsigned int dg_sign = numb & signbit;
-  unsigned int dg_mantissa = (numb & dmantissa) << 8;
-  int          sun_exp = 4 * (dg_exp - 64);
+  const unsigned int dg_exp = (numb >> 24) & dexponent;
+  const unsigned int dg_sign = numb & signbit;
+  unsigned int       dg_mantissa = (numb & dmantissa) << 8;
+  int                sun_exp = 4 * (dg_exp - 64);
   while ((dg_mantissa & signbit) == 0 && dg_mantissa != 0)
   {
     --sun_exp;

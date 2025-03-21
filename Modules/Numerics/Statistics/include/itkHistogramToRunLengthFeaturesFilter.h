@@ -35,7 +35,6 @@ class HistogramToRunLengthFeaturesFilterEnums
 {
 public:
   /**
-   * \class RunLengthFeature
    * \ingroup ITKStatistics
    * Run-length feature types.
    */
@@ -57,7 +56,7 @@ public:
 using RunLengthFeatureEnum = HistogramToRunLengthFeaturesFilterEnums::RunLengthFeature;
 // Define how to print enumeration
 extern ITKStatistics_EXPORT std::ostream &
-                            operator<<(std::ostream & out, const HistogramToRunLengthFeaturesFilterEnums::RunLengthFeature value);
+operator<<(std::ostream & out, const HistogramToRunLengthFeaturesFilterEnums::RunLengthFeature value);
 /**
  * \class HistogramToRunLengthFeaturesFilter
  *  \brief This class computes texture feature coefficients from a grey level
@@ -74,19 +73,10 @@ extern ITKStatistics_EXPORT std::ostream &
  *
  * This class is templated over the input histogram type.
  *
- * Print references:
- * M. M. Galloway. Texture analysis using gray level run lengths. Computer
- * Graphics and Image Processing, 4:172-179, 1975.
+ * For algorithmic details see \cite galloway1975, \cite chu1990 and
+ * \cite dasarathy1991.
  *
- * A. Chu, C. M. Sehgal, and J. F. Greenleaf. Use of gray value distribution of
- * run lengths for texture analysis.  Pattern Recognition Letters, 11:415-420,
- * 1990.
- *
- * B. R. Dasarathy and E. B. Holder. Image characterizations based on joint
- * gray-level run-length distributions. Pattern Recognition Letters, 12:490-502,
- * 1991.
- *
- * IJ article: https://www.insight-journal.org/browse/publication/231
+ * IJ article: https://doi.org/10.54294/ex0itu
  *
  * \sa ScalarImageToRunLengthFeaturesFilter
  * \sa ScalarImageToRunLengthMatrixFilter

@@ -259,7 +259,7 @@ ProcessArguments(int * argc, ArgumentStringType * argv, ProcessedOutputType * pr
       // set the environment which will be read by the subprocess
       std::string threadEnv = "ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=";
       threadEnv += (*argv)[i + 1];
-      itksys::SystemTools::PutEnv(threadEnv.c_str());
+      itksys::SystemTools::PutEnv(threadEnv);
       // and set the number of threads locally for the comparison
       itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads(std::stoi((*argv)[i + 1]));
       *argv += 2;
@@ -441,7 +441,7 @@ void
 GetImageType(const char * fileName, itk::IOPixelEnum & pixelType, itk::IOComponentEnum & componentType)
 {
   using ImageType = itk::Image<unsigned char, 3>;
-  itk::ImageFileReader<ImageType>::Pointer imageReader = itk::ImageFileReader<ImageType>::New();
+  auto imageReader = itk::ImageFileReader<ImageType>::New();
   imageReader->SetFileName(fileName);
   imageReader->UpdateOutputInformation();
 
@@ -503,10 +503,8 @@ RegressionTestHelper(const char *       testImageFilename,
   }
 
   // The sizes of the baseline and test image must match
-  typename ImageType::SizeType baselineSize;
-  baselineSize = baselineReader->GetOutput()->GetLargestPossibleRegion().GetSize();
-  typename ImageType::SizeType testSize;
-  testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
+  const typename ImageType::SizeType baselineSize = baselineReader->GetOutput()->GetLargestPossibleRegion().GetSize();
+  const typename ImageType::SizeType testSize = testReader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
   if (baselineSize != testSize)
   {
@@ -528,13 +526,13 @@ RegressionTestHelper(const char *       testImageFilename,
   diff->SetDirectionTolerance(directionTolerance);
   diff->UpdateLargestPossibleRegion();
 
-  itk::SizeValueType status = diff->GetNumberOfPixelsWithDifferences();
+  const itk::SizeValueType status = diff->GetNumberOfPixelsWithDifferences();
 
   if (!reportErrors)
   {
     // The measurement errors should be reported for both success and errors
     // to facilitate setting tight tolerances of tests.
-    std::string shortFilename = itksys::SystemTools::GetFilenameName(baselineImageFilename);
+    const std::string shortFilename = itksys::SystemTools::GetFilenameName(baselineImageFilename);
 
     std::cout << "<DartMeasurement name=\"ImageError " << shortFilename << "\" type=\"numeric/double\">";
     std::cout << status;
@@ -566,8 +564,7 @@ RegressionTestHelper(const char *       testImageFilename,
     using ExtractType = itk::Testing::ExtractSliceImageFilter<OutputType, DiffOutputType>;
     using WriterType = itk::ImageFileWriter<DiffOutputType>;
     using RegionType = itk::ImageRegion<ITK_TEST_DIMENSION_MAX>;
-    OutputType::SizeType size;
-    size.Fill(0);
+    OutputType::SizeType size{};
 
     auto rescale = RescaleType::New();
     rescale->SetOutputMinimum(itk::NumericTraits<unsigned char>::NonpositiveMin());
@@ -578,8 +575,7 @@ RegressionTestHelper(const char *       testImageFilename,
 
     // Get the center slice of the image,  In 3D, the first slice
     // is often a black slice with little debugging information.
-    OutputType::IndexType index;
-    index.Fill(0);
+    OutputType::IndexType index{};
     for (unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; ++i)
     {
       index[i] = size[i] / 2; // NOTE: Integer Divide used to get approximately
@@ -813,7 +809,7 @@ ComputeHash(const char * testImageFilename)
 int
 HashTestImage(const char * testImageFilename, const std::vector<std::string> & baselineMD5Vector)
 {
-  itk::ImageIOBase::Pointer iobase =
+  const itk::ImageIOBase::Pointer iobase =
     itk::ImageIOFactory::CreateImageIO(testImageFilename, itk::ImageIOFactory::IOFileModeEnum::ReadMode);
 
   if (iobase.IsNull())
@@ -826,7 +822,7 @@ HashTestImage(const char * testImageFilename, const std::vector<std::string> & b
   iobase->ReadImageInformation();
 
   // get output information about input image
-  itk::IOComponentEnum componentType = iobase->GetComponentType();
+  const itk::IOComponentEnum componentType = iobase->GetComponentType();
 
   std::string testMD5 = "";
   switch (componentType)
@@ -871,18 +867,18 @@ HashTestImage(const char * testImageFilename, const std::vector<std::string> & b
       assert(false); // should never get here unless we forgot a type
       itkGenericExceptionMacro("Logic error!");
   }
-
-  auto iter = baselineMD5Vector.begin();
-  assert(baselineMD5Vector.size());
-  do
   {
-    if (*iter == testMD5)
+    auto iter = baselineMD5Vector.begin();
+    assert(baselineMD5Vector.size());
+    do
     {
-      // success, let's get out of here
-      return 0;
-    }
-  } while (++iter != baselineMD5Vector.end());
-
+      if (*iter == testMD5)
+      {
+        // success, let's get out of here
+        return 0;
+      }
+    } while (++iter != baselineMD5Vector.end());
+  }
   // failed to match print the different md5s
   std::cout << "<DartMeasurement name=\"TestMD5\" type=\"text/string\">";
   std::cout << testMD5;
@@ -890,10 +886,10 @@ HashTestImage(const char * testImageFilename, const std::vector<std::string> & b
 
 
   // print out all md5 baselines
-  for (iter = baselineMD5Vector.begin(); iter != baselineMD5Vector.end(); ++iter)
+  for (const auto & baselienMD5 : baselineMD5Vector)
   {
     std::cout << "<DartMeasurement name=\"BaselineMD5\" type=\"text/string\">";
-    std::cout << *iter;
+    std::cout << baselienMD5;
     std::cout << "</DartMeasurement>" << std::endl;
   }
 
@@ -909,13 +905,11 @@ HashTestImage(const char * testImageFilename, const std::vector<std::string> & b
   reader->SetFileName(testImageFilename);
   reader->UpdateLargestPossibleRegion();
 
-  ImageType::SizeType size;
-  size = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
+  ImageType::SizeType size = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
   // Get the center slice of the image,  In 3D, the first slice
   // is often a black slice with little debugging information.
-  ImageType::IndexType index;
-  index.Fill(0);
+  ImageType::IndexType index{};
   for (unsigned int i = 2; i < ITK_TEST_DIMENSION_MAX; ++i)
   {
     index[i] = size[i] / 2; // NOTE: Integer Divide used to get approximately
@@ -972,9 +966,9 @@ RegressionTestBaselines(char * baselineFilename)
 
   std::string originalBaseline(baselineFilename);
 
-  int                    x = 0;
-  std::string::size_type suffixPos = originalBaseline.rfind(".");
-  std::string            suffix;
+  int                          x = 0;
+  const std::string::size_type suffixPos = originalBaseline.rfind(".");
+  std::string                  suffix;
   if (suffixPos != std::string::npos)
   {
     suffix = originalBaseline.substr(suffixPos, originalBaseline.length());

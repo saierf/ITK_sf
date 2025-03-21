@@ -46,7 +46,7 @@ namespace itk
  * \author Gaetan Lehmann
  *
  * This code was contributed in the Insight Journal paper "Noise
- * Simulation". https://www.insight-journal.org/browse/publication/721
+ * Simulation". https://doi.org/10.54294/vh6vbw
  *
  * \ingroup ITKImageNoise
  */
@@ -91,12 +91,8 @@ public:
   itkGetConstMacro(StandardDeviation, double);
   itkSetMacro(StandardDeviation, double);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  /** Begin concept checking */
   itkConceptMacro(InputConvertibleToOutputCheck,
                   (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType>));
-  /** End concept checking */
-#endif
 
 protected:
   AdditiveGaussianNoiseImageFilter();

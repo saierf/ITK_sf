@@ -37,17 +37,17 @@ using ImagePointerType = ImageType::Pointer;
 using ImageRegionType = ImageType::RegionType;
 using ImageSizeType = ImageType::SizeType;
 using ImageIndexType = ImageType::IndexType;
-using CoordRepType = double;
+using CoordinateType = double;
 
 
 int
 itkResamplePhasedArray3DSpecialCoordinatesImageTest(int, char *[])
 {
   // Create and configure an image
-  InputImagePointerType image = InputImageType::New();
-  ImageIndexType        index = { { 0, 0, 0 } };
-  ImageSizeType         size = { { 13, 13, 9 } };
-  ImageRegionType       region{ index, size };
+  const InputImagePointerType image = InputImageType::New();
+  ImageIndexType              index = { { 0, 0, 0 } };
+  ImageSizeType               size = { { 13, 13, 9 } };
+  const ImageRegionType       region{ index, size };
   image->SetLargestPossibleRegion(region);
   image->SetBufferedRegion(region);
   image->SetAzimuthAngularSeparation(5.0 * 2.0 * itk::Math::pi / 360.0);
@@ -82,8 +82,7 @@ itkResamplePhasedArray3DSpecialCoordinatesImageTest(int, char *[])
   resample = itk::ResampleImageFilter<InputImageType, ImageType>::New();
   resample->SetInput(image);
 
-  ImageSizeType cubeSize;
-  cubeSize.Fill(7);
+  auto cubeSize = ImageSizeType::Filled(7);
   resample->SetSize(cubeSize);
 
   //  ImageType::SpacingType spacing;

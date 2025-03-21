@@ -27,13 +27,11 @@ namespace itk
 {
 
 /** \class LabelOverlapMeasuresImageFilter
- * \brief Computes overlap measures between the set same set of labels of
+ * \brief Computes overlap measures between the same set of labels of
  * pixels of two images. Background is assumed to be 0.
  *
- * This code was contributed in the Insight Journal paper:
- * "Introducing Dice, Jaccard, and Other Label Overlap Measures To ITK"
- * by Nicholas J. Tustison, James C. Gee
- * https://www.insight-journal.org/browse/publication/707
+ * This code was contributed in the Insight Journal paper
+ * \cite Tustison_2009_d.
  *
  * \author Nicholas J. Tustison
  * \sa LabelOverlapMeasuresImageFilter
@@ -187,11 +185,7 @@ public:
   /** Get the false discovery rate for the specified individual label. */
   RealType GetFalseDiscoveryRate(LabelType) const;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(Input1HasNumericTraitsCheck, (Concept::HasNumericTraits<LabelType>));
-  // End concept checking
-#endif
 
 protected:
   LabelOverlapMeasuresImageFilter();

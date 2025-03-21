@@ -55,40 +55,36 @@ TestKernelTransform(const char * name, KernelType *)
   sourceLandmarks->GetPoints()->Reserve(4);
 
   // Generate some random coordinates
-  typename KernelPointSetType::CoordRepType randomCoords[3];
+  typename KernelPointSetType::CoordinateType randomCoords[3];
   for (int i = 0; i < 4; ++i)
   {
-    randomCoords[0] = (typename KernelPointSetType::CoordRepType)vnl_sample_uniform(-1.0, 1.0);
-    randomCoords[1] = (typename KernelPointSetType::CoordRepType)vnl_sample_uniform(-1.0, 1.0);
-    randomCoords[2] = (typename KernelPointSetType::CoordRepType)vnl_sample_uniform(-1.0, 1.0);
+    randomCoords[0] = (typename KernelPointSetType::CoordinateType)vnl_sample_uniform(-1.0, 1.0);
+    randomCoords[1] = (typename KernelPointSetType::CoordinateType)vnl_sample_uniform(-1.0, 1.0);
+    randomCoords[2] = (typename KernelPointSetType::CoordinateType)vnl_sample_uniform(-1.0, 1.0);
     targetLandmarks->GetPoints()->SetElement(i, randomCoords);
 
-    randomCoords[0] = (typename KernelPointSetType::CoordRepType)vnl_sample_uniform(-1.0, 1.0);
-    randomCoords[1] = (typename KernelPointSetType::CoordRepType)vnl_sample_uniform(-1.0, 1.0);
-    randomCoords[2] = (typename KernelPointSetType::CoordRepType)vnl_sample_uniform(-1.0, 1.0);
+    randomCoords[0] = (typename KernelPointSetType::CoordinateType)vnl_sample_uniform(-1.0, 1.0);
+    randomCoords[1] = (typename KernelPointSetType::CoordinateType)vnl_sample_uniform(-1.0, 1.0);
+    randomCoords[2] = (typename KernelPointSetType::CoordinateType)vnl_sample_uniform(-1.0, 1.0);
     sourceLandmarks->GetPoints()->SetElement(i, randomCoords);
   }
 
   kernel->SetSourceLandmarks(sourceLandmarks);
   kernel->SetTargetLandmarks(targetLandmarks);
 
-  itk::ModifiedTimeType beginMTime;
-  itk::ModifiedTimeType endMTime;
-  beginMTime = kernel->GetMTime();
+  const itk::ModifiedTimeType         beginMTime = kernel->GetMTime();
   typename KernelType::ParametersType kernelParams = kernel->GetParameters();
   kernelParams[0] = 1.0;
   kernel->SetParameters(kernelParams);
-  endMTime = kernel->GetMTime();
+  const itk::ModifiedTimeType endMTime = kernel->GetMTime();
   if (endMTime > beginMTime)
   {
     std::cout << "PASS" << std::endl;
     return 0;
   }
-  else
-  {
-    std::cout << "FAIL" << std::endl;
-    return 1;
-  }
+
+  std::cout << "FAIL" << std::endl;
+  return 1;
 }
 
 // Main Program

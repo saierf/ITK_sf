@@ -166,10 +166,8 @@ VTKPolyDataMeshIO::CanReadFile(const char * fileName)
   {
     return true;
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 bool
@@ -273,10 +271,10 @@ VTKPolyDataMeshIO::ReadMeshInformation()
 
   std::getline(inputFile, line, '\n');
   ++numLine;
-  size_t versionPos = line.find("Version ");
+  const size_t versionPos = line.find("Version ");
   if (versionPos != std::string::npos)
   {
-    std::string versionString = line.substr(versionPos + 8);
+    const std::string versionString = line.substr(versionPos + 8);
     // Split the version string by "."
     std::vector<std::string> versionTokens;
     std::istringstream       iss(versionString);
@@ -412,8 +410,7 @@ VTKPolyDataMeshIO::ReadMeshInformation()
       // Check whether numberOfVertices and numberOfVertexIndices are correct
       if (numberOfVertices < 1)
       {
-        itkExceptionMacro("ERROR: numberOfVertices < 1\n "
-                          << "numberOfVertices= " << numberOfVertices);
+        itkExceptionMacro("ERROR: numberOfVertices < 1\n numberOfVertices= " << numberOfVertices);
       }
 
       if (numberOfVertexIndices < numberOfVertices)
@@ -459,8 +456,7 @@ VTKPolyDataMeshIO::ReadMeshInformation()
       // Check whether numberOfPolylines and numberOfPolylineIndices are correct
       if (numberOfLines < 1)
       {
-        itkExceptionMacro("ERROR: numberOfLines < 1\n "
-                          << "numberOfLines= " << numberOfLines);
+        itkExceptionMacro("ERROR: numberOfLines < 1\n numberOfLines= " << numberOfLines);
       }
 
       if (numberOfLineIndices < numberOfLines)
@@ -506,8 +502,7 @@ VTKPolyDataMeshIO::ReadMeshInformation()
       // Check whether numberOfPolygons and numberOfPolygonIndices are correct
       if (numberOfPolygons < 1)
       {
-        itkExceptionMacro("ERROR: numberOfPolygons < 1\n "
-                          << "numberOfPolygons= " << numberOfPolygons);
+        itkExceptionMacro("ERROR: numberOfPolygons < 1\n numberOfPolygons= " << numberOfPolygons);
       }
 
       if (numberOfPolygonIndices < numberOfPolygons)
@@ -991,7 +986,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsASCII(std::ifstream & inputFile, void * buff
   SizeValueType index = 0;
   unsigned int  numPoints; // number of point in each cell
 
-  MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
+  const MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
   using GeometryIntegerType = unsigned int;
   auto * data = static_cast<GeometryIntegerType *>(buffer);
 
@@ -1228,9 +1223,9 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYConnectivityType(std::ifstream & input
   using ConnectivityType = TConnectivity;
   using GeometryIntegerType = unsigned int;
 
-  std::string          line;
-  MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
-  unsigned int         numPoints; // number of point in each cell
+  std::string                line;
+  const MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
+  unsigned int               numPoints; // number of point in each cell
 
   auto * outputBuffer = static_cast<unsigned int *>(buffer);
   while (!inputFile.eof())
@@ -1249,7 +1244,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYConnectivityType(std::ifstream & input
       auto *     startBufferOffsets = static_cast<char *>(pvOffsets);
       inputFile.read(startBufferOffsets, numberOfVertexOffsets * sizeof(OffsetType));
       auto * dataOffsets = static_cast<OffsetType *>(pvOffsets);
-      if (itk::ByteSwapper<OffsetType>::SystemIsLittleEndian())
+      if constexpr (itk::ByteSwapper<OffsetType>::SystemIsLittleEndian())
       {
         itk::ByteSwapper<OffsetType>::SwapRangeFromSystemToBigEndian(dataOffsets, numberOfVertexOffsets);
       }
@@ -1269,7 +1264,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYConnectivityType(std::ifstream & input
       auto *     startBufferConnectivity = static_cast<char *>(pvConnectivity);
       inputFile.read(startBufferConnectivity, numberOfVertexConnectivity * sizeof(ConnectivityType));
       auto * dataConnectivity = static_cast<ConnectivityType *>(pvConnectivity);
-      if (itk::ByteSwapper<ConnectivityType>::SystemIsLittleEndian())
+      if constexpr (itk::ByteSwapper<ConnectivityType>::SystemIsLittleEndian())
       {
         itk::ByteSwapper<ConnectivityType>::SwapRangeFromSystemToBigEndian(dataConnectivity,
                                                                            numberOfVertexConnectivity);
@@ -1299,7 +1294,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYConnectivityType(std::ifstream & input
       auto *     startBufferOffsets = static_cast<char *>(pvOffsets);
       inputFile.read(startBufferOffsets, numberOfLinesOffsets * sizeof(OffsetType));
       auto * dataOffsets = static_cast<OffsetType *>(pvOffsets);
-      if (itk::ByteSwapper<OffsetType>::SystemIsLittleEndian())
+      if constexpr (itk::ByteSwapper<OffsetType>::SystemIsLittleEndian())
       {
         itk::ByteSwapper<OffsetType>::SwapRangeFromSystemToBigEndian(dataOffsets, numberOfLinesOffsets);
       }
@@ -1319,7 +1314,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYConnectivityType(std::ifstream & input
       auto *     startBufferConnectivity = static_cast<char *>(pvConnectivity);
       inputFile.read(startBufferConnectivity, numberOfLinesConnectivity * sizeof(ConnectivityType));
       auto * dataConnectivity = static_cast<ConnectivityType *>(pvConnectivity);
-      if (itk::ByteSwapper<ConnectivityType>::SystemIsLittleEndian())
+      if constexpr (itk::ByteSwapper<ConnectivityType>::SystemIsLittleEndian())
       {
         itk::ByteSwapper<ConnectivityType>::SwapRangeFromSystemToBigEndian(dataConnectivity, numberOfLinesConnectivity);
       }
@@ -1361,7 +1356,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYConnectivityType(std::ifstream & input
       auto *     startBufferOffsets = static_cast<char *>(pvOffsets);
       inputFile.read(startBufferOffsets, numberOfPolygonsOffsets * sizeof(OffsetType));
       auto * dataOffsets = static_cast<OffsetType *>(pvOffsets);
-      if (itk::ByteSwapper<OffsetType>::SystemIsLittleEndian())
+      if constexpr (itk::ByteSwapper<OffsetType>::SystemIsLittleEndian())
       {
         itk::ByteSwapper<OffsetType>::SwapRangeFromSystemToBigEndian(dataOffsets, numberOfPolygonsOffsets);
       }
@@ -1381,7 +1376,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYConnectivityType(std::ifstream & input
       auto *     startBufferConnectivity = static_cast<char *>(pvConnectivity);
       inputFile.read(startBufferConnectivity, numberOfPolygonsConnectivity * sizeof(ConnectivityType));
       auto * dataConnectivity = static_cast<ConnectivityType *>(pvConnectivity);
-      if (itk::ByteSwapper<ConnectivityType>::SystemIsLittleEndian())
+      if constexpr (itk::ByteSwapper<ConnectivityType>::SystemIsLittleEndian())
       {
         itk::ByteSwapper<ConnectivityType>::SwapRangeFromSystemToBigEndian(dataConnectivity,
                                                                            numberOfPolygonsConnectivity);
@@ -1411,8 +1406,8 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARYOffsetType(std::ifstream & inputFile, 
 {
   using OffsetType = TOffset;
 
-  MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
-  std::string          connectivityType;
+  const MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
+  std::string                connectivityType;
   ExposeMetaData<std::string>(metaDic, "connectivityType", connectivityType);
   const auto connectivityComponentType = this->GetComponentTypeFromString(connectivityType);
   switch (connectivityComponentType)
@@ -1443,7 +1438,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARY(std::ifstream & inputFile, void * buf
   }
 
   using GeometryIntegerType = unsigned int;
-  MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
+  const MetaDataDictionary & metaDic = this->GetMetaDataDictionary();
 
   if (this->m_ReadMeshVersionMajor >= 5)
   {
@@ -1488,7 +1483,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARY(std::ifstream & inputFile, void * buf
 
         pv = startBuffer;
         auto * data = static_cast<GeometryIntegerType *>(pv);
-        if (itk::ByteSwapper<GeometryIntegerType>::SystemIsLittleEndian())
+        if constexpr (itk::ByteSwapper<GeometryIntegerType>::SystemIsLittleEndian())
         {
           itk::ByteSwapper<GeometryIntegerType>::SwapRangeFromSystemToBigEndian(data, numberOfVertexIndices);
         }
@@ -1506,7 +1501,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARY(std::ifstream & inputFile, void * buf
 
         pv = startBuffer;
         auto * data = static_cast<GeometryIntegerType *>(pv);
-        if (itk::ByteSwapper<GeometryIntegerType>::SystemIsLittleEndian())
+        if constexpr (itk::ByteSwapper<GeometryIntegerType>::SystemIsLittleEndian())
         {
           itk::ByteSwapper<GeometryIntegerType>::SwapRangeFromSystemToBigEndian(data, numberOfLineIndices);
         }
@@ -1524,7 +1519,7 @@ VTKPolyDataMeshIO::ReadCellsBufferAsBINARY(std::ifstream & inputFile, void * buf
 
         pv = startBuffer;
         auto * data = static_cast<GeometryIntegerType *>(pv);
-        if (itk::ByteSwapper<GeometryIntegerType>::SystemIsLittleEndian())
+        if constexpr (itk::ByteSwapper<GeometryIntegerType>::SystemIsLittleEndian())
         {
           itk::ByteSwapper<GeometryIntegerType>::SwapRangeFromSystemToBigEndian(data, numberOfPolygonIndices);
         }

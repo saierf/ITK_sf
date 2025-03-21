@@ -78,7 +78,7 @@ FastMarchingExtensionImageFilter<TLevelSet, TAuxValue, VAuxDimension, TSpeedImag
 
   // set the size of all the auxiliary outputs
   // to be the same as the primary output
-  typename Superclass::LevelSetPointer primaryOutput = this->GetOutput();
+  const typename Superclass::LevelSetPointer primaryOutput = this->GetOutput();
   for (unsigned int k = 0; k < VAuxDimension; ++k)
   {
     AuxImageType * ptr = this->GetAuxiliaryImage(k);
@@ -149,9 +149,9 @@ FastMarchingExtensionImageFilter<TLevelSet, TAuxValue, VAuxDimension, TSpeedImag
 
   if (m_AuxAliveValues)
   {
-    typename AuxValueContainer::ConstIterator         auxIter = m_AuxAliveValues->Begin();
-    typename Superclass::NodeContainer::ConstIterator pointsIter = (this->GetAlivePoints())->Begin();
-    typename Superclass::NodeContainer::ConstIterator pointsEnd = (this->GetAlivePoints())->End();
+    typename AuxValueContainer::ConstIterator               auxIter = m_AuxAliveValues->Begin();
+    typename Superclass::NodeContainer::ConstIterator       pointsIter = (this->GetAlivePoints())->Begin();
+    const typename Superclass::NodeContainer::ConstIterator pointsEnd = (this->GetAlivePoints())->End();
 
     for (; pointsIter != pointsEnd; ++pointsIter, ++auxIter)
     {
@@ -169,13 +169,13 @@ FastMarchingExtensionImageFilter<TLevelSet, TAuxValue, VAuxDimension, TSpeedImag
         this->m_AuxImages[k]->SetPixel(node.GetIndex(), auxVec[k]);
       }
     } // end container loop
-  }   // if AuxAliveValues set
+  } // if AuxAliveValues set
 
   if (m_AuxTrialValues)
   {
-    typename AuxValueContainer::ConstIterator         auxIter = m_AuxTrialValues->Begin();
-    typename Superclass::NodeContainer::ConstIterator pointsIter = (this->GetTrialPoints())->Begin();
-    typename Superclass::NodeContainer::ConstIterator pointsEnd = (this->GetTrialPoints())->End();
+    typename AuxValueContainer::ConstIterator               auxIter = m_AuxTrialValues->Begin();
+    typename Superclass::NodeContainer::ConstIterator       pointsIter = (this->GetTrialPoints())->Begin();
+    const typename Superclass::NodeContainer::ConstIterator pointsEnd = (this->GetTrialPoints())->End();
 
     for (; pointsIter != pointsEnd; ++pointsIter, ++auxIter)
     {
@@ -193,7 +193,7 @@ FastMarchingExtensionImageFilter<TLevelSet, TAuxValue, VAuxDimension, TSpeedImag
         this->m_AuxImages[k]->SetPixel(node.GetIndex(), auxVec[k]);
       }
     } // end container loop
-  }   // if AuxTrialValues set
+  } // if AuxTrialValues set
 }
 
 template <typename TLevelSet, typename TAuxValue, unsigned int VAuxDimension, typename TSpeedImage>
@@ -216,7 +216,7 @@ FastMarchingExtensionImageFilter<TLevelSet, TAuxValue, VAuxDimension, TSpeedImag
   // "Level Set Methods and Fast Marching Methods", J.A. Sethian,
   // Cambridge Press, Second edition, 1999.
 
-  double solution = this->Superclass::UpdateValue(index, speed, output);
+  const double solution = this->Superclass::UpdateValue(index, speed, output);
 
   typename Superclass::NodeType node;
 

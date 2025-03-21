@@ -62,8 +62,7 @@ public:
   OutputPointType
   TransformPoint(const InputPointType & itkNotUsed(inputPoint)) const override
   {
-    OutputPointType outPoint;
-    outPoint.Fill(22.0);
+    auto outPoint = itk::MakeFilled<OutputPointType>(22.0);
     return outPoint;
   }
 
@@ -71,8 +70,7 @@ public:
   OutputVectorType
   TransformVector(const InputVectorType & itkNotUsed(inputVector)) const override
   {
-    OutputVectorType outVector;
-    outVector.Fill(12.2);
+    auto outVector = itk::MakeFilled<OutputVectorType>(12.2);
     return outVector;
   }
 
@@ -86,60 +84,49 @@ public:
   OutputVectorPixelType
   TransformVector(const InputVectorPixelType & itkNotUsed(inputVector)) const override
   {
-    OutputVectorPixelType outVector;
-    outVector.Fill(88.8);
-    return outVector;
+    return {};
   }
 
   using Superclass::TransformCovariantVector;
   OutputCovariantVectorType
   TransformCovariantVector(const InputCovariantVectorType & itkNotUsed(inputVector)) const override
   {
-    OutputCovariantVectorType outVector;
-    outVector.Fill(8.9);
+    auto outVector = itk::MakeFilled<OutputCovariantVectorType>(8.9);
     return outVector;
   }
 
   OutputVectorPixelType
   TransformCovariantVector(const InputVectorPixelType & itkNotUsed(inputVector)) const override
   {
-    OutputVectorPixelType outVector;
-    outVector.Fill(6.9);
-    return outVector;
+    return {};
   }
 
   using Superclass::TransformDiffusionTensor3D;
   OutputDiffusionTensor3DType
   TransformDiffusionTensor3D(const InputDiffusionTensor3DType & itkNotUsed(tensor)) const override
   {
-    OutputDiffusionTensor3DType outTensor;
-    outTensor.Fill(2.1);
+    auto outTensor = itk::MakeFilled<OutputDiffusionTensor3DType>(2.1);
     return outTensor;
   }
 
   OutputVectorPixelType
   TransformDiffusionTensor3D(const InputVectorPixelType & itkNotUsed(tensor)) const override
   {
-    OutputVectorPixelType outTensor;
-    outTensor.Fill(29.1);
-    return outTensor;
+    return {};
   }
 
   using Superclass::TransformSymmetricSecondRankTensor;
   OutputSymmetricSecondRankTensorType
   TransformSymmetricSecondRankTensor(const InputSymmetricSecondRankTensorType & itkNotUsed(tensor)) const override
   {
-    OutputSymmetricSecondRankTensorType outTensor;
-    outTensor.Fill(10.0);
+    auto outTensor = itk::MakeFilled<OutputSymmetricSecondRankTensorType>(10.0);
     return outTensor;
   }
 
   OutputVectorPixelType
   TransformSymmetricSecondRankTensor(const InputVectorPixelType & itkNotUsed(tensor)) const override
   {
-    OutputVectorPixelType outTensor;
-    outTensor.Fill(55.9);
-    return outTensor;
+    return {};
   }
 
   void
@@ -198,13 +185,12 @@ public:
     std::cout << "Testing itkTransform<" << VInputDimension << ',' << VOutputDimension << '>' << std::endl;
     auto transform = TransformType::New();
 
-    InputPointType pnt;
-    pnt.Fill(2.9);
+    auto pnt = itk::MakeFilled<InputPointType>(2.9);
 
     transform->TransformPoint(pnt);
     std::cout << "TransformPoint()                              OK" << std::endl;
 
-    InputVectorType vec;
+    constexpr InputVectorType vec{};
     transform->TransformVector(vec);
     transform->TransformVector(vec, pnt);
 
@@ -214,19 +200,19 @@ public:
     transform->TransformVector(vecpix);
     transform->TransformVector(vecpix, pnt);
 
-    InputVnlVectorType vec_vnl;
+    constexpr InputVnlVectorType vec_vnl{};
     transform->TransformVector(vec_vnl);
     transform->TransformVector(vec_vnl, pnt);
     std::cout << "TransformVector()                             OK" << std::endl;
 
-    InputCovariantVectorType covec;
+    constexpr InputCovariantVectorType covec{};
     transform->TransformCovariantVector(covec);
     transform->TransformCovariantVector(vecpix);
     transform->TransformCovariantVector(covec, pnt);
     transform->TransformCovariantVector(vecpix, pnt);
     std::cout << "TransformCovariantVector()                    OK" << std::endl;
 
-    InputDiffusionTensor3DType difften;
+    const InputDiffusionTensor3DType difften{};
     vecpix.SetSize(6);
     vecpix.Fill(1.7);
     transform->TransformDiffusionTensor3D(difften);
@@ -235,7 +221,7 @@ public:
     transform->TransformDiffusionTensor3D(vecpix, pnt);
     std::cout << "TransformDiffusionTensor3D()                  OK" << std::endl;
 
-    InputSymmetricSecondRankTensorType ssrten;
+    const InputSymmetricSecondRankTensorType ssrten{};
     vecpix.SetSize(VInputDimension * VInputDimension);
     vecpix.Fill(0);
     transform->TransformSymmetricSecondRankTensor(ssrten);
@@ -244,7 +230,7 @@ public:
     transform->TransformSymmetricSecondRankTensor(vecpix, pnt);
     std::cout << "TransformSymmetricSecondRankTensor()          OK" << std::endl;
 
-    typename TransformType::ParametersType parameters(6);
+    const typename TransformType::ParametersType parameters(6);
     try
     {
       transform->SetParameters(parameters);

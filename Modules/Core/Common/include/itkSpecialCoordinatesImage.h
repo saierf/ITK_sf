@@ -193,7 +193,7 @@ public:
   void
   SetPixel(const IndexType & index, const TPixel & value)
   {
-    OffsetValueType offset = this->FastComputeOffset(index);
+    const OffsetValueType offset = this->FastComputeOffset(index);
     (*m_Buffer)[offset] = value;
   }
 
@@ -204,7 +204,7 @@ public:
   const TPixel &
   GetPixel(const IndexType & index) const
   {
-    OffsetValueType offset = this->FastComputeOffset(index);
+    const OffsetValueType offset = this->FastComputeOffset(index);
     return ((*m_Buffer)[offset]);
   }
 
@@ -215,7 +215,7 @@ public:
   TPixel &
   GetPixel(const IndexType & index)
   {
-    OffsetValueType offset = this->FastComputeOffset(index);
+    const OffsetValueType offset = this->FastComputeOffset(index);
     return ((*m_Buffer)[offset]);
   }
 
@@ -223,13 +223,21 @@ public:
    *
    * For efficiency, this function does not check that the
    * image has actually been allocated yet. */
-  TPixel & operator[](const IndexType & index) { return this->GetPixel(index); }
+  TPixel &
+  operator[](const IndexType & index)
+  {
+    return this->GetPixel(index);
+  }
 
   /** \brief Access a pixel. This version can only be an rvalue.
    *
    * For efficiency, this function does not check that the
    * image has actually been allocated yet. */
-  const TPixel & operator[](const IndexType & index) const { return this->GetPixel(index); }
+  const TPixel &
+  operator[](const IndexType & index) const
+  {
+    return this->GetPixel(index);
+  }
 
   /** Return a pointer to the beginning of the buffer.  This is used by
    * the image iterator class. */
@@ -303,25 +311,25 @@ public:
   /* It is ILLEGAL in C++ to make a templated member function virtual! */
   /* Therefore, we must just let templates take care of everything.    */
   /*
-  template<typename TCoordRep>
+  template<typename TCoordinate>
   virtual bool TransformPhysicalPointToContinuousIndex(
-              const Point<TCoordRep, VImageDimension>& point,
-              ContinuousIndex<TCoordRep, VImageDimension>& index   ) const = 0;
+              const Point<TCoordinate, VImageDimension>& point,
+              ContinuousIndex<TCoordinate, VImageDimension>& index   ) const = 0;
 
-  template<typename TCoordRep>
+  template<typename TCoordinate>
   virtual bool TransformPhysicalPointToIndex(
-            const Point<TCoordRep, VImageDimension>&,
+            const Point<TCoordinate, VImageDimension>&,
             IndexType & index                                ) const = 0;
 
-  template<typename TCoordRep>
+  template<typename TCoordinate>
   virtual void TransformContinuousIndexToPhysicalPoint(
-            const ContinuousIndex<TCoordRep, VImageDimension>& index,
-            Point<TCoordRep, VImageDimension>& point        ) const = 0;
+            const ContinuousIndex<TCoordinate, VImageDimension>& index,
+            Point<TCoordinate, VImageDimension>& point        ) const = 0;
 
-  template<typename TCoordRep>
+  template<typename TCoordinate>
   virtual void TransformIndexToPhysicalPoint(
                       const IndexType & index,
-                      Point<TCoordRep, VImageDimension>& point ) const = 0;
+                      Point<TCoordinate, VImageDimension>& point ) const = 0;
   */
 
 protected:

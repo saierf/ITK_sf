@@ -18,6 +18,7 @@
 #ifndef itkEventObject_h
 #define itkEventObject_h
 
+#include "itkMacro.h"
 #include "itkIndent.h"
 
 namespace itk
@@ -139,11 +140,11 @@ operator<<(std::ostream & os, const EventObject & e)
     void                                                   \
     operator=(const Self &);                               \
   };                                                       \
-  static_assert(true, "Compile time eliminated. Used to require a semi-colon at end of macro.")
+  ITK_MACROEND_NOOP_STATEMENT
 
 #define itkEventMacroDefinition(classname, super)                            \
   classname::classname(const classname & s)                                  \
-    : super(s){};                                                            \
+    : super(s) {};                                                           \
   classname::~classname() {}                                                 \
   const char * classname::GetEventName() const { return #classname; }        \
   bool         classname::CheckEvent(const itk::EventObject * e) const       \
@@ -151,7 +152,7 @@ operator<<(std::ostream & os, const EventObject & e)
     return (dynamic_cast<const classname *>(e) != nullptr);                  \
   }                                                                          \
   itk::EventObject * classname::MakeObject() const { return new classname; } \
-  static_assert(true, "Compile time eliminated. Used to require a semi-colon at end of macro.")
+  ITK_MACROEND_NOOP_STATEMENT
 
 #if !defined(ITK_LEGACY_REMOVE)
 // Support Pre 2015 code bases
@@ -189,7 +190,7 @@ operator<<(std::ostream & os, const EventObject & e)
         return new Self;                                   \
       }                                                    \
       classname(const Self & s)                            \
-        : super(s){};                                      \
+        : super(s) {};                                     \
                                                            \
     private:                                               \
       void                                                 \

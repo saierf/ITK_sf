@@ -54,7 +54,7 @@ ImageBoundaryFaceCalculatorTest(TImage *                          image,
     if (fit == faceList.begin())
     {
       using NeighborhoodIteratorType = itk::ConstNeighborhoodIterator<TImage>;
-      NeighborhoodIteratorType nIt(radius, image, *fit);
+      const NeighborhoodIteratorType nIt(radius, image, *fit);
       // a neighborhood iterator with radius and the first region should never overlap the boundary of the image
       if (!nIt.InBounds() && fit->GetNumberOfPixels() > 0)
       {
@@ -97,14 +97,11 @@ NeighborhoodAlgorithmTest()
   using IndexType = typename ImageType::IndexType;
   using SizeType = typename ImageType::SizeType;
 
-  IndexType ind;
-  ind.Fill(0);
+  IndexType ind{};
 
-  SizeType size;
-  size.Fill(5);
+  auto size = SizeType::Filled(5);
 
-  SizeType radius;
-  radius.Fill(1);
+  auto radius = SizeType::Filled(1);
 
   RegionType region(ind, size);
 

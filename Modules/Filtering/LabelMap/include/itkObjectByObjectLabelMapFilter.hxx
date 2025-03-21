@@ -194,14 +194,12 @@ ObjectByObjectLabelMapFilter<TInputImage,
   if (m_ConstrainPaddingToImage)
   {
     m_Crop->SetCropBorder(m_PadSize);
-    SizeType zero;
-    zero.Fill(0);
+    constexpr SizeType zero{};
     m_Pad->SetPadSize(zero);
   }
   else
   {
-    SizeType zero;
-    zero.Fill(0);
+    constexpr SizeType zero{};
     m_Crop->SetCropBorder(zero);
     m_Pad->SetPadSize(m_PadSize);
   }
@@ -267,7 +265,7 @@ ObjectByObjectLabelMapFilter<TInputImage,
         {
           // the label has been stolen by a previously split object. Just move that object elsewhere
           // to free the label
-          typename LabelObjectType::Pointer lotmp = output->GetLabelObject(m_Label);
+          const typename LabelObjectType::Pointer lotmp = output->GetLabelObject(m_Label);
           output->RemoveLabelObject(lotmp);
           outLo->SetLabel(m_Label);
           outLo->template CopyAttributesFrom<LabelObjectType>(inLo);

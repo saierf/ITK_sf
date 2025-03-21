@@ -25,9 +25,9 @@
 namespace itk
 {
 
-template <typename TInputImage, typename TCoordRep = SpacePrecisionType>
+template <typename TInputImage, typename TCoordinate = SpacePrecisionType>
 class TestImageFunction
-  : public ImageFunction<TInputImage, typename NumericTraits<typename TInputImage::PixelType>::RealType, TCoordRep>
+  : public ImageFunction<TInputImage, typename NumericTraits<typename TInputImage::PixelType>::RealType, TCoordinate>
 {
 public:
   ITK_DISALLOW_COPY_AND_MOVE(TestImageFunction);
@@ -35,7 +35,7 @@ public:
   /** Standard class type aliases. */
   using Self = TestImageFunction;
   using Superclass =
-    ImageFunction<TInputImage, typename NumericTraits<typename TInputImage::PixelType>::RealType, TCoordRep>;
+    ImageFunction<TInputImage, typename NumericTraits<typename TInputImage::PixelType>::RealType, TCoordinate>;
 
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
@@ -111,21 +111,20 @@ itkImageFunctionTest(int, char *[])
   using SizeType = RegionType::SizeType;
   using IndexType = ImageType::IndexType;
 
-  using CoordRepType = float;
-  using ContinuousIndexType = itk::ContinuousIndex<CoordRepType, Dimension>;
-  using PointType = itk::Point<CoordRepType, Dimension>;
+  using CoordinateType = float;
+  using ContinuousIndexType = itk::ContinuousIndex<CoordinateType, Dimension>;
+  using PointType = itk::Point<CoordinateType, Dimension>;
 
   using IndexNumericTraits = itk::NumericTraits<IndexType::IndexValueType>;
   using ContinuousIndexNumericTraits = itk::NumericTraits<ContinuousIndexType::ValueType>;
   using PointNumericTraits = itk::NumericTraits<PointType::ValueType>;
 
 
-  using FunctionType = itk::TestImageFunction<ImageType, CoordRepType>;
+  using FunctionType = itk::TestImageFunction<ImageType, CoordinateType>;
 
   auto image = ImageType::New();
 
-  IndexType start;
-  start.Fill(1);
+  auto     start = IndexType::Filled(1);
   SizeType size;
   size[0] = 3;
   size[1] = 4;
@@ -134,15 +133,6 @@ itkImageFunctionTest(int, char *[])
 
   image->SetRegions(region);
   image->Allocate();
-
-  ImageType::PointType   origin;
-  ImageType::SpacingType spacing;
-  origin.Fill(0.0);
-  spacing.Fill(1.0);
-
-  image->SetOrigin(origin);
-  image->SetSpacing(spacing);
-
   image->Print(std::cout);
 
   auto function = FunctionType::New();
@@ -286,8 +276,7 @@ itkImageFunctionTest(int, char *[])
   }
 
   /* IsInsideBuffer with Point type */
-  PointType point;
-  point.Fill(1);
+  auto point = itk::MakeFilled<PointType>(1);
   if (!function->IsInsideBuffer(point))
   {
     std::cout << "Error with IsInsideBuffer 1P." << std::endl;

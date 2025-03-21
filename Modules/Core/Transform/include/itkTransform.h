@@ -529,9 +529,11 @@ public:
                       " is unimplemented for "
                       << this->GetNameOfClass());
   }
-  itkLegacyMacro(virtual void ComputeJacobianWithRespectToPosition(const InputPointType & x, JacobianType & jacobian)
-                   const);
 
+#if !defined(ITK_LEGACY_REMOVE)
+  itkLegacyMacro(virtual void ComputeJacobianWithRespectToPosition(const InputPointType & x, JacobianType & jacobian)
+                   const;)
+#endif
 
   /** This provides the ability to get a local jacobian value
    *  in a dense/local transform, e.g. DisplacementFieldTransform. For such
@@ -540,8 +542,11 @@ public:
    *  since there is no change with respect to position. */
   virtual void
   ComputeInverseJacobianWithRespectToPosition(const InputPointType & pnt, InverseJacobianPositionType & jacobian) const;
+
+#if !defined(ITK_LEGACY_REMOVE)
   itkLegacyMacro(virtual void ComputeInverseJacobianWithRespectToPosition(const InputPointType & x,
-                                                                          JacobianType &         jacobian) const);
+                                                                          JacobianType &         jacobian) const;)
+#endif
 
   /** Apply this transform to an image without resampling.
    *
@@ -575,16 +580,8 @@ protected:
   Transform() = default;
 
   Transform(NumberOfParametersType numberOfParameters);
-#if defined(__GNUC__)
-  // A bug in some versions of the GCC and Clang compilers
-  // result in an ICE or linker error when "= default" is requested.
-  // This was observed in at least gcc 4.8 and 5.4.0, and
-  // AppleClang 7.0.2 and 8.0.0. Probably others too.
-  // "= default" doesn't gain us much, so just don't use it here.
-  ~Transform() override{};
-#else
   ~Transform() override = default;
-#endif
+
   mutable ParametersType      m_Parameters{};
   mutable FixedParametersType m_FixedParameters{};
 

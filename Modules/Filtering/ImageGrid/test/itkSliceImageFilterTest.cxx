@@ -217,16 +217,12 @@ TEST(SliceImageFilterTests, Empty)
   SourceType::SizeValueType size[] = { 32, 32 };
   source->SetSize(size);
 
-  int                  step[ImageDimension] = { 1, 1 };
-  ImageType::IndexType start;
-  start.Fill(10);
-  ImageType::IndexType stop;
-  stop.Fill(10);
+  int  step[ImageDimension] = { 1, 1 };
+  auto start = ImageType::IndexType::Filled(10);
+  auto stop = ImageType::IndexType::Filled(10);
 
 
-  ImageType::Pointer img;
-
-  img = RunFilter<ImageType>(source->GetOutput(), start, stop, step);
+  ImageType::Pointer img = RunFilter<ImageType>(source->GetOutput(), start, stop, step);
   std::cout << img;
 
   for (unsigned int i = 0; i < ImageDimension; ++i)
@@ -255,8 +251,7 @@ TEST(SliceImageFilterTests, Coverage)
   auto filter = FilterType::New();
   std::cout << filter;
 
-  FilterType::IndexType idx;
-  idx.Fill(10);
+  auto idx = FilterType::IndexType::Filled(10);
 
   filter->SetStart(idx);
   EXPECT_EQ(idx, filter->GetStart());
@@ -273,8 +268,7 @@ TEST(SliceImageFilterTests, Coverage)
   filter->SetStop(13);
   EXPECT_EQ(idx, filter->GetStop());
 
-  FilterType::ArrayType a;
-  a.Fill(14);
+  auto a = itk::MakeFilled<FilterType::ArrayType>(14);
   filter->SetStep(a);
   EXPECT_EQ(a, filter->GetStep());
 
@@ -291,7 +285,7 @@ TEST(SliceImageFilterTests, Sizes)
   using SourceType = itk::GaussianImageSource<ImageType>;
   auto source = SourceType::New();
 
-  SourceType::SizeType size = { { 64, 64, 64 } };
+  constexpr SourceType::SizeType size = { { 64, 64, 64 } };
   source->SetSize(size);
   source->ReleaseDataFlagOn();
 

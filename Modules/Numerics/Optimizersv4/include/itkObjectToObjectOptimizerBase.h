@@ -226,8 +226,14 @@ public:
   /** Set the number of work units to use when threading.
    *
    * NOTE: deprecated. Use SetNumberOfWorkUnits() */
-  itkLegacyMacro(virtual void SetNumberOfThreads(ThreadIdType number)) { return this->SetNumberOfWorkUnits(number); }
-  itkLegacyMacro(virtual const ThreadIdType & GetNumberOfThreads() const) { return this->m_NumberOfWorkUnits; }
+  itkLegacyMacro(virtual void SetNumberOfThreads(ThreadIdType number))
+  {
+    return this->SetNumberOfWorkUnits(number);
+  }
+  itkLegacyMacro(virtual const ThreadIdType & GetNumberOfThreads() const)
+  {
+    return this->m_NumberOfWorkUnits;
+  }
 #endif // !ITK_LEGACY_REMOVE
 
   /** Get the number of work units set to be used. */
@@ -259,7 +265,7 @@ public:
   StartOptimization(bool doOnlyInitialization = false);
 
   /** Stop condition return string type */
-  virtual const StopConditionReturnStringType
+  virtual StopConditionReturnStringType
   GetStopConditionDescription() const = 0;
 
   /** Returns true if derived optimizer supports using scales.
@@ -274,6 +280,7 @@ public:
 protected:
   /** Default constructor */
   ObjectToObjectOptimizerBaseTemplate();
+
   ~ObjectToObjectOptimizerBaseTemplate() override;
 
   MetricTypePointer m_Metric{};

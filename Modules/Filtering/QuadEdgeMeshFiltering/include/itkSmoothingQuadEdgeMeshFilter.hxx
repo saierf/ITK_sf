@@ -49,13 +49,13 @@ template <typename TInputMesh, typename TOutputMesh>
 void
 SmoothingQuadEdgeMeshFilter<TInputMesh, TOutputMesh>::GenerateData()
 {
-  OutputPointIdentifier numberOfPoints = this->GetInput()->GetNumberOfPoints();
+  const OutputPointIdentifier numberOfPoints = this->GetInput()->GetNumberOfPoints();
 
   ProgressReporter progress(this, 0, m_NumberOfIterations * (numberOfPoints + 1), 100);
 
   OutputMeshPointer mesh = OutputMeshType::New();
 
-  OutputPointsContainerPointer temp = OutputPointsContainer::New();
+  const OutputPointsContainerPointer temp = OutputPointsContainer::New();
   temp->Reserve(numberOfPoints);
 
   OutputPointsContainerPointer  points;
@@ -175,7 +175,7 @@ SmoothingQuadEdgeMeshFilter<TInputMesh, TOutputMesh>::PrintSelf(std::ostream & o
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "DelaunayConforming: " << (m_DelaunayConforming ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(DelaunayConforming);
   os << indent << "NumberOfIterations: " << m_NumberOfIterations << std::endl;
   os << indent << "RelaxationFactor: " << m_RelaxationFactor << std::endl;
 }

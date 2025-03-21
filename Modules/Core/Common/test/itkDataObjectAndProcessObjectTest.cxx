@@ -228,8 +228,8 @@ itkDataObjectAndProcessObjectTest(int, char *[])
   ITK_TEST_SET_GET_VALUE(true, process->GetReleaseDataBeforeUpdateFlag());
 
   ITK_TEST_EXPECT_TRUE(itk::MultiThreaderBase::GetGlobalDefaultNumberOfThreads() <= process->GetNumberOfWorkUnits());
-  process->SetNumberOfWorkUnits(11);
-  ITK_TEST_SET_GET_VALUE(11, process->GetNumberOfWorkUnits());
+  process->SetNumberOfWorkUnits(itk::ITK_MAX_THREADS - 1);
+  ITK_TEST_SET_GET_VALUE(itk::ITK_MAX_THREADS - 1, process->GetNumberOfWorkUnits());
   process->SetNumberOfWorkUnits(0);
   ITK_TEST_SET_GET_VALUE(1, process->GetNumberOfWorkUnits());
   process->SetNumberOfWorkUnits(itk::NumericTraits<itk::ThreadIdType>::max());
@@ -238,14 +238,14 @@ itkDataObjectAndProcessObjectTest(int, char *[])
   ITK_TEST_SET_GET_VALUE(itk::MultiThreaderBase::GetGlobalDefaultNumberOfThreads(), process->GetNumberOfWorkUnits());
 
   // not sure what to test with that method - at least test that it exist
-  itk::MultiThreaderBase::Pointer multiThreader = process->GetMultiThreader();
+  const itk::MultiThreaderBase::Pointer multiThreader = process->GetMultiThreader();
   ITK_TEST_SET_GET_VALUE(true, multiThreader.IsNotNull());
 
   // create some data object that will be used as input and output
-  itk::TestDataObject::Pointer input0 = itk::TestDataObject::New();
-  itk::TestDataObject::Pointer input1 = itk::TestDataObject::New();
+  const itk::TestDataObject::Pointer input0 = itk::TestDataObject::New();
+  const itk::TestDataObject::Pointer input1 = itk::TestDataObject::New();
 
-  itk::TestDataObject::Pointer output1 = itk::TestDataObject::New();
+  const itk::TestDataObject::Pointer output1 = itk::TestDataObject::New();
 
   // default input values
   ITK_TEST_SET_GET_NULL_VALUE(process->GetPrimaryInput());
@@ -297,7 +297,7 @@ itkDataObjectAndProcessObjectTest(int, char *[])
   process->PopBackInput();
   ITK_TEST_SET_GET_VALUE(1, process->GetNumberOfIndexedInputs());
 
-  itk::TestDataObject::Pointer output = itk::TestDataObject::New();
+  const itk::TestDataObject::Pointer output = itk::TestDataObject::New();
   process->SetNthOutput(0, output);
 
   process->SetNumberOfRequiredInputs(1);

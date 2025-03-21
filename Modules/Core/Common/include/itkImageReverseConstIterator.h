@@ -166,8 +166,8 @@ public:
     m_PixelAccessorFunctor.SetBegin(m_Buffer);
   }
 
-  /** Constructor establishes an iterator to walk a particular image and a
-   * particular region of that image. */
+  /** Constructor establishes an iterator to walk a particular image and a particular region of that image. Initializes
+   * the iterator at the begin of the region. */
   ImageReverseConstIterator(const ImageType * ptr, const RegionType & region)
   {
     SizeValueType offset;
@@ -208,7 +208,7 @@ public:
     m_Region = it.GetRegion();
     m_Buffer = m_Image->GetBufferPointer();
 
-    IndexType ind = it.GetIndex();
+    const IndexType ind = it.GetIndex();
 
     m_Offset = m_Image->ComputeOffset(ind);
 

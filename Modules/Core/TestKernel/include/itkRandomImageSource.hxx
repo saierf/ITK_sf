@@ -58,23 +58,9 @@ template <typename TOutputImage>
 void
 RandomImageSource<TOutputImage>::SetSize(SizeValueArrayType sizeArray)
 {
-  const unsigned int count = TOutputImage::ImageDimension;
-  unsigned int       i;
-
-  for (i = 0; i < count; ++i)
-  {
-    if (sizeArray[i] != this->m_Size[i])
-    {
-      break;
-    }
-  }
-  if (i < count)
+  if (ContainerCopyWithCheck(m_Size, sizeArray, TOutputImage::ImageDimension))
   {
     this->Modified();
-    for (i = 0; i < count; ++i)
-    {
-      this->m_Size[i] = sizeArray[i];
-    }
   }
 }
 
@@ -89,23 +75,9 @@ template <typename TOutputImage>
 void
 RandomImageSource<TOutputImage>::SetSpacing(SpacingValueArrayType spacingArray)
 {
-  const unsigned int count = TOutputImage::ImageDimension;
-  unsigned int       i;
-
-  for (i = 0; i < count; ++i)
-  {
-    if (Math::NotExactlyEquals(spacingArray[i], this->m_Spacing[i]))
-    {
-      break;
-    }
-  }
-  if (i < count)
+  if (ContainerCopyWithCheck(m_Spacing, spacingArray, TOutputImage::ImageDimension))
   {
     this->Modified();
-    for (i = 0; i < count; ++i)
-    {
-      this->m_Spacing[i] = spacingArray[i];
-    }
   }
 }
 
@@ -113,23 +85,9 @@ template <typename TOutputImage>
 void
 RandomImageSource<TOutputImage>::SetOrigin(PointValueArrayType originArray)
 {
-  const unsigned int count = TOutputImage::ImageDimension;
-  unsigned int       i;
-
-  for (i = 0; i < count; ++i)
-  {
-    if (Math::NotExactlyEquals(originArray[i], this->m_Origin[i]))
-    {
-      break;
-    }
-  }
-  if (i < count)
+  if (ContainerCopyWithCheck(m_Origin, originArray, TOutputImage::ImageDimension))
   {
     this->Modified();
-    for (i = 0; i < count; ++i)
-    {
-      this->m_Origin[i] = originArray[i];
-    }
   }
 }
 
@@ -197,8 +155,7 @@ template <typename TOutputImage>
 void
 RandomImageSource<TOutputImage>::GenerateOutputInformation()
 {
-  TOutputImage * output;
-  output = this->GetOutput(0);
+  TOutputImage * output = this->GetOutput(0);
 
   const typename TOutputImage::RegionType largestPossibleRegion(this->m_Size);
   output->SetLargestPossibleRegion(largestPossibleRegion);
@@ -217,7 +174,7 @@ RandomImageSource<TOutputImage>::DynamicThreadedGenerateData(const OutputImageRe
 
 
   using scalarType = typename TOutputImage::PixelType;
-  typename TOutputImage::Pointer image = this->GetOutput(0);
+  const typename TOutputImage::Pointer image = this->GetOutput(0);
 
   TotalProgressReporter progress(this, image->GetRequestedRegion().GetNumberOfPixels());
 

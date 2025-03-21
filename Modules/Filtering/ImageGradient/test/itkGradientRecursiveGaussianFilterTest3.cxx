@@ -64,8 +64,7 @@ itkGradientRecursiveGaussianFilterTest3Run(typename TImageType::PixelType &   my
   size[1] = 8;
   size[2] = 8;
 
-  myIndexType start;
-  start.Fill(0);
+  myIndexType start{};
 
   myRegionType region{ start, size };
 
@@ -153,7 +152,7 @@ itkGradientRecursiveGaussianFilterTest3Compare(typename TGradImage1DType::Pointe
                                                                      vectorPixelGradImage->GetBufferedRegion());
   scalarIt.GoToBegin();
   vector2DIt.GoToBegin();
-  typename TGradImage1DType::PixelType::ValueType tolerance = 1e-5;
+  const typename TGradImage1DType::PixelType::ValueType tolerance = 1e-5;
 
   while (!scalarIt.IsAtEnd() && !vector2DIt.IsAtEnd())
   {
@@ -163,8 +162,8 @@ itkGradientRecursiveGaussianFilterTest3Compare(typename TGradImage1DType::Pointe
     {
       for (unsigned int c = 0; c < vector.GetNumberOfComponents() / numDimensions; ++c)
       {
-        typename TGradImage1DType::PixelType::ValueType truth = scalar[d] / (c + 1.0);
-        typename TGradImage1DType::PixelType::ValueType test = vector[d + (c * numDimensions)];
+        const typename TGradImage1DType::PixelType::ValueType truth = scalar[d] / (c + 1.0);
+        const typename TGradImage1DType::PixelType::ValueType test = vector[d + (c * numDimensions)];
         if (itk::Math::abs(truth - test) > tolerance)
         {
           std::cerr << "One or more components of vector gradient image pixel are not as expected: " << std::endl
@@ -222,10 +221,8 @@ itkGradientRecursiveGaussianFilterTest3(int argc, char * argv[])
   using myImageScalarType = itk::Image<myScalarPixelType, myDimension>;
 
   myGradImage1DType::Pointer scalarPixelGradImage = nullptr;
-  myScalarPixelType          pixelBorder;
-  myScalarPixelType          pixelFill;
-  pixelBorder = myScalarPixelType{};
-  pixelFill = static_cast<myScalarPixelType>(100.0);
+  auto                       pixelBorder = myScalarPixelType{};
+  auto                       pixelFill = static_cast<myScalarPixelType>(100.0);
   runResult = itkGradientRecursiveGaussianFilterTest3Run<myImageScalarType, myGradImage1DType, myComponents1D>(
     pixelBorder, pixelFill, scalarPixelGradImage, argv[2]);
   if (runResult == EXIT_FAILURE)

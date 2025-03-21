@@ -44,7 +44,7 @@ MultiGradientOptimizerv4Template<TInternalComputationValueType>::PrintSelf(std::
 
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "Stop: " << (m_Stop ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(Stop);
   os << indent << "StopCondition: " << m_StopCondition << std::endl;
   os << indent << "StopConditionDescription: " << m_StopConditionDescription.str() << std::endl;
   os << indent << "OptimizersList: " << m_OptimizersList << std::endl;
@@ -87,7 +87,7 @@ MultiGradientOptimizerv4Template<TInternalComputationValueType>::GetMetricValues
 template <typename TInternalComputationValueType>
 auto
 MultiGradientOptimizerv4Template<TInternalComputationValueType>::GetStopConditionDescription() const
-  -> const StopConditionReturnStringType
+  -> StopConditionReturnStringType
 {
   return this->m_StopConditionDescription.str();
 }

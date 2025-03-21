@@ -79,7 +79,7 @@ PointSetToImageMetric<TFixedPointSet, TMovingImage>::Initialize()
 
   if (m_ComputeGradient)
   {
-    GradientImageFilterPointer gradientFilter = GradientImageFilterType::New();
+    const GradientImageFilterPointer gradientFilter = GradientImageFilterType::New();
 
     gradientFilter->SetInput(m_MovingImage);
 
@@ -115,7 +115,7 @@ PointSetToImageMetric<TFixedPointSet, TMovingImage>::PrintSelf(std::ostream & os
   itkPrintSelfObjectMacro(Transform);
   itkPrintSelfObjectMacro(Interpolator);
 
-  os << indent << "ComputeGradient: " << (m_ComputeGradient ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(ComputeGradient);
 
   itkPrintSelfObjectMacro(GradientImage);
 }

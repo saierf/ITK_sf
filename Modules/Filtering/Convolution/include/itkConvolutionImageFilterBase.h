@@ -32,7 +32,6 @@ class ConvolutionImageFilterBaseEnums
 {
 public:
   /**
-   * \class ConvolutionImageFilterOutputRegion
    * \ingroup ITKConvolution
    * Output region mode type enumeration
    */
@@ -44,7 +43,7 @@ public:
 };
 /** Define how to print enumerations */
 extern ITKConvolution_EXPORT std::ostream &
-                             operator<<(std::ostream & out, const ConvolutionImageFilterBaseEnums::ConvolutionImageFilterOutputRegion value);
+operator<<(std::ostream & out, const ConvolutionImageFilterBaseEnums::ConvolutionImageFilterOutputRegion value);
 
 /**
  * \class ConvolutionImageFilterBase
@@ -154,7 +153,8 @@ protected:
   /** Default superclass implementation ensures that input images
    * occupy same physical space. This is not needed for this filter. */
   void
-  VerifyInputInformation() const override{};
+  VerifyInputInformation() const override
+  {}
 
 private:
   bool m_Normalize{ false };

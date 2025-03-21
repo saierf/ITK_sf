@@ -47,7 +47,7 @@ itk_fetch_module(
   "nD morphological contour interpolation
 
 Insight Journal article:
-https://www.insight-journal.org/browse/publication/977
+https://doi.org/10.54294/achtrg
 
 An ITK-based implementation of morphological contour interpolation based off the paper:
 Albu AB, Beugeling T, Laurendeau D.
@@ -58,5 +58,5 @@ This work is supported by NIH grant R01 EB014346
 'Continued development and maintenance of the ITK-SNAP 3D image segmentation software'."
   MODULE_COMPLIANCE_LEVEL 3
   GIT_REPOSITORY https://github.com/KitwareMedical/ITKMorphologicalContourInterpolation.git
-  GIT_TAG fc7ffdc939395a272e1ccba8d027db80d0eb834e
+  GIT_TAG a0af585005fe2722ab5876f3a522eaa3122aad4e
   )

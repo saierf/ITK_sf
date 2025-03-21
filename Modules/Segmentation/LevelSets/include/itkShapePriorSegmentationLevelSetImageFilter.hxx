@@ -81,7 +81,7 @@ ShapePriorSegmentationLevelSetImageFilter<TInputImage, TFeatureImage, TOutputPix
      */
 
     // Get the nodes of the active region and plug it into the cost function
-    NodeContainerPointer nodes = NodeContainerType::New();
+    const NodeContainerPointer nodes = NodeContainerType::New();
     this->ExtractActiveRegion(nodes);
 
     // Setup the cost function
@@ -129,8 +129,7 @@ ShapePriorSegmentationLevelSetImageFilter<TInputImage, TFeatureImage, TOutputPix
 
   if (m_InitialParameters.Size() != m_ShapeFunction->GetNumberOfParameters())
   {
-    itkExceptionMacro("InitialParameters size does not match "
-                      << "the number of parameters required by ShapeFunction");
+    itkExceptionMacro("InitialParameters size does not match the number of parameters required by ShapeFunction");
   }
 
   m_CurrentParameters = m_InitialParameters;

@@ -35,7 +35,7 @@ namespace itk
 class LoggerBaseEnums
 {
 public:
-  /** \class PriorityLevel
+  /**
    *  \ingroup ITKCommon
    * Definition of types of messages. These codes will be used to regulate
    * the level of detail of messages reported to the final outputs
@@ -51,7 +51,7 @@ public:
     NOTSET
   };
 
-  /** \class TimeStampFormat
+  /**
    * \ingroup ITKCommon
    * Select the type of format for reporting time stamps */
   enum class TimeStampFormat : uint8_t
@@ -140,7 +140,7 @@ public:
 
   /** Provides a default formatted log entry */
   virtual std::string
-  BuildFormattedEntry(PriorityLevelEnum level, std::string const & content);
+  BuildFormattedEntry(PriorityLevelEnum level, const std::string & content);
 
   /** Set the priority level for the current logger. Only messages that have
    * priorities equal or greater than the one set here will be posted to the
@@ -177,41 +177,41 @@ public:
   AddLogOutput(OutputType * output);
 
   virtual void
-  Write(PriorityLevelEnum level, std::string const & content);
+  Write(PriorityLevelEnum level, const std::string & content);
 
   /** Helper methods */
   void
-  Debug(std::string const & message)
+  Debug(const std::string & message)
   {
     this->Write(LoggerBase::PriorityLevelEnum::DEBUG, message);
   }
 
   void
-  Info(std::string const & message)
+  Info(const std::string & message)
   {
     this->Write(LoggerBase::PriorityLevelEnum::INFO, message);
   }
 
   void
-  Warning(std::string const & message)
+  Warning(const std::string & message)
   {
     this->Write(LoggerBase::PriorityLevelEnum::WARNING, message);
   }
 
   void
-  Critical(std::string const & message)
+  Critical(const std::string & message)
   {
     this->Write(LoggerBase::PriorityLevelEnum::CRITICAL, message);
   }
 
   void
-  Error(std::string const & message)
+  Error(const std::string & message)
   {
     this->Write(LoggerBase::PriorityLevelEnum::CRITICAL, message);
   }
 
   void
-  Fatal(std::string const & message)
+  Fatal(const std::string & message)
   {
     this->Write(LoggerBase::PriorityLevelEnum::FATAL, message);
   }

@@ -191,8 +191,7 @@ LinearSystemWrapperDenseVNL::Solve()
 void
 LinearSystemWrapperDenseVNL::SwapMatrices(unsigned int MatrixIndex1, unsigned int MatrixIndex2)
 {
-  vnl_matrix<Float> * tmp;
-  tmp = (*m_Matrices)[MatrixIndex1];
+  vnl_matrix<Float> * tmp = (*m_Matrices)[MatrixIndex1];
   (*m_Matrices)[MatrixIndex1] = (*m_Matrices)[MatrixIndex2];
   (*m_Matrices)[MatrixIndex2] = tmp;
 }
@@ -200,8 +199,7 @@ LinearSystemWrapperDenseVNL::SwapMatrices(unsigned int MatrixIndex1, unsigned in
 void
 LinearSystemWrapperDenseVNL::SwapVectors(unsigned int VectorIndex1, unsigned int VectorIndex2)
 {
-  vnl_vector<Float> tmp;
-  tmp = *(*m_Vectors)[VectorIndex1];
+  vnl_vector<Float> tmp = *(*m_Vectors)[VectorIndex1];
   *(*m_Vectors)[VectorIndex1] = *(*m_Vectors)[VectorIndex2];
   *(*m_Vectors)[VectorIndex2] = tmp;
 }
@@ -209,8 +207,7 @@ LinearSystemWrapperDenseVNL::SwapVectors(unsigned int VectorIndex1, unsigned int
 void
 LinearSystemWrapperDenseVNL::SwapSolutions(unsigned int SolutionIndex1, unsigned int SolutionIndex2)
 {
-  vnl_vector<Float> * tmp;
-  tmp = (*m_Solutions)[SolutionIndex1];
+  vnl_vector<Float> * tmp = (*m_Solutions)[SolutionIndex1];
   (*m_Solutions)[SolutionIndex1] = (*m_Solutions)[SolutionIndex2];
   (*m_Solutions)[SolutionIndex2] = tmp;
 }
@@ -273,16 +270,15 @@ LinearSystemWrapperDenseVNL::ScaleSolution(Float scale, unsigned int solutionInd
 
 LinearSystemWrapperDenseVNL::~LinearSystemWrapperDenseVNL()
 {
-  unsigned int i;
-  for (i = 0; i < m_NumberOfMatrices; ++i)
+  for (unsigned int i = 0; i < m_NumberOfMatrices; ++i)
   {
     this->DestroyMatrix(i);
   }
-  for (i = 0; i < m_NumberOfVectors; ++i)
+  for (unsigned int i = 0; i < m_NumberOfVectors; ++i)
   {
     this->DestroyVector(i);
   }
-  for (i = 0; i < m_NumberOfSolutions; ++i)
+  for (unsigned int i = 0; i < m_NumberOfSolutions; ++i)
   {
     this->DestroySolution(i);
   }

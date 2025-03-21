@@ -51,8 +51,7 @@ namespace itk
  * parameter (namely, sigma) using leave-one-out cross validation. It implements schemes for random
  * sampling of patches non-locally (from the entire image) as well as semi-locally (from the spatial
  * proximity of the pixel being denoised at the specific point in time). It implements a specific
- * scheme for defining patch weights (mask) as described in Awate and Whitaker 2005 IEEE CVPR and
- * 2006 IEEE TPAMI.
+ * scheme for defining patch weights (mask) as described in \cite awate2005 and \cite awate2006.
  *
  * \ingroup Filtering
  * \ingroup ITKDenoising
@@ -170,10 +169,8 @@ public:
   /** Set/Get flag indicating whether the fast algorithm for tensor computations should be used.
    *
    *  Specifically, when this flag is true (default) or On, a faster implementation of the 3x3
-   *  symmetric positive-definite eigensystem analysis will be used. See
-   *  Hasan KM, Basser PJ, Parker DL, Alexander AL.
-   *  Analytical computation of the eigenvalues and eigenvectors in DT-MRI.
-   *  J Magn Reson 2001; 152: 41-47.
+   *  symmetric positive-definite eigensystem analysis will be
+   *  used. See \cite hasan2001.
    *  This faster algorithm may be slightly less accurate and possibly less stable in the presence
    *  of noise.  So far in practice it has been shown to work well.
    *
@@ -368,10 +365,8 @@ protected:
     {
       return this->AddExponentialMapUpdate(a, b);
     }
-    else
-    {
-      return this->AddEuclideanUpdate(a, b);
-    }
+
+    return this->AddEuclideanUpdate(a, b);
   }
 
   template <typename RealT>
@@ -433,7 +428,8 @@ protected:
   ThreadedApplyUpdate(const InputImageRegionType & regionToProcess, const int itkNotUsed(threadId));
 
   void
-  PostProcessOutput() override;
+  PostProcessOutput() override
+  {}
 
   virtual void
   SetThreadData(int threadId, const ThreadDataStruct & data);

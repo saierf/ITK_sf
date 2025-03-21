@@ -20,7 +20,7 @@
 namespace itk
 {
 bool ITKCommon_EXPORT
-     ci_equal(char a, char b)
+ci_equal(char a, char b)
 {
   return tolower(static_cast<int>(a)) == tolower(static_cast<int>(b));
 }
@@ -54,25 +54,30 @@ ITKCommon_EXPORT std::istream &
 
     // Get name
     std::istringstream stream(headerline);
-    std::string        address, perms, offset, device;
-    int                inode = -1;
+
+    int inode = -1;
     // the header is defined with the following expression: "address permissions
     // offset device inode [name]"
+    std::string address;
+
     stream >> address;
     if (!stream.good())
     {
       itkGenericExceptionMacro("bad address: " << address);
     }
+    std::string perms;
     stream >> perms;
     if (!stream.good())
     {
       itkGenericExceptionMacro("bad perms: " << perms);
     }
+    std::string offset;
     stream >> offset;
     if (!stream.good())
     {
       itkGenericExceptionMacro("bad offset: " << offset);
     }
+    std::string device;
     stream >> device;
     if (!stream.good())
     {
@@ -343,10 +348,7 @@ struct MapRecordConditionalPlusor
 /**              ---             MapData               ---              **/
 
 /** MadData destructor */
-MapData::~MapData()
-{
-  this->Reset();
-}
+MapData::~MapData() { this->Reset(); }
 
 MapData::MemoryLoadType
 MapData::GetTotalMemoryUsage()

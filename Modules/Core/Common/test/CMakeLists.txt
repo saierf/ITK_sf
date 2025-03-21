@@ -1714,6 +1714,7 @@ if(ITK_BUILD_SHARED_LIBS AND ITK_DYNAMIC_LOADING)
 endif()
 
 set(ITKCommonGTests
+    itkArrayGTest.cxx
     itkArray2DGTest.cxx
     itkAggregateTypesGTest.cxx
     itkBitCastGTest.cxx
@@ -1735,6 +1736,7 @@ set(ITKCommonGTests
     itkImageIORegionGTest.cxx
     itkImageRandomConstIteratorWithIndexGTest.cxx
     itkImageRegionGTest.cxx
+    itkImageRegionIteratorGTest.cxx
     itkIndexGTest.cxx
     itkIndexRangeGTest.cxx
     itkLightObjectGTest.cxx
@@ -1747,6 +1749,7 @@ set(ITKCommonGTests
     itkOffsetGTest.cxx
     itkOptimizerParametersGTest.cxx
     itkPointGTest.cxx
+    itkPointSetGTest.cxx
     itkRGBAPixelGTest.cxx
     itkRGBPixelGTest.cxx
     itkShapedImageNeighborhoodRangeGTest.cxx
@@ -1758,7 +1761,9 @@ set(ITKCommonGTests
     itkWeakPointerGTest.cxx
     itkCommonTypeTraitsGTest.cxx
     itkMetaDataDictionaryGTest.cxx
-    itkSpatialOrientationAdaptorGTest.cxx)
+    itkSpatialOrientationAdaptorGTest.cxx
+    itkAnatomicalOrientationGTest.cxx
+)
 creategoogletestdriver(ITKCommon "${ITKCommon-Test_LIBRARIES}" "${ITKCommonGTests}")
 # If `-static` was passed to CMAKE_EXE_LINKER_FLAGS, compilation fails. No need to
 # test this case.

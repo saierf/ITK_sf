@@ -300,10 +300,8 @@ public:
     {
       return true;
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
   /** Turn On/Off the flag which determines whether Positive or Negative speed
@@ -439,8 +437,7 @@ public:
   {
     m_SegmentationFunction = s;
 
-    typename SegmentationFunctionType::RadiusType r;
-    r.Fill(1);
+    constexpr auto r = MakeFilled<typename SegmentationFunctionType::RadiusType>(1);
 
     m_SegmentationFunction->Initialize(r);
     this->SetDifferenceFunction(m_SegmentationFunction);
@@ -505,11 +502,7 @@ public:
   void
   GenerateAdvectionImage();
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<TOutputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   ~SegmentationLevelSetImageFilter() override = default;

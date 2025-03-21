@@ -101,8 +101,8 @@ public:
     m_SpanEndOffset = 0;
   }
 
-  /** Constructor establishes an iterator to walk a particular image and a
-   * particular region of that image. */
+  /** Constructor establishes an iterator to walk a particular image and a particular region of that image. Initializes
+   * the iterator at the begin of the region. */
   ImageScanlineConstIterator(const TImage * ptr, const RegionType & region)
     : ImageConstIterator<TImage>(ptr, region)
   {
@@ -265,7 +265,7 @@ protected:
 // Deduction guide for class template argument deduction (CTAD).
 template <typename TImage>
 ImageScanlineConstIterator(SmartPointer<TImage>, const typename TImage::RegionType &)
-  ->ImageScanlineConstIterator<std::remove_const_t<TImage>>;
+  -> ImageScanlineConstIterator<std::remove_const_t<TImage>>;
 
 } // end namespace itk
 

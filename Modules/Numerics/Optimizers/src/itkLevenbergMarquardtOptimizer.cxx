@@ -101,8 +101,8 @@ LevenbergMarquardtOptimizer::StartOptimization()
 {
   this->InvokeEvent(StartEvent());
 
-  ParametersType initialPosition = GetInitialPosition();
-  ParametersType parameters(initialPosition);
+  const ParametersType initialPosition = GetInitialPosition();
+  ParametersType       parameters(initialPosition);
 
   // If the user provides the scales then we set otherwise we don't
   // for computation speed.
@@ -198,16 +198,16 @@ LevenbergMarquardtOptimizer::GetOptimizer() const
   return m_VnlOptimizer.get();
 }
 
-const std::string
+std::string
 LevenbergMarquardtOptimizer::GetStopConditionDescription() const
 {
-  std::ostringstream reason, outcome;
-
+  std::ostringstream outcome;
   outcome.str("");
   if (GetOptimizer())
   {
     GetOptimizer()->diagnose_outcome(outcome);
   }
+  std::ostringstream reason;
   reason << this->GetNameOfClass() << ": " << ((!outcome.str().empty()) ? outcome.str().c_str() : "");
   return reason.str();
 }

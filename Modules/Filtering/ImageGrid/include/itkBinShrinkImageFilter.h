@@ -49,7 +49,7 @@ namespace itk
  * This code was contributed in the Insight Journal paper:
  * "BinShrink: A multi-resolution filter with cache efficient averaging"
  * by Lowekamp B., Chen D.
- * https://www.insight-journal.org/browse/publication/912
+ * https://doi.org/10.54294/p39qox
  *
  * \ingroup ITKImageGrid
  * \ingroup Streamed
@@ -115,13 +115,9 @@ public:
   GenerateInputRequestedRegion() override;
 
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  /** Begin concept checking */
   itkConceptMacro(InputConvertibleToOutputCheck,
                   (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType>));
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<ImageDimension, OutputImageDimension>));
-  /** End concept checking */
-#endif
 
 protected:
   BinShrinkImageFilter();

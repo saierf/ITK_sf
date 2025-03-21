@@ -57,7 +57,7 @@ MultiResolutionImageRegistrationMethod<TFixedImage, TMovingImage>::MultiResoluti
   m_InitialTransformParametersOfNextLevel.Fill(0.0f);
   m_LastTransformParameters.Fill(0.0f);
 
-  TransformOutputPointer transformDecorator =
+  const TransformOutputPointer transformDecorator =
     itkDynamicCastInDebugMode<TransformOutputType *>(this->MakeOutput(0).GetPointer());
 
   this->ProcessObject::SetNthOutput(0, transformDecorator.GetPointer());
@@ -224,7 +224,7 @@ MultiResolutionImageRegistrationMethod<TFixedImage, TMovingImage>::PreparePyrami
   ScheduleType schedule = m_FixedImagePyramid->GetSchedule();
   itkDebugMacro("FixedImage schedule: " << schedule);
 
-  ScheduleType movingschedule = m_MovingImagePyramid->GetSchedule();
+  const ScheduleType movingschedule = m_MovingImagePyramid->GetSchedule();
   itkDebugMacro("MovingImage schedule: " << movingschedule);
 
   SizeType  inputSize = m_FixedImageRegion.GetSize();
@@ -297,15 +297,15 @@ MultiResolutionImageRegistrationMethod<TFixedImage, TMovingImage>::PrintSelf(std
   os << indent << "CurrentLevel: " << static_cast<typename NumericTraits<SizeValueType>::PrintType>(m_CurrentLevel)
      << std::endl;
 
-  os << indent << "Stop: " << (m_Stop ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(Stop);
 
   os << indent << "FixedImagePyramidSchedule: "
      << static_cast<typename NumericTraits<ScheduleType>::PrintType>(m_FixedImagePyramidSchedule) << std::endl;
   os << indent << "MovingImagePyramidSchedule: "
      << static_cast<typename NumericTraits<ScheduleType>::PrintType>(m_MovingImagePyramidSchedule) << std::endl;
 
-  os << indent << "ScheduleSpecified: " << (m_ScheduleSpecified ? "On" : "Off") << std::endl;
-  os << indent << "NumberOfLevelsSpecified: " << (m_Stop ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(ScheduleSpecified);
+  itkPrintSelfBooleanMacro(Stop);
 }
 
 template <typename TFixedImage, typename TMovingImage>

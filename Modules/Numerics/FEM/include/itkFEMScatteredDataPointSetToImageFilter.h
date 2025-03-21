@@ -67,8 +67,8 @@ namespace fem
  *
    \code
 
-    const unsigned int ParametricDimension = 3;
-    const unsigned int DataDimension = 3;
+    constexpr unsigned int ParametricDimension = 3;
+    constexpr unsigned int DataDimension = 3;
 
     using PixelType = int;
     using InputImageType = itk::Image<PixelType, ParametricDimension>;
@@ -106,17 +106,7 @@ namespace fem
  *
  * \author Yixun Liu
  *
- * \par REFERENCE
- * O. Clatz, H. Delingette, I.-F. Talos, A. Golby, R. Kikinis, F. Jolesz,
- * N. Ayache, and S. Warfield, "Robust non-rigid registration to capture brain
- * shift from intra-operative MRI", IEEE Trans. Med. Imag.,
- * 24(11);1417-27, 2005.
- *
- * \par REFERENCE
- * Yixun Liu, Andriy Fedorov, Ron Kikinis and Nikos Chrisochoides,
- * "Real-time Non-rigidRegistration of Medical Images on a Cooperative Parallel
- * Architecture", IEEE International Conference on Bioinformatics & Biomedicine,
- * pp. 401-404, November 2009.
+ * For algorithmic details see \cite clatz2005 and \cite liu2009.
  *
  * \sa FEMRobustSolver
  *

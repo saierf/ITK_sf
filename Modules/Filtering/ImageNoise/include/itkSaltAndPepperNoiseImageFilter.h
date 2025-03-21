@@ -44,7 +44,7 @@ namespace itk
  * \begin{cases}
  * M,   & \quad \text{if } U < p/2 \\
  * m,   & \quad \text{if } U > 1 - p/2 \\
- * I_0, & \quad \text{if } p/2 \geq U \leq 1 - p/2
+ * I_0, & \quad \text{if } p/2 \geq U \leq 1 - p/2
  * \end{cases} \f$
  *
  * \par
@@ -59,7 +59,7 @@ namespace itk
  * \author Gaetan Lehmann
  *
  * This code was contributed in the Insight Journal paper "Noise
- * Simulation". https://www.insight-journal.org/browse/publication/721
+ * Simulation". https://doi.org/10.54294/vh6vbw
  *
  * \ingroup ITKImageNoise
  */
@@ -111,12 +111,8 @@ public:
   itkGetConstMacro(PepperValue, OutputImagePixelType);
 
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  /** Begin concept checking */
   itkConceptMacro(InputConvertibleToOutputCheck,
                   (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType>));
-  /** End concept checking */
-#endif
 
 protected:
   SaltAndPepperNoiseImageFilter();

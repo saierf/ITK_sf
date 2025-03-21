@@ -141,7 +141,8 @@ public:
    * \param dt New time step.
    */
   virtual void
-  SetTimeStep(Float dt);
+  SetTimeStep(Float itkNotUsed(dt))
+  {}
 
   /** Returns the Solution for the specified nodal point. */
   Float
@@ -228,9 +229,7 @@ public:
   void
   InitializeInterpolationGrid(const InterpolationGridSizeType & size)
   {
-    InterpolationGridPointType bb1;
-
-    bb1.Fill(0.0);
+    InterpolationGridPointType bb1{};
 
     InterpolationGridPointType bb2;
     for (unsigned int i = 0; i < FEMDimension; ++i)
@@ -384,7 +383,8 @@ protected:
 
   /** Decompose matrix using svd, qr, etc. if needed. */
   void
-  DecomposeK();
+  DecomposeK()
+  {}
 
   /** Solve for the displacement vector u. May be overridden in derived
    * classes. */

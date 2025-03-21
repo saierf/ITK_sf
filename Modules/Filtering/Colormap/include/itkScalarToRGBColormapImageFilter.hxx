@@ -42,7 +42,7 @@
  * This code was contributed in the Insight Journal paper:
  * "Meeting Andy Warhol Somewhere Over the Rainbow: RGB Colormapping and ITK"
  * by Tustison N., Zhang H., Lehmann G., Yushkevich P., Gee J.
- * https://www.insight-journal.org/browse/publication/285
+ * https://doi.org/10.54294/tmojbk
  *
  */
 
@@ -77,7 +77,7 @@ ScalarToRGBColormapImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerat
 
     for (It.GoToBegin(); !It.IsAtEnd(); ++It)
     {
-      InputImagePixelType value = It.Get();
+      const InputImagePixelType value = It.Get();
       if (value < minimumValue)
       {
         minimumValue = value;
@@ -98,8 +98,8 @@ void
 ScalarToRGBColormapImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread)
 {
-  InputImagePointer  inputPtr = this->GetInput();
-  OutputImagePointer outputPtr = this->GetOutput();
+  const InputImagePointer  inputPtr = this->GetInput();
+  const OutputImagePointer outputPtr = this->GetOutput();
 
   TotalProgressReporter progressReporter(this, this->GetOutput()->GetRequestedRegion().GetNumberOfPixels());
 

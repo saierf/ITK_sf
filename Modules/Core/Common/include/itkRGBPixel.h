@@ -80,7 +80,13 @@ public:
 #ifdef ITK_FUTURE_LEGACY_REMOVE
   RGBPixel() = default;
 #else
-  RGBPixel() { this->Fill(0); }
+  constexpr RGBPixel()
+    : Superclass(Superclass())
+  {
+    // `: Superclass(Superclass())` is a workaround for an old compiler bug. A simple `: Superclass()` triggered
+    // warnings from GCC 9.4.0 saying: "warning: '<anonymous>' may be used uninitialized in this function
+    // [-Wmaybe-uninitialized]".
+  }
 #endif
 
 #if defined(ITK_LEGACY_REMOVE)
@@ -120,8 +126,9 @@ public:
   Self
   operator+(const Self & r) const;
   Self
-       operator-(const Self & r) const;
-  Self operator*(const ComponentType & r) const;
+  operator-(const Self & r) const;
+  Self
+  operator*(const ComponentType & r) const;
   Self
   operator/(const ComponentType & r) const;
 
@@ -239,7 +246,7 @@ operator>>(std::istream & is, RGBPixel<TComponent> & c);
 
 template <typename T>
 inline void
-swap(RGBPixel<T> & a, RGBPixel<T> & b)
+swap(RGBPixel<T> & a, RGBPixel<T> & b) noexcept
 {
   a.swap(b);
 }

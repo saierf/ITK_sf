@@ -51,7 +51,7 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::PrintS
   os << indent << "DerivativeWeights: " << m_DerivativeWeights << std::endl;
   os << indent << "ComponentWeights: " << m_ComponentWeights << std::endl;
   os << indent << "SqrtComponentWeights: " << m_SqrtComponentWeights << std::endl;
-  os << indent << "UseImageSpacing: " << (m_UseImageSpacing ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(UseImageSpacing);
   os << indent << "UsePrincipleComponents: " << m_UsePrincipleComponents << std::endl;
   os << indent << "RequestedNumberOfThreads: "
      << static_cast<typename NumericTraits<ThreadIdType>::PrintType>(m_RequestedNumberOfWorkUnits) << std::endl;
@@ -89,8 +89,8 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Genera
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  InputImagePointer  inputPtr = const_cast<InputImageType *>(this->GetInput());
-  OutputImagePointer outputPtr = this->GetOutput();
+  const InputImagePointer  inputPtr = const_cast<InputImageType *>(this->GetInput());
+  const OutputImagePointer outputPtr = this->GetOutput();
 
   if (!inputPtr || !outputPtr)
   {
@@ -99,11 +99,9 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Genera
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
-  RadiusType r1;
-  r1.Fill(1);
+  constexpr auto r1 = MakeFilled<RadiusType>(1);
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(r1);
 
@@ -113,21 +111,19 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Genera
     inputPtr->SetRequestedRegion(inputRequestedRegion);
     return;
   }
-  else
-  {
-    // Couldn't crop the region (requested region is outside the largest
-    // possible region).  Throw an exception.
 
-    // store what we tried to request (prior to trying to crop)
-    inputPtr->SetRequestedRegion(inputRequestedRegion);
+  // Couldn't crop the region (requested region is outside the largest
+  // possible region).  Throw an exception.
 
-    // build an exception
-    InvalidRequestedRegionError e(__FILE__, __LINE__);
-    e.SetLocation(ITK_LOCATION);
-    e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
-    e.SetDataObject(inputPtr);
-    throw e;
-  }
+  // store what we tried to request (prior to trying to crop)
+  inputPtr->SetRequestedRegion(inputRequestedRegion);
+
+  // build an exception
+  InvalidRequestedRegionError e(__FILE__, __LINE__);
+  e.SetLocation(ITK_LOCATION);
+  e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
+  e.SetDataObject(inputPtr);
+  throw e;
 }
 
 template <typename TInputImage, typename TRealType, typename TOutputImage>
@@ -178,8 +174,7 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Before
   //
   // cast might not be necessary, but CastImageFilter is optimized for
   // the case where the InputImageType == OutputImageType
-  typename CastImageFilter<TInputImage, RealVectorImageType>::Pointer caster =
-    CastImageFilter<TInputImage, RealVectorImageType>::New();
+  auto caster = CastImageFilter<TInputImage, RealVectorImageType>::New();
   caster->SetInput(this->GetInput());
   caster->GetOutput()->SetRequestedRegion(this->GetInput()->GetRequestedRegion());
   caster->Update();
@@ -197,9 +192,8 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::Dynami
 
   // Find the data-set boundary "faces"
   NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<RealVectorImageType> bC;
-  RadiusType                                                               r1;
-  r1.Fill(1);
-  typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<RealVectorImageType>::FaceListType faceList =
+  auto                                                                     r1 = MakeFilled<RadiusType>(1);
+  const typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<RealVectorImageType>::FaceListType faceList =
     bC(m_RealValuedInputImage.GetPointer(), outputRegionForThread, r1);
 
   TotalProgressReporter progress(this, this->GetOutput()->GetRequestedRegion().GetNumberOfPixels());
@@ -260,23 +254,23 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::CubicS
   // coefficients of the polynomial: x^3 + c[2]x^2 + c[1]x^1 + c[0].  The roots
   // s are not necessarily sorted, and int is the number of distinct roots
   // found in s.
-  int          num;
-  const double dpi = itk::Math::pi;
-  const double epsilon = 1.0e-11;
+  int              num;
+  const double     dpi = itk::Math::pi;
+  constexpr double epsilon = 1.0e-11;
 
   // Substitution of  x = y - c[2]/3 eliminate the quadric term  x^3 +px + q = 0
-  double sq_c2 = c[2] * c[2];
-  double p = 1.0 / 3 * (-1.0 / 3.0 * sq_c2 + c[1]);
-  double q = 1.0 / 2 * (2.0 / 27.0 * c[2] * sq_c2 - 1.0 / 3.0 * c[2] * c[1] + c[0]);
+  const double sq_c2 = c[2] * c[2];
+  const double p = 1.0 / 3 * (-1.0 / 3.0 * sq_c2 + c[1]);
+  const double q = 1.0 / 2 * (2.0 / 27.0 * c[2] * sq_c2 - 1.0 / 3.0 * c[2] * c[1] + c[0]);
 
   // Cardano's formula
-  double cb_p = p * p * p;
-  double D = q * q + cb_p;
+  const double cb_p = p * p * p;
+  const double D = q * q + cb_p;
 
   if (D < -epsilon) // D < 0, three real solutions, by far the common case.
   {
-    double phi = 1.0 / 3.0 * std::acos(-q / std::sqrt(-cb_p));
-    double t = 2.0 * std::sqrt(-p);
+    const double phi = 1.0 / 3.0 * std::acos(-q / std::sqrt(-cb_p));
+    const double t = 2.0 * std::sqrt(-p);
 
     s[0] = t * std::cos(phi);
     s[1] = -t * std::cos(phi + dpi / 3);
@@ -293,7 +287,7 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::CubicS
     }
     else
     {
-      double u = itk::Math::cbrt(-q);
+      const double u = itk::Math::cbrt(-q);
       s[0] = 2 * u;
       s[1] = -u;
       num = 2;
@@ -302,16 +296,16 @@ VectorGradientMagnitudeImageFilter<TInputImage, TRealType, TOutputImage>::CubicS
   else // Only one real solution. This case misses a double root on rare
        // occasions with very large char eqn coefficients.
   {
-    double sqrt_D = std::sqrt(D);
-    double u = itk::Math::cbrt(sqrt_D - q);
-    double v = -itk::Math::cbrt(sqrt_D + q);
+    const double sqrt_D = std::sqrt(D);
+    const double u = itk::Math::cbrt(sqrt_D - q);
+    const double v = -itk::Math::cbrt(sqrt_D + q);
 
     s[0] = u + v;
     num = 1;
   }
 
   // Resubstitute
-  double sub = 1.0 / 3.0 * c[2];
+  const double sub = 1.0 / 3.0 * c[2];
 
   for (int i = 0; i < num; ++i)
   {

@@ -102,10 +102,7 @@ namespace itk
  * Appropriate padding must be performed by the user if any image which
  * are not multiples of the grid sizes are used.
  *
- * For more information about the algorithm, see G. Koepfler, C. Lopez
- * and J. M. Morel, ``A Multiscale Algorithm for Image Segmentation by
- * Variational Method,'' {\em SIAM Journal of Numerical Analysis},
- * vol. 31, pp. 282-299, 1994.
+ * For more information about the algorithm, see \cite koepfler1994.
  *
  * Algorithm details:
  *
@@ -285,17 +282,13 @@ public:
   void
   PrintAlgorithmBorderStats();
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<typename InputImagePixelType::ValueType>));
   itkConceptMacro(SameDimension, (Concept::SameDimension<Self::InputImageDimension, Self::OutputImageDimension>));
-#  if defined(THIS_CONCEPT_FAILS_ON_GCC)
+#if defined(THIS_CONCEPT_FAILS_ON_GCC)
   /** The input pixel type must be the same as that of the output image. */
   itkConceptMacro(SameVectorDimension,
                   (Concept::SameDimension<Self::InputImageVectorDimension, Self::OutputImageVectorDimension>));
-#  endif
-  // End concept checking
-#endif
+#endif // end THIS_CONCEPT_FAILS_ON_GCC
 
 protected:
   KLMRegionGrowImageFilter();

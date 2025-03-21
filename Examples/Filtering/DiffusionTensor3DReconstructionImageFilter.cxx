@@ -87,8 +87,7 @@ main(int argc, char * argv[])
   using PixelType = unsigned short;
   using ImageType = itk::VectorImage<unsigned short, 3>;
 
-  itk::ImageFileReader<ImageType>::Pointer reader =
-    itk::ImageFileReader<ImageType>::New();
+  auto reader = itk::ImageFileReader<ImageType>::New();
 
   ImageType::Pointer img;
 
@@ -135,29 +134,30 @@ main(int argc, char * argv[])
   // DWMRI_gradient_0003:=0.110000        0.664000        0.740000
   // ...
   //
-  itk::MetaDataDictionary  imgMetaDictionary = img->GetMetaDataDictionary();
+  const itk::MetaDataDictionary imgMetaDictionary =
+    img->GetMetaDataDictionary();
   std::vector<std::string> imgMetaKeys = imgMetaDictionary.GetKeys();
   std::vector<std::string>::const_iterator itKey = imgMetaKeys.begin();
   std::string                              metaString;
 
   TensorReconstructionImageFilterType::GradientDirectionType vect3d;
-  TensorReconstructionImageFilterType::GradientDirectionContainerType::Pointer
-    DiffusionVectors = TensorReconstructionImageFilterType::
+  const TensorReconstructionImageFilterType::GradientDirectionContainerType::
+    Pointer DiffusionVectors = TensorReconstructionImageFilterType::
       GradientDirectionContainerType::New();
 
 
   for (; itKey != imgMetaKeys.end(); ++itKey)
   {
-    double x, y, z;
 
     itk::ExposeMetaData<std::string>(imgMetaDictionary, *itKey, metaString);
     if (itKey->find("DWMRI_gradient") != std::string::npos)
     {
       std::cout << *itKey << " ---> " << metaString << std::endl;
-      sscanf(metaString.c_str(), "%lf %lf %lf\n", &x, &y, &z);
-      vect3d[0] = x;
-      vect3d[1] = y;
-      vect3d[2] = z;
+      sscanf(metaString.c_str(),
+             "%lf %lf %lf\n",
+             &(vect3d[0]),
+             &(vect3d[1]),
+             &(vect3d[2]));
       DiffusionVectors->InsertElement(numberOfImages, vect3d);
       ++numberOfImages;
       // If the direction is 0.0, this is a reference image
@@ -252,13 +252,13 @@ main(int argc, char * argv[])
       {
         snprintf(filename,
                  sizeof(filename),
-                 "ReferenceImage%d.mhd",
+                 "ReferenceImage%u.mhd",
                  referenceImageIndex);
         ++referenceImageIndex;
       }
       else
       {
-        snprintf(filename, sizeof(filename), "Gradient%d.mhd", i);
+        snprintf(filename, sizeof(filename), "Gradient%u.mhd", i);
       }
       gradientWriter->SetFileName(filename);
       gradientWriter->Update();

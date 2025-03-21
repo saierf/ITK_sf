@@ -28,10 +28,8 @@ namespace itk
  * \brief BinaryThreshold projection
  *
  *
- * This class was contributed to the Insight Journal by Gaetan Lehmann.
- * the original paper can be found at
- * https://www.insight-journal.org/browse/publication/71
- *
+ * This class was contributed to the Insight Journal by Gaetan Lehmann
+ * \cite Lehmann_2006_a.
  *
  * \author Gaetan Lehmann. Biologie du Developpement et de la Reproduction,
  * INRA de Jouy-en-Josas, France.
@@ -78,10 +76,8 @@ public:
     {
       return m_ForegroundValue;
     }
-    else
-    {
-      return m_BackgroundValue;
-    }
+
+    return m_BackgroundValue;
   }
 
   bool m_IsForeground;
@@ -142,12 +138,8 @@ public:
   itkSetMacro(ThresholdValue, InputPixelType);
   itkGetConstMacro(ThresholdValue, InputPixelType);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputPixelTypeGreaterThanComparable, (Concept::GreaterThanComparable<InputPixelType>));
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   BinaryThresholdProjectionImageFilter()

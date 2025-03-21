@@ -67,93 +67,70 @@ main(int argc, char * argv[])
     return EXIT_FAILURE;
   }
 
-  // input parameters
-  const char * membershipImageFileName = argv[1];
-  const char * labelMapImageFileName = argv[2];
-
-  // setup reader
-  constexpr unsigned int Dimension = 2;
-  using InputPixelType = float;
-  using InputImageType = itk::VectorImage<InputPixelType, Dimension>;
-  using ReaderType = itk::ImageFileReader<InputImageType>;
-
-  auto reader = ReaderType::New();
-  reader->SetFileName(membershipImageFileName);
-
-  using LabelType = unsigned char;
-  using PriorType = float;
-  using PosteriorType = float;
-
-
-  using ClassifierFilterType =
-    itk::BayesianClassifierImageFilter<InputImageType,
-                                       LabelType,
-                                       PosteriorType,
-                                       PriorType>;
-
-  auto filter = ClassifierFilterType::New();
-
-
-  filter->SetInput(reader->GetOutput());
-
-  if (argv[3])
-  {
-    filter->SetNumberOfSmoothingIterations(std::stoi(argv[3]));
-    using ExtractedComponentImageType =
-      ClassifierFilterType::ExtractedComponentImageType;
-    using SmoothingFilterType = itk::GradientAnisotropicDiffusionImageFilter<
-      ExtractedComponentImageType,
-      ExtractedComponentImageType>;
-    auto smoother = SmoothingFilterType::New();
-    smoother->SetNumberOfIterations(1);
-    smoother->SetTimeStep(0.125);
-    smoother->SetConductanceParameter(3);
-    filter->SetSmoothingFilter(smoother);
-  }
-
-
-  // SET FILTER'S PRIOR PARAMETERS
-  // do nothing here to default to uniform priors
-  // otherwise set the priors to some user provided values
-
-  //
-  // Setup writer.. Rescale the label map to the dynamic range of the
-  // datatype and write it
-  //
-  using ClassifierOutputImageType = ClassifierFilterType::OutputImageType;
-  using OutputImageType = itk::Image<unsigned char, Dimension>;
-  using RescalerType =
-    itk::RescaleIntensityImageFilter<ClassifierOutputImageType,
-                                     OutputImageType>;
-  auto rescaler = RescalerType::New();
-  rescaler->SetInput(filter->GetOutput());
-  rescaler->SetOutputMinimum(0);
-  rescaler->SetOutputMaximum(255);
-
-  using WriterType = itk::ImageFileWriter<OutputImageType>;
-
-  auto writer = WriterType::New();
-  writer->SetFileName(labelMapImageFileName);
-
-  //
-  // Write labelmap to file
-  //
-  writer->SetInput(rescaler->GetOutput());
-
   try
   {
-    writer->Update();
+    constexpr unsigned int Dimension = 2;
+    using InputPixelType = float;
+    using InputImageType = itk::VectorImage<InputPixelType, Dimension>;
+
+    auto input = itk::ReadImage<InputImageType>(argv[1]);
+
+    using LabelType = unsigned char;
+    using PriorType = float;
+    using PosteriorType = float;
+
+    using ClassifierFilterType =
+      itk::BayesianClassifierImageFilter<InputImageType,
+                                         LabelType,
+                                         PosteriorType,
+                                         PriorType>;
+
+    auto filter = ClassifierFilterType::New();
+
+    filter->SetInput(input);
+
+    if (argc > 3)
+    {
+      filter->SetNumberOfSmoothingIterations(std::stoi(argv[3]));
+      using ExtractedComponentImageType =
+        ClassifierFilterType::ExtractedComponentImageType;
+      using SmoothingFilterType =
+        itk::GradientAnisotropicDiffusionImageFilter<
+          ExtractedComponentImageType,
+          ExtractedComponentImageType>;
+      auto smoother = SmoothingFilterType::New();
+      smoother->SetNumberOfIterations(1);
+      smoother->SetTimeStep(0.125);
+      smoother->SetConductanceParameter(3);
+      filter->SetSmoothingFilter(smoother);
+    }
+
+    // SET FILTER'S PRIOR PARAMETERS
+    // do nothing here to default to uniform priors
+    // otherwise set the priors to some user provided values
+
+    // Rescale the label map to the dynamic range of the datatype and write it
+    using ClassifierOutputImageType = ClassifierFilterType::OutputImageType;
+    using OutputImageType = itk::Image<unsigned char, Dimension>;
+    using RescalerType =
+      itk::RescaleIntensityImageFilter<ClassifierOutputImageType,
+                                       OutputImageType>;
+    auto rescaler = RescalerType::New();
+    rescaler->SetInput(filter->GetOutput());
+    rescaler->SetOutputMinimum(0);
+    rescaler->SetOutputMaximum(255);
+
+    // Write labelmap to file
+    itk::WriteImage(rescaler->GetOutput(), argv[2]);
+
+    // Testing print
+    filter->Print(std::cout);
+    std::cout << "Test passed." << std::endl;
   }
   catch (const itk::ExceptionObject & excp)
   {
-    std::cerr << "Exception caught: " << std::endl;
-    std::cerr << excp << std::endl;
+    std::cerr << "ITK exception caught:\n" << excp << std::endl;
     return EXIT_FAILURE;
   }
-
-  // Testing print
-  filter->Print(std::cout);
-  std::cout << "Test passed." << std::endl;
-
   return EXIT_SUCCESS;
 }

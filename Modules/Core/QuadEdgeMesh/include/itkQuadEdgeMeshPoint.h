@@ -31,21 +31,21 @@ namespace itk
  * to an entry in the edge ring.
  * \ingroup ITKQuadEdgeMesh
  */
-template <typename TCoordRep,
+template <typename TCoordinate,
           unsigned int VPointDimension,
           typename TQuadEdge = GeometricalQuadEdge<unsigned long, unsigned long, bool, bool, true>>
-class ITK_TEMPLATE_EXPORT QuadEdgeMeshPoint : public Point<TCoordRep, VPointDimension>
+class ITK_TEMPLATE_EXPORT QuadEdgeMeshPoint : public Point<TCoordinate, VPointDimension>
 {
 public:
   /** Standard type alias. */
   using Self = QuadEdgeMeshPoint;
-  using Superclass = Point<TCoordRep, VPointDimension>;
+  using Superclass = Point<TCoordinate, VPointDimension>;
 
   /** Types & values defined in superclass. */
   static constexpr unsigned int PointDimension = VPointDimension;
 
   using typename Superclass::ValueType;
-  using typename Superclass::CoordRepType;
+  using typename Superclass::CoordinateType;
   using typename Superclass::RealType;
   using typename Superclass::Iterator;
   using typename Superclass::ConstIterator;
@@ -53,13 +53,8 @@ public:
 
   using ValueArrayType = ValueType[Self::PointDimension];
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
-  // End concept checking
-#endif
-
 public:
-  QuadEdgeMeshPoint();
+  QuadEdgeMeshPoint() = default;
   QuadEdgeMeshPoint(const Self &) = default;
   QuadEdgeMeshPoint(QuadEdgeMeshPoint &&) = default;
   QuadEdgeMeshPoint &
@@ -118,7 +113,7 @@ protected:
   Initialize();
 
 protected:
-  TQuadEdge * m_Edge; /**< Entry edge for this point into an Onext ring */
+  TQuadEdge * m_Edge{}; /**< Entry edge for this point into an Onext ring */
 };
 } // end namespace itk
 

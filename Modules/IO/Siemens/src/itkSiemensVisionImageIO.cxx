@@ -80,7 +80,7 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
 
   // #define DEBUGHEADER
 #if defined(DEBUGHEADER)
-#  define DB(x) std::cerr << #  x << ' ' << x << std::endl
+#  define DB(x) std::cerr << #x << ' ' << x << std::endl
 #else
 #  define DB(x)
 #endif
@@ -116,18 +116,17 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
   hdr->name[HDR_PAT_NAME_LEN] = '\0';
   DB(hdr->name);
 
-  int year, month, day, hour, minute, second;
-
+  int year;
   this->GetIntAt(f, HDR_REG_YEAR, &year);
-
+  int month;
   this->GetIntAt(f, HDR_REG_MONTH, &month);
-
+  int day;
   this->GetIntAt(f, HDR_REG_DAY, &day);
-
+  int hour;
   this->GetIntAt(f, HDR_REG_HOUR, &hour);
-
+  int minute;
   this->GetIntAt(f, HDR_REG_MIN, &minute);
-
+  int second;
   this->GetIntAt(f, HDR_REG_SEC, &second);
 
   snprintf(hdr->date, sizeof(hdr->date), "%d/%d/%d %d:%d:%d", year, month, day, hour, minute, second);
@@ -149,8 +148,6 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
   }
 
   char tmpStr[TEMPLEN];
-  char tmpStr2[TEMPLEN];
-
   this->GetStringAt(f, TEXT_STUDY_NUM2, tmpStr, TEXT_STUDY_NUM2_LEN);
   tmpStr[TEXT_STUDY_NUM2_LEN] = '\0';
   hdr->seriesNumber = std::stoi(tmpStr);
@@ -205,6 +202,7 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
   this->GetStringAt(f, TEXT_ANGLE_FLAG1, tmpStr, TEXT_ANGLE_FLAG1_LEN);
   tmpStr[TEXT_ANGLE_FLAG1_LEN] = '\0';
 
+  char tmpStr2[TEMPLEN];
   this->GetStringAt(f, TEXT_ANGLE_FLAG3, tmpStr2, TEXT_ANGLE_FLAG3_LEN);
   tmpStr2[TEXT_ANGLE_FLAG3_LEN] = '\0';
 
@@ -223,8 +221,7 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
     if (text_angle_len.empty() || itk::Math::abs(std::stod(text_angle_len)) <= 45.0)
     {
       // hdr->imagePlane = itk::IOCommon::ITK_ANALYZE_ORIENTATION_IRP_CORONAL;
-      hdr->coordinateOrientation =
-        itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSP;
+      hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::RSP);
     }
     else
     {
@@ -232,15 +229,13 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
       {
         // hdr->imagePlane =
         // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_SAGITTAL;
-        hdr->coordinateOrientation =
-          itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_AIR;
+        hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::AIR);
       }
       else
       {
         // hdr->imagePlane =
         // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_TRANSVERSE;
-        hdr->coordinateOrientation =
-          itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RAI;
+        hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::RAI);
       }
     }
   }
@@ -250,8 +245,7 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
     {
       // hdr->imagePlane =
       // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_SAGITTAL;
-      hdr->coordinateOrientation =
-        itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_AIR;
+      hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::AIR);
     }
     else
     {
@@ -259,15 +253,13 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
       {
         // hdr->imagePlane =
         // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_CORONAL;
-        hdr->coordinateOrientation =
-          itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSP;
+        hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::RSP);
       }
       else
       {
         // hdr->imagePlane =
         // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_TRANSVERSE;
-        hdr->coordinateOrientation =
-          itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RAI;
+        hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::RAI);
       }
     }
   }
@@ -277,8 +269,7 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
     {
       // hdr->imagePlane =
       // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_TRANSVERSE;
-      hdr->coordinateOrientation =
-        itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RAI;
+      hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::RAI);
     }
     else
     {
@@ -286,15 +277,13 @@ SiemensVisionImageIO::ReadHeader(const char * FileNameToRead)
       {
         // hdr->imagePlane =
         // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_CORONAL;
-        hdr->coordinateOrientation =
-          itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_RSP;
+        hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::RSP);
       }
       else
       {
         // hdr->imagePlane =
         // itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_ANALYZE_ORIENTATION_IRP_SAGITTAL;
-        hdr->coordinateOrientation =
-          itk::SpatialOrientationEnums::ValidCoordinateOrientations::ITK_COORDINATE_ORIENTATION_AIR;
+        hdr->coordinateOrientation = AnatomicalOrientation(itk::AnatomicalOrientation::NegativeEnum::AIR);
       }
     }
   }

@@ -74,16 +74,10 @@ main(int argc, char * argv[])
   using ImageType = itk::Image<PixelType, Dimension>;
   // Software Guide : EndCodeSnippet
 
-
-  using ReaderType = itk::ImageFileReader<ImageType>;
-
-  auto reader = ReaderType::New();
-
-  reader->SetFileName(argv[1]);
-
+  ImageType::Pointer input;
   try
   {
-    reader->Update();
+    input = itk::ReadImage<ImageType>(argv[1]);
   }
   catch (const itk::ExceptionObject & excp)
   {
@@ -119,7 +113,7 @@ main(int argc, char * argv[])
   // Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  histogramGenerator->SetInput(reader->GetOutput());
+  histogramGenerator->SetInput(input);
   // Software Guide : EndCodeSnippet
 
 
@@ -193,8 +187,8 @@ main(int argc, char * argv[])
   // Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  HistogramType::ConstIterator itr = histogram->Begin();
-  HistogramType::ConstIterator end = histogram->End();
+  HistogramType::ConstIterator       itr = histogram->Begin();
+  const HistogramType::ConstIterator end = histogram->End();
 
   unsigned int binNumber = 0;
   while (itr != end)

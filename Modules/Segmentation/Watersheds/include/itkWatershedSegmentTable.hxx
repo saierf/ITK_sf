@@ -60,16 +60,13 @@ template <typename TScalar>
 bool
 SegmentTable<TScalar>::Add(IdentifierType a, const segment_t & t)
 {
-  std::pair<Iterator, bool> result;
-  result = m_HashMap.insert(ValueType(a, t));
+  const std::pair<Iterator, bool> result = m_HashMap.insert(ValueType(a, t));
   if (result.second == false)
   {
     return false;
   }
-  else
-  {
-    return true;
-  }
+
+  return true;
 }
 } // end namespace watershed
 } // end namespace itk

@@ -43,11 +43,7 @@ namespace itk
 class PNGFileWrapper
 {
 public:
-  PNGFileWrapper(const char * const fname, const char * const openMode)
-    : m_FilePointer(nullptr)
-  {
-    m_FilePointer = fopen(fname, openMode);
-  }
+  PNGFileWrapper(const char * const fname, const char * const openMode) { m_FilePointer = fopen(fname, openMode); }
 
   virtual ~PNGFileWrapper()
   {
@@ -57,14 +53,14 @@ public:
     }
   }
 
-  FILE * volatile m_FilePointer;
+  FILE * volatile m_FilePointer{ nullptr };
 };
 
 bool
 PNGImageIO::CanReadFile(const char * file)
 {
   // First check the filename
-  std::string filename = file;
+  const std::string filename = file;
 
   if (filename.empty())
   {
@@ -73,18 +69,18 @@ PNGImageIO::CanReadFile(const char * file)
   }
 
   // Now check the file header
-  PNGFileWrapper pngfp(file, "rb");
+  const PNGFileWrapper pngfp(file, "rb");
   if (pngfp.m_FilePointer == nullptr)
   {
     return false;
   }
   unsigned char header[8];
-  size_t        temp = fread(header, 1, 8, pngfp.m_FilePointer);
+  const size_t  temp = fread(header, 1, 8, pngfp.m_FilePointer);
   if (temp != 8)
   {
     return false;
   }
-  bool is_png = !png_sig_cmp(header, 0, 8);
+  const bool is_png = !png_sig_cmp(header, 0, 8);
   if (!is_png)
   {
     return false;
@@ -122,15 +118,15 @@ PNGImageIO::Read(void * buffer)
 {
   itkDebugMacro("Read: file dimensions = " << this->GetNumberOfDimensions());
   // use this class so return will call close
-  PNGFileWrapper pngfp(this->GetFileName(), "rb");
-  FILE *         fp = pngfp.m_FilePointer;
+  const PNGFileWrapper pngfp(this->GetFileName(), "rb");
+  FILE *               fp = pngfp.m_FilePointer;
   if (!fp)
   {
     itkExceptionMacro("PNGImageIO could not open file: " << this->GetFileName() << " for reading." << std::endl
                                                          << "Reason: " << itksys::SystemTools::GetLastSystemError());
   }
   unsigned char header[8];
-  size_t        temp = fread(header, 1, 8, fp);
+  const size_t  temp = fread(header, 1, 8, fp);
   if (temp != 8)
   {
     itkExceptionMacro("PNGImageIO failed to read header for file: " << this->GetFileName() << std::endl
@@ -138,7 +134,7 @@ PNGImageIO::Read(void * buffer)
                                                                     << " instead of 8");
   }
 
-  bool is_png = !png_sig_cmp(header, 0, 8);
+  const bool is_png = !png_sig_cmp(header, 0, 8);
   if (!is_png)
   {
     itkExceptionMacro("File is not png type: " << this->GetFileName());
@@ -174,9 +170,13 @@ PNGImageIO::Read(void * buffer)
 
   png_read_info(png_ptr, info_ptr);
 
-  png_uint_32 width, height;
-  int         bitDepth, colorType, interlaceType;
-  int         compression_type, filter_method;
+  png_uint_32 width;
+  png_uint_32 height;
+  int         bitDepth;
+  int         colorType;
+  int         interlaceType;
+  int         compression_type;
+  int         filter_method;
   png_get_IHDR(
     png_ptr, info_ptr, &width, &height, &bitDepth, &colorType, &interlaceType, &compression_type, &filter_method);
 
@@ -314,14 +314,14 @@ PNGImageIO::ReadImageInformation()
   m_Origin[1] = 0.0;
 
   // use this class so return will call close
-  PNGFileWrapper pngfp(m_FileName.c_str(), "rb");
-  FILE *         fp = pngfp.m_FilePointer;
+  const PNGFileWrapper pngfp(m_FileName.c_str(), "rb");
+  FILE *               fp = pngfp.m_FilePointer;
   if (!fp)
   {
     return;
   }
   unsigned char header[8];
-  size_t        temp = fread(header, 1, 8, fp);
+  const size_t  temp = fread(header, 1, 8, fp);
   if (temp != 8)
   {
     itkExceptionMacro("PNGImageIO failed to read header for file: " << this->GetFileName() << std::endl
@@ -329,7 +329,7 @@ PNGImageIO::ReadImageInformation()
                                                                     << " instead of 8");
   }
 
-  bool is_png = !png_sig_cmp(header, 0, 8);
+  const bool is_png = !png_sig_cmp(header, 0, 8);
   if (!is_png)
   {
     return;
@@ -365,9 +365,13 @@ PNGImageIO::ReadImageInformation()
 
   png_read_info(png_ptr, info_ptr);
 
-  png_uint_32 width, height;
-  int         bitDepth, colorType, interlaceType;
-  int         compression_type, filter_method;
+  png_uint_32 width;
+  png_uint_32 height;
+  int         bitDepth;
+  int         colorType;
+  int         interlaceType;
+  int         compression_type;
+  int         filter_method;
   png_get_IHDR(
     png_ptr, info_ptr, &width, &height, &bitDepth, &colorType, &interlaceType, &compression_type, &filter_method);
 
@@ -481,7 +485,7 @@ PNGImageIO::ReadImageInformation()
 bool
 PNGImageIO::CanWriteFile(const char * name)
 {
-  std::string filename = name;
+  const std::string filename = name;
 
   if (filename.empty())
   {
@@ -505,8 +509,8 @@ void
 PNGImageIO::WriteSlice(const std::string & fileName, const void * const buffer)
 {
   // use this class so return will call close
-  PNGFileWrapper pngfp(fileName.c_str(), "wb");
-  FILE *         fp = pngfp.m_FilePointer;
+  const PNGFileWrapper pngfp(fileName.c_str(), "wb");
+  FILE *               fp = pngfp.m_FilePointer;
 
   if (!fp)
   {
@@ -568,8 +572,8 @@ PNGImageIO::WriteSlice(const std::string & fileName, const void * const buffer)
                                                             << "Reason: " << itksys::SystemTools::GetLastSystemError());
   }
 
-  int          colorType;
-  unsigned int numComp = this->GetNumberOfComponents();
+  int                colorType;
+  const unsigned int numComp = this->GetNumberOfComponents();
   switch (numComp)
   {
     case 1:
@@ -593,21 +597,11 @@ PNGImageIO::WriteSlice(const std::string & fileName, const void * const buffer)
       break;
   }
 
-  png_uint_32 width, height;
-  double      rowSpacing, colSpacing;
-  width = this->GetDimensions(0);
-  colSpacing = m_Spacing[0];
+  const png_uint_32 width = this->GetDimensions(0);
+  const double      colSpacing = m_Spacing[0];
 
-  if (m_NumberOfDimensions > 1)
-  {
-    height = this->GetDimensions(1);
-    rowSpacing = m_Spacing[1];
-  }
-  else
-  {
-    height = 1;
-    rowSpacing = 1;
-  }
+  const png_uint_32 height = (m_NumberOfDimensions > 1) ? this->GetDimensions(1) : 1;
+  const double      rowSpacing = (m_NumberOfDimensions > 1) ? m_Spacing[1] : 1;
 
   png_set_IHDR(png_ptr,
                info_ptr,
@@ -688,7 +682,7 @@ PNGImageIO::WriteSlice(const std::string & fileName, const void * const buffer)
 
   {
     const int                      rowInc = width * numComp * bitDepth / 8;
-    volatile const unsigned char * outPtr = ((const unsigned char *)buffer);
+    const volatile unsigned char * outPtr = ((const unsigned char *)buffer);
     for (unsigned int ui = 0; ui < height; ++ui)
     {
       row_pointers[ui] = const_cast<png_byte *>(outPtr);

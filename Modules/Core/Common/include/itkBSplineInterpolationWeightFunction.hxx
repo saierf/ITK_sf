@@ -26,9 +26,9 @@
 namespace itk
 {
 /** Compute weights for interpolation at continuous index position */
-template <typename TCoordRep, unsigned int VSpaceDimension, unsigned int VSplineOrder>
+template <typename TCoordinate, unsigned int VSpaceDimension, unsigned int VSplineOrder>
 auto
-BSplineInterpolationWeightFunction<TCoordRep, VSpaceDimension, VSplineOrder>::Evaluate(
+BSplineInterpolationWeightFunction<TCoordinate, VSpaceDimension, VSplineOrder>::Evaluate(
   const ContinuousIndexType & index) const -> WeightsType
 {
   WeightsType weights;
@@ -40,9 +40,9 @@ BSplineInterpolationWeightFunction<TCoordRep, VSpaceDimension, VSplineOrder>::Ev
 }
 
 /** Compute weights for interpolation at continuous index position */
-template <typename TCoordRep, unsigned int VSpaceDimension, unsigned int VSplineOrder>
+template <typename TCoordinate, unsigned int VSpaceDimension, unsigned int VSplineOrder>
 void
-BSplineInterpolationWeightFunction<TCoordRep, VSpaceDimension, VSplineOrder>::Evaluate(
+BSplineInterpolationWeightFunction<TCoordinate, VSpaceDimension, VSplineOrder>::Evaluate(
   const ContinuousIndexType & index,
   WeightsType &               weights,
   IndexType &                 startIndex) const
@@ -59,10 +59,8 @@ BSplineInterpolationWeightFunction<TCoordRep, VSpaceDimension, VSplineOrder>::Ev
     return table;
   }();
 
-  unsigned int j, k;
-
   // Find the starting index of the support region
-  for (j = 0; j < SpaceDimension; ++j)
+  for (unsigned int j = 0; j < SpaceDimension; ++j)
   {
     // Note that the expression passed to Math::Floor is adapted to work around
     // a compiler bug which caused endless compilations (apparently), by
@@ -72,22 +70,22 @@ BSplineInterpolationWeightFunction<TCoordRep, VSpaceDimension, VSplineOrder>::Ev
 
   // Compute the weights
   Matrix<double, SpaceDimension, SplineOrder + 1> weights1D;
-  for (j = 0; j < SpaceDimension; ++j)
+  for (unsigned int j = 0; j < SpaceDimension; ++j)
   {
     double x = index[j] - static_cast<double>(startIndex[j]);
 
-    for (k = 0; k <= SplineOrder; ++k)
+    for (unsigned int k = 0; k <= SplineOrder; ++k)
     {
       weights1D[j][k] = BSplineKernelFunction<SplineOrder>::FastEvaluate(x);
       x -= 1.0;
     }
   }
 
-  for (k = 0; k < Self::NumberOfWeights; ++k)
+  for (unsigned int k = 0; k < Self::NumberOfWeights; ++k)
   {
     weights[k] = 1.0;
 
-    for (j = 0; j < SpaceDimension; ++j)
+    for (unsigned int j = 0; j < SpaceDimension; ++j)
     {
       weights[k] *= weights1D[j][offsetToIndexTable[k][j]];
     }

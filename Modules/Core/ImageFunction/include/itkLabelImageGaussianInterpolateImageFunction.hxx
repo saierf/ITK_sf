@@ -33,16 +33,16 @@
 namespace itk
 {
 
-template <typename TInputImage, typename TCoordRep, typename TPixelCompare>
+template <typename TInputImage, typename TCoordinate, typename TPixelCompare>
 auto
-LabelImageGaussianInterpolateImageFunction<TInputImage, TCoordRep, TPixelCompare>::EvaluateAtContinuousIndex(
+LabelImageGaussianInterpolateImageFunction<TInputImage, TCoordinate, TPixelCompare>::EvaluateAtContinuousIndex(
   const ContinuousIndexType & cindex,
   OutputType *                itkNotUsed(grad)) const -> OutputType
 {
   vnl_vector<RealType> erfArray[ImageDimension];
   vnl_vector<RealType> gerfArray[ImageDimension];
 
-  typename Superclass::RegionType region = this->ComputeInterpolationRegion(cindex);
+  const typename Superclass::RegionType region = this->ComputeInterpolationRegion(cindex);
 
   // Compute the ERF difference arrays
   for (unsigned int d = 0; d < ImageDimension; ++d)

@@ -154,8 +154,7 @@ itkDiffeomorphicDemonsRegistrationFilterTest2(int argc, char * argv[])
   registrator->InPlaceOn();
 
 
-  FunctionType * fptr;
-  fptr = dynamic_cast<FunctionType *>(registrator->GetDifferenceFunction().GetPointer());
+  auto * fptr = dynamic_cast<FunctionType *>(registrator->GetDifferenceFunction().GetPointer());
   fptr->Print(std::cout);
 
   // exercise other member variables
@@ -171,9 +170,8 @@ itkDiffeomorphicDemonsRegistrationFilterTest2(int argc, char * argv[])
   registrator->SetStandardDeviations(v);
 
   using ProgressType = ShowProgressObject<RegistrationType>;
-  ProgressType                                    progressWatch(registrator);
-  itk::SimpleMemberCommand<ProgressType>::Pointer command;
-  command = itk::SimpleMemberCommand<ProgressType>::New();
+  ProgressType                                          progressWatch(registrator);
+  const itk::SimpleMemberCommand<ProgressType>::Pointer command = itk::SimpleMemberCommand<ProgressType>::New();
   command->SetCallbackFunction(&progressWatch, &ProgressType::ShowProgress);
   registrator->AddObserver(itk::ProgressEvent(), command);
 
@@ -181,8 +179,8 @@ itkDiffeomorphicDemonsRegistrationFilterTest2(int argc, char * argv[])
   using WarperType = itk::WarpImageFilter<ImageType, ImageType, FieldType>;
   auto warper = WarperType::New();
 
-  using CoordRepType = WarperType::CoordRepType;
-  using InterpolatorType = itk::NearestNeighborInterpolateImageFunction<ImageType, CoordRepType>;
+  using CoordinateType = WarperType::CoordinateType;
+  using InterpolatorType = itk::NearestNeighborInterpolateImageFunction<ImageType, CoordinateType>;
   auto interpolator = InterpolatorType::New();
 
   const ImageType * fixed = fixedReader->GetOutput();

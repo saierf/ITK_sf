@@ -56,10 +56,8 @@ public:
     {
       return static_cast<TOutput>(A);
     }
-    else
-    {
-      return m_OutsideValue;
-    }
+
+    return m_OutsideValue;
   }
 
   /** Method to explicitly set the outside value of the mask */
@@ -220,13 +218,9 @@ public:
     return this->GetFunctor().GetMaskingValue();
   }
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(MaskEqualityComparableCheck, (Concept::EqualityComparable<typename TMaskImage::PixelType>));
   itkConceptMacro(InputConvertibleToOutputCheck,
                   (Concept::Convertible<typename TInputImage::PixelType, typename TOutputImage::PixelType>));
-  // End concept checking
-#endif
 
 protected:
   MaskImageFilter() = default;
@@ -272,8 +266,8 @@ private:
     // image. Otherwise, check that the number of components in the
     // outside value is the same as the number of components in the
     // output image. If not, throw an exception.
-    VariableLengthVector<TValue> currentValue = this->GetFunctor().GetOutsideValue();
-    VariableLengthVector<TValue> zeroVector(currentValue.GetSize());
+    const VariableLengthVector<TValue> currentValue = this->GetFunctor().GetOutsideValue();
+    VariableLengthVector<TValue>       zeroVector(currentValue.GetSize());
     zeroVector.Fill(TValue{});
 
     if (currentValue == zeroVector)

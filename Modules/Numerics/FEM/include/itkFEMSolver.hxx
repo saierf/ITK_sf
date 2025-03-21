@@ -108,11 +108,6 @@ Solver<VDimension>::GetTimeStep() const -> Float
 }
 
 template <unsigned int VDimension>
-void
-Solver<VDimension>::SetTimeStep(Float itkNotUsed(dt))
-{}
-
-template <unsigned int VDimension>
 auto
 Solver<VDimension>::GetSolution(unsigned int i, unsigned int which) -> Float
 {
@@ -519,11 +514,6 @@ Solver<VDimension>::AssembleF(int dim)
 
 template <unsigned int VDimension>
 void
-Solver<VDimension>::DecomposeK()
-{}
-
-template <unsigned int VDimension>
-void
 Solver<VDimension>::RunSolver()
 {
 
@@ -724,15 +714,13 @@ Solver<VDimension>::InitializeInterpolationGrid(const InterpolationGridSizeType 
   // Set the interpolation grid (image) size, origin and spacing
   // from the given vectors, so that physical point of v1 is (0,0,0) and
   // physical point v2 is (size[0],size[1],size[2]).
-  InterpolationGridSizeType image_size;
-  image_size.Fill(1);
+  constexpr auto image_size = InterpolationGridSizeType::Filled(1);
   for (unsigned int i = 0; i < FEMDimension; ++i)
   {
     image_size[i] = size[i];
   }
 
-  InterpolationGridPointType image_origin;
-  image_origin.Fill(0.0);
+  InterpolationGridPointType image_origin{};
   for (unsigned int i = 0; i < FEMDimension; ++i)
   {
     image_origin[i] = bb1[i];
@@ -871,7 +859,7 @@ Solver<VDimension>::FillInterpolationGrid()
         iter.Set(e);
       }
     } // next point in region
-  }   // next element
+  } // next element
 }
 
 template <unsigned int VDimension>

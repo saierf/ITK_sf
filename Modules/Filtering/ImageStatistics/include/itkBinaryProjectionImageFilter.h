@@ -26,9 +26,8 @@ namespace itk
 /** \class BinaryProjectionImageFilter
  * \brief Binary projection
  *
- * This class was contributed to the Insight Journal by Gaetan Lehmann.
- * The original paper can be found at
- * https://www.insight-journal.org/browse/publication/71
+ * This class was contributed to the Insight Journal by Gaetan Lehmann
+ * \cite Lehmann_2006_a.
  *
  * \author Gaetan Lehmann. Biologie du Developpement et de la Reproduction,
  *  INRA de Jouy-en-Josas, France.
@@ -75,10 +74,8 @@ public:
     {
       return (TOutputPixel)m_ForegroundValue;
     }
-    else
-    {
-      return m_BackgroundValue;
-    }
+
+    return m_BackgroundValue;
   }
 
   bool m_IsForeground;
@@ -145,12 +142,8 @@ public:
    * NumericTraits<PixelType>::NonpositiveMin(). */
   itkGetConstMacro(BackgroundValue, OutputPixelType);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputPixelTypeGreaterThanComparable, (Concept::EqualityComparable<InputPixelType>));
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   BinaryProjectionImageFilter()

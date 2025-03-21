@@ -50,13 +50,8 @@ extern ITKOptimizers_EXPORT std::ostream &
  * \brief An optimizer based on simultaneous perturbation...
  *
  * This optimizer is an implementation of the Simultaneous
- * Perturbation Stochastic Approximation method, described in:
- *
- * - https://www.jhuapl.edu/SPSA/
- *
- * - Spall, J.C. (1998), "An Overview of the Simultaneous
- * Perturbation Method for Efficient Optimization," Johns
- * Hopkins APL Technical Digest, vol. 19, pp. 482-492
+ * Perturbation Stochastic Approximation method, described in
+ * \cite spall1998.
  *
  * \ingroup Optimizers
  * \ingroup ITKOptimizers
@@ -123,10 +118,7 @@ public:
    * the MaximumNumberOfIterations, the Scales, and the
    * the InitialPosition before calling this method.
    *
-   * Described in:
-   * Spall, J.C. (1998), "Implementation of the Simultaneous Perturbation
-   * Algorithm for Stochastic Optimization", IEEE Trans. Aerosp. Electron.
-   * Syst. 34(3), 817-823.
+   * Described in \cite spall1998a.
    */
   virtual void
   GuessParameters(SizeValueType numberOfGradientEstimates, double initialStepSize);
@@ -251,7 +243,7 @@ public:
   itkGetConstMacro(Tolerance, double);
 
   /** Get the reason for termination */
-  const std::string
+  std::string
   GetStopConditionDescription() const override;
 
 protected:

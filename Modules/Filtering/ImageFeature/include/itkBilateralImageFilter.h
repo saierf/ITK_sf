@@ -49,8 +49,7 @@ namespace itk
  * by an order of magnitude while maintaining edges.
  *
  * The bilateral operator used here was described by Tomasi and
- * Manduchi (Bilateral Filtering for Gray and ColorImages. IEEE
- * ICCV. 1998.)
+ * Manduchi in \cite tomasi1998.
  *
  * \sa GaussianOperator
  * \sa RecursiveGaussianImageFilter
@@ -169,11 +168,7 @@ public:
   itkSetMacro(NumberOfRangeGaussianSamples, unsigned long);
   itkGetConstMacro(NumberOfRangeGaussianSamples, unsigned long);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   /** Constructor. */

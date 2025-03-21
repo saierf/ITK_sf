@@ -16,14 +16,15 @@
  *
  *=========================================================================*/
 #ifndef itkExceptionObject_h
+#define itkExceptionObject_h
+
+// NOTE: This itkExceptionObject.h file is included by itkMacro.h, and should never be included directly.
+#ifndef allow_inclusion_of_itkExceptionObject_h
 #  error "Do not include itkExceptionObject.h directly,  include itkMacro.h instead."
-#else // itkExceptionObject_h
+#endif
 
-#  include "itkMacro.h"
-
-#  include <memory> // For shared_ptr.
-#  include <string>
-#  include <stdexcept>
+#include <memory> // For shared_ptr.
+#include <string>
 
 namespace itk
 {
@@ -55,14 +56,10 @@ public:
   /** Explicitly-defaulted default-constructor. Creates an empty exception object. */
   ExceptionObject() noexcept = default;
 
-  explicit ExceptionObject(const char * file,
-                           unsigned int lineNumber = 0,
-                           const char * desc = "None",
-                           const char * loc = "Unknown");
   explicit ExceptionObject(std::string  file,
                            unsigned int lineNumber = 0,
-                           std::string  desc = "None",
-                           std::string  loc = "Unknown");
+                           std::string  description = "None",
+                           std::string  location = {});
 
   /** Copy-constructor. */
   ExceptionObject(const ExceptionObject &) noexcept = default;
@@ -132,7 +129,7 @@ public:
 private:
   class ExceptionData;
 
-  std::shared_ptr<const ExceptionData> m_ExceptionData{};
+  std::shared_ptr<const ExceptionData> m_ExceptionData;
 };
 
 /** Generic inserter operator for ExceptionObject and its subclasses. */
@@ -225,22 +222,35 @@ public:
   }
 
   /** Constructor. Needed to ensure the exception object can be copied. */
-  ProcessAborted(const char * file, unsigned int lineNumber)
-    : ExceptionObject(file, lineNumber)
-  {
-    this->SetDescription("Filter execution was aborted by an external request");
-  }
-
-  /** Constructor. Needed to ensure the exception object can be copied. */
-  ProcessAborted(const std::string & file, unsigned int lineNumber)
-    : ExceptionObject(file, lineNumber)
-  {
-    this->SetDescription("Filter execution was aborted by an external request");
-  }
+  ProcessAborted(std::string file, unsigned int lineNumber)
+    : ExceptionObject(std::move(file), lineNumber, "Filter execution was aborted by an external request")
+  {}
 
   /** \see LightObject::GetNameOfClass() */
   itkOverrideGetNameOfClassMacro(ProcessAborted);
 };
-} // end namespace itk
 
+// Forward declaration in Macro.h, implementation here to avoid circular dependency
+template <typename TTarget, typename TSource>
+TTarget
+itkDynamicCastInDebugMode(TSource x)
+{
+#ifndef NDEBUG
+  if (x == nullptr)
+  {
+    return nullptr;
+  }
+  TTarget rval = dynamic_cast<TTarget>(x);
+  if (rval == nullptr)
+  {
+    itkGenericExceptionMacro("Failed dynamic cast to " << typeid(TTarget).name()
+                                                       << " object type = " << x->GetNameOfClass());
+  }
+  return rval;
+#else
+  return static_cast<TTarget>(x);
+#endif
+}
+
+} // end namespace itk
 #endif // itkExceptionObject_h

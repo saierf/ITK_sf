@@ -32,8 +32,8 @@ itkImageLinearIteratorTest(int, char *[])
 
   using ImageType = itk::Image<PixelType, ImageDimension>;
 
-  auto                    myImage = ImageType::New();
-  ImageType::ConstPointer myConstImage = myImage;
+  auto                          myImage = ImageType::New();
+  const ImageType::ConstPointer myConstImage = myImage;
 
   ImageType::SizeType size0;
 
@@ -41,10 +41,9 @@ itkImageLinearIteratorTest(int, char *[])
   size0[1] = 100;
   size0[2] = 100;
 
-  ImageType::IndexType start0;
-  start0.Fill(0);
+  constexpr ImageType::IndexType start0{};
 
-  ImageType::RegionType region0{ start0, size0 };
+  const ImageType::RegionType region0{ start0, size0 };
 
   myImage->SetRegions(region0);
   myImage->Allocate();
@@ -101,7 +100,7 @@ itkImageLinearIteratorTest(int, char *[])
   ConstIteratorType cot(myConstImage, region0);
 
   // Test exceptions
-  int direction = ImageType::GetImageDimension() + 1;
+  constexpr int direction = ImageType::GetImageDimension() + 1;
   ITK_TRY_EXPECT_EXCEPTION(cot.SetDirection(direction));
 
   cot.GoToBegin();
@@ -154,7 +153,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 3;
     size[2] = 4;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     std::cout << "  IteratorType ior( myImage, region );" << std::endl;
     IteratorType ior(myImage, region);
@@ -233,7 +232,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     IteratorType bot(myImage, region);
 
@@ -279,7 +278,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     ConstIteratorType cbot(myImage, region);
 
@@ -325,7 +324,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     IteratorType cbot(myImage, region);
 
@@ -336,8 +335,8 @@ itkImageLinearIteratorTest(int, char *[])
     {
       while (!cbot.IsAtEndOfLine())
       {
-        ImageType::IndexType index = cbot.GetIndex();
-        ImageType::PixelType pixel = cbot.Get();
+        const ImageType::IndexType index = cbot.GetIndex();
+        const ImageType::PixelType pixel = cbot.Get();
 
         if (index != pixel)
         {
@@ -369,7 +368,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     ConstIteratorType cbot(myImage, region);
 
@@ -380,8 +379,8 @@ itkImageLinearIteratorTest(int, char *[])
     {
       while (!cbot.IsAtEndOfLine())
       {
-        ImageType::IndexType index = cbot.GetIndex();
-        ImageType::PixelType pixel = cbot.Get();
+        const ImageType::IndexType index = cbot.GetIndex();
+        const ImageType::PixelType pixel = cbot.Get();
 
         if (index != pixel)
         {
@@ -413,7 +412,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     std::cout << "    IteratorType cbot( myImage, region );" << std::endl;
     IteratorType cbot(myImage, region);
@@ -464,7 +463,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     std::cout << "    IteratorType cbot( myImage, region );" << std::endl;
     IteratorType cbot(myImage, region);
@@ -521,7 +520,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     ConstIteratorType cbot(myImage, region);
 
@@ -562,7 +561,7 @@ itkImageLinearIteratorTest(int, char *[])
     size[1] = 12;
     size[2] = 13;
 
-    ImageType::RegionType region{ start, size };
+    const ImageType::RegionType region{ start, size };
 
     ConstIteratorType cbot(myImage, region);
 

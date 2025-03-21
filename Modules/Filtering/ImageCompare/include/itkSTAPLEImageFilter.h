@@ -38,12 +38,7 @@ namespace itk
  * and one that indicate probability of each pixel being in the object targeted
  * by the segmentation.
  *
- * The STAPLE algorithm is described in
- *
- * S. Warfield, K. Zou, W. Wells, "Validation of image segmentation and expert
- * quality with an expectation-maximization algorithm" in MICCAI 2002: Fifth
- * International Conference on Medical Image Computing and Computer-Assisted
- * Intervention, Springer-Verlag, Heidelberg, Germany, 2002, pp. 298-306
+ * The STAPLE algorithm is described in \cite warfield2002.
  *
  * \par INPUTS
  * Input volumes to the STAPLE filter must be binary segmentations of an image,
@@ -220,11 +215,7 @@ public:
   /** Get the number of elapsed iterations of the iterative E-M algorithm. */
   itkGetConstMacro(ElapsedIterations, unsigned int);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   STAPLEImageFilter()

@@ -122,7 +122,6 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
   }
 
   auto fieldPoints = InputPointSetType::New();
-  fieldPoints->Initialize();
 
   auto weights = WeightsContainerType::New();
 
@@ -135,7 +134,7 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
     itkExceptionMacro("Output (B-spline) domain is undefined.");
   }
 
-  using ContinuousIndexType = ContinuousIndex<typename InputFieldPointType::CoordRepType, ImageDimension>;
+  using ContinuousIndexType = ContinuousIndex<typename InputFieldPointType::CoordinateType, ImageDimension>;
 
   // Create an output field based on the b-spline domain to determine boundary
   // points and whether or not specified points are inside or outside the domain.
@@ -184,7 +183,7 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
       }
       if (isOnStationaryBoundary)
       {
-        VectorType                            data{};
+        const VectorType                      data{};
         typename InputPointSetType::PointType point;
 
         bsplineParametricDomainField->TransformIndexToPhysicalPoint(index, point);
@@ -240,7 +239,8 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
       inputField->TransformIndexToPhysicalPoint(index, physicalPoint);
       const ContinuousIndexType cidx =
         bsplinePhysicalDomainField
-          ->template TransformPhysicalPointToContinuousIndex<typename InputFieldPointType::CoordRepType>(physicalPoint);
+          ->template TransformPhysicalPointToContinuousIndex<typename InputFieldPointType::CoordinateType>(
+            physicalPoint);
       bsplineParametricDomainField->TransformContinuousIndexToPhysicalPoint(cidx, parametricPoint);
 
       bool isInside = true;
@@ -328,8 +328,8 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
         // to the boundary), we can ignore it.
         for (unsigned int d = 0; d < ImageDimension; ++d)
         {
-          if (cidx[d] < static_cast<typename ContinuousIndexType::CoordRepType>(startIndex[d]) + 0.5 ||
-              cidx[d] > static_cast<typename ContinuousIndexType::CoordRepType>(
+          if (cidx[d] < static_cast<typename ContinuousIndexType::CoordinateType>(startIndex[d]) + 0.5 ||
+              cidx[d] > static_cast<typename ContinuousIndexType::CoordinateType>(
                           startIndex[d] + static_cast<int>(this->m_BSplineDomainSize[d]) - 1) -
                           0.5)
           {
@@ -361,8 +361,7 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
 
   itkDebugMacro("Calculating the B-spline displacement field. ");
 
-  ArrayType close;
-  close.Fill(false);
+  constexpr auto close = MakeFilled<ArrayType>(false);
 
   auto bspliner = BSplineFilterType::New();
   bspliner->SetOrigin(this->m_BSplineDomainOrigin);
@@ -389,14 +388,14 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "EstimateInverse: " << (m_EstimateInverse ? "On" : "Off") << std::endl;
-  os << indent << "EnforceStationaryBoundary: " << (m_EnforceStationaryBoundary ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(EstimateInverse);
+  itkPrintSelfBooleanMacro(EnforceStationaryBoundary);
   os << indent << "NumberOfControlPoints: " << m_NumberOfControlPoints << std::endl;
   os << indent << "NumberOfFittingLevels: " << m_NumberOfFittingLevels << std::endl;
 
   itkPrintSelfObjectMacro(PointWeights);
 
-  os << indent << "UsePointWeights: " << (m_UsePointWeights ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(UsePointWeights);
 
   os << indent
      << "BSplineDomainOrigin: " << static_cast<typename NumericTraits<OriginType>::PrintType>(m_BSplineDomainOrigin)
@@ -409,9 +408,8 @@ DisplacementFieldToBSplineImageFilter<TInputImage, TInputPointSet, TOutputImage>
   os << indent << "BSplineDomainDirection: "
      << static_cast<typename NumericTraits<DirectionType>::PrintType>(m_BSplineDomainDirection) << std::endl;
 
-  os << indent << "BSplineDomainIsDefined: " << (m_BSplineDomainIsDefined ? "On" : "Off") << std::endl;
-  os << indent << "UseInputFieldToDefineTheBSplineDomain: " << (m_UseInputFieldToDefineTheBSplineDomain ? "On" : "Off")
-     << std::endl;
+  itkPrintSelfBooleanMacro(BSplineDomainIsDefined);
+  itkPrintSelfBooleanMacro(UseInputFieldToDefineTheBSplineDomain);
 }
 
 } // end namespace itk

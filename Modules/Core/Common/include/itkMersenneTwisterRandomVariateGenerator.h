@@ -69,10 +69,7 @@ namespace Statistics
  * division, and it benefits from caches and pipelines.  For more information
  * see the inventors' web page at http:*www.math.keio.ac.jp/~matumoto/emt.html
  *
- * Reference
- * M. Matsumoto and T. Nishimura, "Mersenne Twister: A 623-Dimensionally
- * Equidistributed Uniform Pseudo-Random Number Generator", ACM Transactions on
- * Modeling and Computer Simulation, Vol. 8, No. 1, January 1998, pp 3-30.
+ * Algorithmic details can be found in \cite matsumoto1998.
  *
  * Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
  * Copyright (C) 2000 - 2003, Richard J. Wagner
@@ -350,10 +347,9 @@ MersenneTwisterRandomVariateGenerator::Initialize(const IntegerType seed)
   // only MSBs of the state array.  Modified 9 Jan 2002 by Makoto Matsumoto.
   IntegerType * s = state;
   IntegerType * r = state;
-  IntegerType   i = 1;
 
   *s++ = seed & 0xffffffffUL;
-  for (i = 1; i < MersenneTwisterRandomVariateGenerator::StateVectorLength; ++i)
+  for (IntegerType i = 1; i < MersenneTwisterRandomVariateGenerator::StateVectorLength; ++i)
   {
     *s++ = (1812433253UL * (*r ^ (*r >> 30)) + i) & 0xffffffffUL;
     ++r;
@@ -372,13 +368,12 @@ MersenneTwisterRandomVariateGenerator::reload()
   constexpr auto index = int{ M } - int{ MersenneTwisterRandomVariateGenerator::StateVectorLength };
 
   IntegerType * p = state;
-  int           i;
 
-  for (i = MersenneTwisterRandomVariateGenerator::StateVectorLength - M; i--; ++p)
+  for (int i = MersenneTwisterRandomVariateGenerator::StateVectorLength - M; i--; ++p)
   {
     *p = twist(p[M], p[0], p[1]);
   }
-  for (i = M; --i; ++p)
+  for (int i = M; --i; ++p)
   {
     *p = twist(p[index], p[0], p[1]);
   }
@@ -500,7 +495,8 @@ MersenneTwisterRandomVariateGenerator::GetIntegerVariate(const IntegerType & n)
 inline double
 MersenneTwisterRandomVariateGenerator::Get53BitVariate()
 {
-  IntegerType a = GetIntegerVariate() >> 5, b = GetIntegerVariate() >> 6;
+  const IntegerType a = GetIntegerVariate() >> 5;
+  const IntegerType b = GetIntegerVariate() >> 6;
 
   return (a * 67108864.0 + b) * (1.0 / 9007199254740992.0); // by Isaku
                                                             // Wada
@@ -513,8 +509,8 @@ MersenneTwisterRandomVariateGenerator::GetNormalVariate(const double mean, const
 {
   // Return a real number from a normal (Gaussian) distribution with given
   // mean and variance by Box-Muller method
-  double r = std::sqrt(-2.0 * std::log(1.0 - GetVariateWithOpenRange()) * variance);
-  double phi = 2.0 * itk::Math::pi * GetVariateWithOpenUpperRange();
+  const double r = std::sqrt(-2.0 * std::log(1.0 - GetVariateWithOpenRange()) * variance);
+  const double phi = 2.0 * itk::Math::pi * GetVariateWithOpenUpperRange();
 
   return mean + r * std::cos(phi);
 }
@@ -524,7 +520,7 @@ MersenneTwisterRandomVariateGenerator::GetNormalVariate(const double mean, const
 inline double
 MersenneTwisterRandomVariateGenerator::GetUniformVariate(const double a, const double b)
 {
-  double u = GetVariateWithOpenUpperRange();
+  const double u = GetVariateWithOpenUpperRange();
 
   return ((1.0 - u) * a + u * b);
 }

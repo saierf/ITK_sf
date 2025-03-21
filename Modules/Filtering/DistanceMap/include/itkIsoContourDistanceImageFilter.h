@@ -49,6 +49,8 @@ namespace itk
  *`Krissian K. and Westin C.F.',
  * EUROCAST NeuroImaging Workshop Las Palmas Spain,
  * Ninth International Conference on Computer Aided Systems Theory , pages 48-51, Feb 2003.
+ * NOTE: Attribution is incorrect, the manuscript does not appear to be
+ * part of the EUROCAST'03 proceedings (https://doi.org/10.1007/b13239).
  *
  *
  * \ingroup LevelSetSegmentation
@@ -132,8 +134,6 @@ public:
     return m_NarrowBand;
   }
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputEqualityComparableCheck, (Concept::EqualityComparable<InputPixelType>));
   itkConceptMacro(OutputEqualityComparableCheck, (Concept::EqualityComparable<PixelType>));
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<ImageDimension, OutputImageDimension>));
@@ -142,8 +142,6 @@ public:
   itkConceptMacro(OutputAdditiveOperatorsCheck, (Concept::AdditiveOperators<PixelType>));
   itkConceptMacro(InputOStreamWritableCheck, (Concept::OStreamWritable<InputPixelType>));
   itkConceptMacro(OutputOStreamWritableCheck, (Concept::OStreamWritable<PixelType>));
-  // End concept checking
-#endif
 
 protected:
   IsoContourDistanceImageFilter();

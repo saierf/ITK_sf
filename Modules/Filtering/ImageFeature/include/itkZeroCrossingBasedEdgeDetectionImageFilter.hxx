@@ -40,15 +40,12 @@ template <typename TInputImage, typename TOutputImage>
 void
 ZeroCrossingBasedEdgeDetectionImageFilter<TInputImage, TOutputImage>::GenerateData()
 {
-  typename InputImageType::ConstPointer input = this->GetInput();
+  const typename InputImageType::ConstPointer input = this->GetInput();
 
   // Create the filters that are needed
-  typename DiscreteGaussianImageFilter<TInputImage, TOutputImage>::Pointer gaussianFilter =
-    DiscreteGaussianImageFilter<TInputImage, TOutputImage>::New();
-  typename LaplacianImageFilter<TInputImage, TOutputImage>::Pointer laplacianFilter =
-    LaplacianImageFilter<TInputImage, TOutputImage>::New();
-  typename ZeroCrossingImageFilter<TInputImage, TOutputImage>::Pointer zerocrossingFilter =
-    ZeroCrossingImageFilter<TInputImage, TOutputImage>::New();
+  auto gaussianFilter = DiscreteGaussianImageFilter<TInputImage, TOutputImage>::New();
+  auto laplacianFilter = LaplacianImageFilter<TInputImage, TOutputImage>::New();
+  auto zerocrossingFilter = ZeroCrossingImageFilter<TInputImage, TOutputImage>::New();
 
   // Create a process accumulator for tracking the progress of this minipipeline
   auto progress = ProgressAccumulator::New();

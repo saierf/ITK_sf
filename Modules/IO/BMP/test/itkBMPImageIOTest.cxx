@@ -38,7 +38,7 @@ itkBMPImageIOTest(int argc, char * argv[])
   using PixelType = itk::RGBPixel<ComponentType>;
   using ImageType = itk::Image<PixelType, Dimension>;
 
-  itk::ImageFileReader<ImageType>::Pointer reader = itk::ImageFileReader<ImageType>::New();
+  const itk::ImageFileReader<ImageType>::Pointer reader = itk::ImageFileReader<ImageType>::New();
 
   reader->SetFileName(argv[1]);
 
@@ -52,19 +52,18 @@ itkBMPImageIOTest(int argc, char * argv[])
 
   ITK_TRY_EXPECT_NO_EXCEPTION(reader->Update());
 
-  ImageType::Pointer image = reader->GetOutput();
+  const ImageType::Pointer image = reader->GetOutput();
 
   image->Print(std::cout);
 
-  ImageType::RegionType region = image->GetLargestPossibleRegion();
+  const ImageType::RegionType region = image->GetLargestPossibleRegion();
   std::cout << "LargestPossibleRegion " << region;
 
   // Print the IO
   reader->GetImageIO()->Print(std::cout);
 
   // Generate test image
-  itk::ImageFileWriter<ImageType>::Pointer writer;
-  writer = itk::ImageFileWriter<ImageType>::New();
+  const itk::ImageFileWriter<ImageType>::Pointer writer = itk::ImageFileWriter<ImageType>::New();
   writer->SetInput(reader->GetOutput());
   writer->SetFileName(argv[2]);
 

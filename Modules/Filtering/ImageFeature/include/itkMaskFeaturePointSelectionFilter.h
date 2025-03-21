@@ -42,9 +42,7 @@ namespace itk
  * This filter is intended to be used for initializing the process of
  * Physics-Based Non-Rigid Registration. It selects a fraction of non-masked
  * points with highest variance. Optionally, tensors are computed for each
- * point and stored as pixel values. [ M. Bierling, Displacement estimation
- * by hierarchical block matching, Proc. SPIE Vis. Comm. and Image Proc.,
- * vol. 1001, pp. 942-951, 1988. ].
+ * point and stored as pixel values \cite bierling1988.
  *
  * The filter is templated over input image and mask and output pointset.
  * \author Andriy Kot, Center for Real-Time Computing, Old Dominion University,
@@ -133,13 +131,9 @@ public:
   itkSetClampMacro(SelectFraction, double, 0, 1);
   itkGetMacro(SelectFraction, double);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(ImageDimensionShouldBe3, (Concept::SameDimension<TImage::ImageDimension, 3u>));
   itkConceptMacro(MaskDimensionShouldBe3, (Concept::SameDimension<TMask::ImageDimension, 3u>));
   itkConceptMacro(PointDimensionShouldBe3, (Concept::SameDimension<TFeatures::PointType::PointDimension, 3u>));
-  // End concept checking
-#endif
 
 protected:
   MaskFeaturePointSelectionFilter();

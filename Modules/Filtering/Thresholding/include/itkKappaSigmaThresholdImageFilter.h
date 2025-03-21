@@ -36,7 +36,7 @@ namespace itk
  * \author Gaetan Lehmann
  *
  * \note This class was taken from the Insight Journal paper:
- * https://www.insight-journal.org/browse/publication/132
+ * https://doi.org/10.54294/39qekn
  *
  * \sa KappaSigmaThresholdImageCalculator
  * \ingroup IntensityImageFilters
@@ -107,12 +107,8 @@ public:
   itkSetMacro(NumberOfIterations, unsigned int);
   itkGetConstMacro(NumberOfIterations, unsigned int);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputComparableCheck, (Concept::Comparable<OutputPixelType>));
   itkConceptMacro(OutputOStreamWritableCheck, (Concept::OStreamWritable<OutputPixelType>));
-  // End concept checking
-#endif
 
   /** Set the mask image */
   void

@@ -99,7 +99,7 @@ bool
 GiplImageIO::CanReadFile(const char * filename)
 {
   // First check the filename extension
-  bool extensionFound = CheckExtension(filename);
+  const bool extensionFound = CheckExtension(filename);
 
   if (!extensionFound)
   {
@@ -177,14 +177,14 @@ GiplImageIO::CanReadFile(const char * filename)
 bool
 GiplImageIO::CanWriteFile(const char * name)
 {
-  std::string filename = name;
+  const std::string filename = name;
 
   if (filename.empty())
   {
     itkDebugMacro("No filename specified.");
   }
 
-  bool extensionFound = CheckExtension(name);
+  const bool extensionFound = CheckExtension(name);
 
   if (!extensionFound)
   {
@@ -253,8 +253,6 @@ GiplImageIO::Read(void * buffer)
 void
 GiplImageIO::ReadImageInformation()
 {
-  unsigned int i;
-
   CheckExtension(m_FileName.c_str());
 
   if (m_IsCompressed)
@@ -275,12 +273,12 @@ GiplImageIO::ReadImageInformation()
   unsigned short dims[4];
 
   unsigned int numberofdimension = 0;
-  for (i = 0; i < 4; ++i)
+  for (unsigned short & dim : dims)
   {
-    dims[i] = 0;
+    dim = 0;
   }
 
-  for (i = 0; i < 4; ++i)
+  for (unsigned int i = 0; i < 4; ++i)
   {
     if (m_IsCompressed)
     {
@@ -314,7 +312,7 @@ GiplImageIO::ReadImageInformation()
 
   this->SetNumberOfDimensions(numberofdimension);
 
-  for (i = 0; i < numberofdimension; ++i)
+  for (unsigned int i = 0; i < numberofdimension; ++i)
   {
     m_Dimensions[i] = dims[i];
   }
@@ -368,7 +366,7 @@ GiplImageIO::ReadImageInformation()
   }
 
   float pixdim[4]; /*   10   16  X,Y,Z,T pixel dimensions mm */
-  for (i = 0; i < 4; ++i)
+  for (unsigned int i = 0; i < 4; ++i)
   {
     if (m_IsCompressed)
     {
@@ -394,37 +392,37 @@ GiplImageIO::ReadImageInformation()
   }
 
   char line1[80]; /*   26   80  Patient / Text field        */
-  for (i = 0; i < 80; ++i)
+  for (char & it : line1)
   {
     if (m_IsCompressed)
     {
-      gzread(m_Internal->m_GzFile, (char *)&line1[i], static_cast<unsigned int>(sizeof(char)));
+      gzread(m_Internal->m_GzFile, (char *)&it, static_cast<unsigned int>(sizeof(char)));
     }
     else
     {
-      m_Ifstream.read((char *)&line1[i], sizeof(char));
+      m_Ifstream.read((char *)&it, sizeof(char));
     }
   }
 
   float matrix[20]; /*  106   80                              */
-  for (i = 0; i < 20; ++i)
+  for (float & it : matrix)
   {
     if (m_IsCompressed)
     {
-      gzread(m_Internal->m_GzFile, (char *)&matrix[i], static_cast<unsigned int>(sizeof(float)));
+      gzread(m_Internal->m_GzFile, (char *)&it, static_cast<unsigned int>(sizeof(float)));
     }
     else
     {
-      m_Ifstream.read((char *)&matrix[i], sizeof(float));
+      m_Ifstream.read((char *)&it, sizeof(float));
     }
 
     if (m_ByteOrder == IOByteOrderEnum::BigEndian)
     {
-      ByteSwapper<float>::SwapFromSystemToBigEndian(&matrix[i]);
+      ByteSwapper<float>::SwapFromSystemToBigEndian(&it);
     }
     else if (m_ByteOrder == IOByteOrderEnum::LittleEndian)
     {
-      ByteSwapper<float>::SwapFromSystemToLittleEndian(&matrix[i]);
+      ByteSwapper<float>::SwapFromSystemToLittleEndian(&it);
     }
   }
 
@@ -487,7 +485,7 @@ GiplImageIO::ReadImageInformation()
   }
 
   double origin[4]; /*  204   32  X,Y,Z,T offset              */
-  for (i = 0; i < 4; ++i)
+  for (unsigned int i = 0; i < 4; ++i)
   {
     if (m_IsCompressed)
     {
@@ -705,7 +703,7 @@ GiplImageIO::Write(const void * buffer)
 {
   CheckExtension(m_FileName.c_str());
 
-  unsigned int nDims = this->GetNumberOfDimensions();
+  const unsigned int nDims = this->GetNumberOfDimensions();
 
   if (m_IsCompressed)
   {
@@ -1102,7 +1100,7 @@ GiplImageIO::PrintSelf(std::ostream & os, Indent indent) const
 bool
 GiplImageIO::CheckExtension(const char * filename)
 {
-  std::string fname = filename;
+  const std::string fname = filename;
 
   if (fname.empty())
   {

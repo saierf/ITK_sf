@@ -123,7 +123,9 @@ Octree<TPixel, ColorTableSize, MappingFunctionType>::GetValue(const unsigned int
   // Define CurrentOctreeNode at the Octree head Node
   OctreeNode * CurrentOctreeNode = &m_Tree;
   // Define the origin of current OctreeNode
-  unsigned int ox = 0, oy = 0, oz = 0;
+  unsigned int ox = 0;
+  unsigned int oy = 0;
+  unsigned int oz = 0;
   // Define the halfwidth, this will be changed inside of while loop
   unsigned int halfwidth = this->m_Width;
 
@@ -178,44 +180,42 @@ Octree<TPixel, ColorTableSize, MappingFunctionType>::maskToOctree(const TPixel *
   {
     return nodeArray[0];
   }
-  else
-  {
-    auto * q = new OctreeNodeBranch(this);
 
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::ZERO);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::ZERO)]);
-    }
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::ONE);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::ONE)]);
-    }
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::TWO);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::TWO)]);
-    }
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::THREE);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::THREE)]);
-    }
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::FOUR);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::FOUR)]);
-    }
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::FIVE);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::FIVE)]);
-    }
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::SIX);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::SIX)]);
-    }
-    {
-      OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::SEVEN);
-      newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::SEVEN)]);
-    }
-    return (q);
+  auto * q = new OctreeNodeBranch(this);
+
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::ZERO);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::ZERO)]);
   }
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::ONE);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::ONE)]);
+  }
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::TWO);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::TWO)]);
+  }
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::THREE);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::THREE)]);
+  }
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::FOUR);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::FOUR)]);
+  }
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::FIVE);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::FIVE)]);
+  }
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::SIX);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::SIX)]);
+  }
+  {
+    OctreeNode * newbranch = q->GetLeaf(OctreeNode::LeafIdentifierEnum::SEVEN);
+    newbranch->SetBranch(nodeArray[static_cast<uint8_t>(OctreeNode::LeafIdentifierEnum::SEVEN)]);
+  }
+  return (q);
 }
 
 template <typename TPixel, unsigned int ColorTableSize, typename MappingFunctionType>
@@ -225,9 +225,9 @@ Octree<TPixel, ColorTableSize, MappingFunctionType>::BuildFromBuffer(const void 
                                                                      const unsigned int ysize,
                                                                      const unsigned int zsize)
 {
-  unsigned int maxSize = xsize >= ysize ? (xsize >= zsize ? xsize : zsize) : (ysize >= zsize ? ysize : zsize);
-  unsigned int width = 1;
-  unsigned int depth = 0;
+  const unsigned int maxSize = xsize >= ysize ? (xsize >= zsize ? xsize : zsize) : (ysize >= zsize ? ysize : zsize);
+  unsigned int       width = 1;
+  unsigned int       depth = 0;
 
   while (width < maxSize)
   {

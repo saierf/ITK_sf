@@ -105,8 +105,8 @@ public:
       in which case the SliceDimension is also one dimensional. */
   static constexpr unsigned int SliceDimension = ImageDimension - (ImageDimension > 1);
 
-  /** Dimension of the image available at run time. */
-  static unsigned int
+  /** Dimension of the image available at compile-time and at run time. */
+  static constexpr unsigned int
   GetImageDimension()
   {
     return ImageDimension;
@@ -280,11 +280,11 @@ public:
    * We take into account the fact that each voxel has its
    * center at the integer coordinate and extends half way
    * to the next integer coordinate, inclusive on all sides. */
-  template <typename TCoordRepType>
+  template <typename TCoordinate>
   bool
-  IsInside(const ContinuousIndex<TCoordRepType, VImageDimension> & index) const
+  IsInside(const ContinuousIndex<TCoordinate, VImageDimension> & index) const
   {
-    constexpr TCoordRepType half = 0.5;
+    constexpr TCoordinate half = 0.5;
     for (unsigned int i = 0; i < ImageDimension; ++i)
     {
       // Use negation of tests so that index[i]==NaN leads to returning false.
@@ -413,7 +413,7 @@ private:
 
 // Deduction guide to avoid compiler warnings (-wctad-maybe-unsupported) when using class template argument deduction.
 template <unsigned int VImageDimension>
-ImageRegion(const Index<VImageDimension> &, const Size<VImageDimension> &)->ImageRegion<VImageDimension>;
+ImageRegion(const Index<VImageDimension> &, const Size<VImageDimension> &) -> ImageRegion<VImageDimension>;
 
 
 template <unsigned int VImageDimension>
@@ -424,11 +424,11 @@ operator<<(std::ostream & os, const ImageRegion<VImageDimension> & region);
 
 namespace std
 {
-#if defined(__clang__)
-#  pragma GCC diagnostic push
-// Old Clang compiler versions (before Clang 7.0.0) produced some unimportant warnings, like: "warning: 'tuple_size'
-// defined as a struct template here but previously declared as a class template"
-#  pragma GCC diagnostic ignored "-Wmismatched-tags"
+#if defined(__clang__) && defined(__apple_build_version__) && (__clang_major__ <= 10)
+#  pragma clang diagnostic push
+// Old AppleClang 10.0.0 (Xcode 10.1, newest on macOS 10.13) produced some unimportant warnings, like:
+// "warning: 'tuple_size' defined as a struct template here but previously declared as a class template"
+#  pragma clang diagnostic ignored "-Wmismatched-tags"
 #endif
 
 // NOLINTBEGIN(cert-dcl58-cpp)
@@ -456,8 +456,8 @@ struct tuple_element<VTupleIndex, itk::ImageRegion<VImageDimension>>
 
 // NOLINTEND(cert-dcl58-cpp)
 
-#if defined(__clang__)
-#  pragma GCC diagnostic pop
+#if defined(__clang__) && defined(__apple_build_version__) && (__clang_major__ <= 10)
+#  pragma clang diagnostic pop
 #endif
 } // namespace std
 

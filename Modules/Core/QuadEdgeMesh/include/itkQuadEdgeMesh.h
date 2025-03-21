@@ -43,7 +43,7 @@ namespace itk
  * \author Alexandre Gouaillard, Leonardo Florez-Valencia, Eric Boix
  *
  * This implementation was contributed as a paper to the Insight Journal
- * https://www.insight-journal.org/browse/publication/122
+ * https://doi.org/10.54294/4mx7kk
  *
  * \ingroup ITKQuadEdgeMesh
  */
@@ -71,7 +71,7 @@ public:
 
   /** Types defined in superclass. */
   using typename Superclass::CellPixelType;
-  using typename Superclass::CoordRepType;
+  using typename Superclass::CoordinateType;
   using typename Superclass::PointIdentifier;
   using typename Superclass::PointHashType;
   using typename Superclass::PointType;
@@ -83,7 +83,7 @@ public:
   // Point section:
   using typename Superclass::PointsContainer;
   using typename Superclass::PointsContainerPointer;
-  using CoordRepArrayType = CoordRepType[Self::PointDimension];
+  using CoordRepArrayType = CoordinateType[Self::PointDimension];
 
   // Point data section:
   using typename Superclass::PointDataContainer;
@@ -410,7 +410,7 @@ public:
   FindEdgeCell(const PointIdentifier & pid0, const PointIdentifier & pid1) const;
 
   ///  Compute the euclidean length of argument edge
-  CoordRepType
+  CoordinateType
   ComputeEdgeLength(QEPrimal * e);
 
   PointIdentifier
@@ -424,11 +424,6 @@ public:
 
   PointIdentifier
   Splice(QEPrimal * a, QEPrimal * b);
-
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
-  // End concept checking
-#endif
 
   // for reusability of a mesh in the MeshToMesh filter
   void

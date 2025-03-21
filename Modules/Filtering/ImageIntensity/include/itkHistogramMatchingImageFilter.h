@@ -60,10 +60,7 @@ namespace itk
  * type and that the input and output image type have the same number of
  * dimension and have scalar pixel types.
  *
- * \par REFERENCE
- * Laszlo G. Nyul, Jayaram K. Udupa, and Xuan Zhang, "New Variants of a Method
- * of MRI Scale Standardization", IEEE Transactions on Medical Imaging,
- * 19(2):143-150, 2000.
+ * For algorithmic details see \cite nyul2000.
  *
  * \ingroup IntensityImageFilters MultiThreaded
  *
@@ -170,8 +167,6 @@ public:
   itkGetModifiableObjectMacro(SourceHistogram, HistogramType);
   itkGetModifiableObjectMacro(OutputHistogram, HistogramType);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(IntConvertibleToInputCheck, (Concept::Convertible<int, InputPixelType>));
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<ImageDimension, OutputImageDimension>));
   itkConceptMacro(DoubleConvertibleToInputCheck, (Concept::Convertible<double, InputPixelType>));
@@ -179,8 +174,6 @@ public:
   itkConceptMacro(InputConvertibleToDoubleCheck, (Concept::Convertible<InputPixelType, double>));
   itkConceptMacro(OutputConvertibleToDoubleCheck, (Concept::Convertible<OutputPixelType, double>));
   itkConceptMacro(SameTypeCheck, (Concept::SameType<InputPixelType, OutputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   HistogramMatchingImageFilter();

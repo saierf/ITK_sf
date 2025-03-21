@@ -74,8 +74,8 @@ public:
   inline TOutput
   operator()(const TInput & x) const
   {
-    RealType value = static_cast<RealType>(x) * m_Factor + m_Offset;
-    auto     result = static_cast<TOutput>(value);
+    const RealType value = static_cast<RealType>(x) * m_Factor + m_Offset;
+    auto           result = static_cast<TOutput>(value);
 
     result = (result > m_Maximum) ? m_Maximum : result;
     result = (result < m_Minimum) ? m_Minimum : result;
@@ -183,14 +183,10 @@ public:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputPixelType>));
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputPixelType>));
   itkConceptMacro(RealTypeMultiplyOperatorCheck, (Concept::MultiplyOperator<RealType>));
   itkConceptMacro(RealTypeAdditiveOperatorsCheck, (Concept::AdditiveOperators<RealType>));
-  // End concept checking
-#endif
 
 protected:
   RescaleIntensityImageFilter();

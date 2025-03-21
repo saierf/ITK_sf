@@ -54,15 +54,15 @@ namespace itk
  *
  * \ingroup ITKImageGrid
  */
-template <typename TInputImage, typename TCoordRep = double>
+template <typename TInputImage, typename TCoordinate = double>
 class ITK_TEMPLATE_EXPORT BSplineControlPointImageFunction
-  : public ImageFunction<TInputImage, typename TInputImage::PixelType, TCoordRep>
+  : public ImageFunction<TInputImage, typename TInputImage::PixelType, TCoordinate>
 {
 public:
   ITK_DISALLOW_COPY_AND_MOVE(BSplineControlPointImageFunction);
 
   using Self = BSplineControlPointImageFunction;
-  using Superclass = ImageFunction<TInputImage, typename TInputImage::PixelType, TCoordRep>;
+  using Superclass = ImageFunction<TInputImage, typename TInputImage::PixelType, TCoordinate>;
   using Pointer = SmartPointer<Self>;
   using ConstPointer = SmartPointer<const Self>;
 
@@ -78,7 +78,11 @@ public:
   /** Image type alias support */
   using ControlPointLatticeType = TInputImage;
   using InputImageType = TInputImage;
-  using CoordRepType = TCoordRep;
+  using CoordinateType = TCoordinate;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#endif
   using PixelType = typename InputImageType::PixelType;
   using RegionType = typename InputImageType::RegionType;
   using IndexType = typename InputImageType::IndexType;
@@ -91,12 +95,12 @@ public:
 
   /** Output type alias support */
   using OutputType = PixelType;
-  using GradientType = VariableSizeMatrix<CoordRepType>;
-  using HessianComponentType = VariableSizeMatrix<CoordRepType>;
+  using GradientType = VariableSizeMatrix<CoordinateType>;
+  using HessianComponentType = VariableSizeMatrix<CoordinateType>;
 
   /** Other type alias */
   using ArrayType = FixedArray<unsigned int, ImageDimension>;
-  using RealImageType = Image<CoordRepType, ImageDimension>;
+  using RealImageType = Image<CoordinateType, ImageDimension>;
   using RealImagePointer = typename RealImageType::Pointer;
   using typename Superclass::ContinuousIndexType;
   using RealType = float;
@@ -300,7 +304,7 @@ private:
   typename KernelOrder2Type::Pointer m_KernelOrder2{};
   typename KernelOrder3Type::Pointer m_KernelOrder3{};
 
-  CoordRepType m_BSplineEpsilon{};
+  CoordinateType m_BSplineEpsilon{};
 };
 
 } // end namespace itk

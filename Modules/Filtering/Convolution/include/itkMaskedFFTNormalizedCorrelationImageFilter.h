@@ -125,11 +125,7 @@ namespace itk
  * type. You will get a compilation error if the pixel type of the
  * output image is not float or double.
  *
- * References:
- * 1) D. Padfield. "Masked object registration in the Fourier domain."
- * Transactions on Image Processing.
- * 2) D. Padfield. "Masked FFT registration". In Proc. Computer
- * Vision and Pattern Recognition, 2010.
+ * For algorithmic details see \cite padfield2012 and \cite padfield2010.
  *
  * \author: Dirk Padfield, GE Global Research, padfield\@research.ge.com
  * \ingroup ITKConvolution
@@ -216,11 +212,7 @@ public:
   /** Get the maximum number of overlapping pixels. */
   itkGetMacro(MaximumNumberOfOverlappingPixels, SizeValueType);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputPixelTypeIsFloatingPointCheck, (Concept::IsFloatingPoint<OutputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   MaskedFFTNormalizedCorrelationImageFilter()

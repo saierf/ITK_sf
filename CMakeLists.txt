@@ -10,7 +10,7 @@
 # CMake versions greater than the ITK_NEWEST_VALIDATED_POLICIES_VERSION policies will
 # continue to generate policy warnings "CMake Warning (dev)...Policy CMP0XXX is not set:"
 #
-set(ITK_OLDEST_VALIDATED_POLICIES_VERSION "3.16.3")
+set(ITK_OLDEST_VALIDATED_POLICIES_VERSION "3.22.1")
 set(ITK_NEWEST_VALIDATED_POLICIES_VERSION "3.29.0")
 cmake_minimum_required(VERSION ${ITK_OLDEST_VALIDATED_POLICIES_VERSION}...${ITK_NEWEST_VALIDATED_POLICIES_VERSION}
                        FATAL_ERROR)
@@ -494,11 +494,11 @@ option(
 mark_as_advanced(ITK_USE_64BITS_IDS)
 
 # ITK turn on concept checking
-option(
-  ITK_USE_CONCEPT_CHECKING
-  "Turn on concept checking to give helpful errors at compile time if a type cannot be used as a template parameter."
-  ON)
-mark_as_advanced(ITK_USE_CONCEPT_CHECKING)
+if(ITK_USE_CONCEPT_CHECKING)
+  message(
+    WARNING
+      "Ignoring ITK_USE_CONCEPT_CHECKING, as concept checking is performed unconditionally. This variable is no longer used")
+endif()
 if(ITK_USE_STRICT_CONCEPT_CHECKING)
   message(
     WARNING
@@ -541,6 +541,9 @@ mark_as_advanced(ITK_COMPUTER_MEMORY_SIZE)
 # spacing/direction/origin to single precision
 option(ITK_USE_FLOAT_SPACE_PRECISION "Use single precision for origin/spacing/directions in itk::Image" OFF)
 mark_as_advanced(ITK_USE_FLOAT_SPACE_PRECISION)
+if( ITK_USE_FLOAT_SPACE_PRECISION AND ITK_WRAP_PYTHON)
+  message(FATAL_ERROR "ITK_USE_FLOAT_SPACE_PRECISION=ON not supported with ITK_WRAP_PYTHON=ON")
+endif()
 
 # This flag allows to not build itkTestDrivers while still configuring all the tests and disable all
 # tests that are implemented in the `test` folder in each ITK module. It does not disable tests
@@ -578,8 +581,6 @@ add_subdirectory(Modules/Remote)
 # Enable modules according to user inputs and the module dependency DAG.
 include(ITKModuleEnablement)
 
-# Setup clang-format for code style enforcement
-include(ITKClangFormatSetup)
 # Setup clang-tidy for code best-practices enforcement for C++11
 include(ITKClangTidySetup)
 #----------------------------------------------------------------------

@@ -899,7 +899,7 @@ protected:
   progressFixedToFloat(uint32_t fixed)
   {
     return static_cast<double>(fixed) / static_cast<double>(std::numeric_limits<uint32_t>::max());
-  };
+  }
 
   /**
    * Internal method convert floating point progress [0.0, 1.0] to internal integer representation. Values outside the
@@ -916,9 +916,9 @@ protected:
     {
       return std::numeric_limits<uint32_t>::max();
     }
-    double temp = static_cast<double>(f) * std::numeric_limits<uint32_t>::max();
+    const double temp = static_cast<double>(f) * std::numeric_limits<uint32_t>::max();
     return static_cast<uint32_t>(temp);
-  };
+  }
 
 
   /** Sets the required number of outputs, and creates each of them by MakeOutput. */

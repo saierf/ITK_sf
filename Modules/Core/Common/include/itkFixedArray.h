@@ -103,8 +103,16 @@ public:
     {
       return ReverseIterator(m_Iterator++);
     }
-    Iterator    operator->() const { return (m_Iterator - 1); }
-    ValueType & operator*() const { return *(m_Iterator - 1); }
+    Iterator
+    operator->() const
+    {
+      return (m_Iterator - 1);
+    }
+    ValueType &
+    operator*() const
+    {
+      return *(m_Iterator - 1);
+    }
 
     bool
     operator==(const ReverseIterator & rit) const
@@ -150,8 +158,16 @@ public:
     {
       return ConstReverseIterator(m_Iterator++);
     }
-    ConstIterator     operator->() const { return (m_Iterator - 1); }
-    const ValueType & operator*() const { return *(m_Iterator - 1); }
+    ConstIterator
+    operator->() const
+    {
+      return (m_Iterator - 1);
+    }
+    const ValueType &
+    operator*() const
+    {
+      return *(m_Iterator - 1);
+    }
 
     bool
     operator==(const ConstReverseIterator & rit) const
@@ -164,6 +180,9 @@ public:
   private:
     ConstIterator m_Iterator;
   };
+
+  /** The type of an element. */
+  using value_type = TValue;
 
   /** A pointer to the ValueType. */
   using pointer = ValueType *;
@@ -260,20 +279,20 @@ public:
 
   /** Allow the FixedArray to be indexed normally.  No bounds checking is done.
    */
-// false positive warnings with GCC
-#if defined(__GNUC__)
-#  if (__GNUC__ >= 7)
-#    pragma GCC diagnostic push
-#    pragma GCC diagnostic ignored "-Warray-bounds"
-#  endif
-#endif
-  constexpr reference       operator[](unsigned int index) { return m_InternalArray[index]; }
-  constexpr const_reference operator[](unsigned int index) const { return m_InternalArray[index]; }
-#if defined(__GNUC__)
-#  if (__GNUC__ >= 7)
-#    pragma GCC diagnostic pop
-#  endif
-#endif
+  // false positive warnings with GCC
+  ITK_GCC_PRAGMA_PUSH
+  ITK_GCC_SUPPRESS_Warray_bounds
+  constexpr reference
+  operator[](unsigned int index)
+  {
+    return m_InternalArray[index];
+  }
+  constexpr const_reference
+  operator[](unsigned int index) const
+  {
+    return m_InternalArray[index];
+  }
+  ITK_GCC_PRAGMA_POP
 
   /** Set/Get element methods are more convenient in wrapping languages */
   void
@@ -329,16 +348,16 @@ public:
   End() const;
 
   /** Get a begin ReverseIterator. */
-  itkLegacyMacro(ReverseIterator rBegin());
+  itkLegacyMacro(ReverseIterator rBegin();)
 
   /** Get a begin ConstReverseIterator. */
-  itkLegacyMacro(ConstReverseIterator rBegin() const);
+  itkLegacyMacro(ConstReverseIterator rBegin() const;)
 
   /** Get an end ReverseIterator. */
-  itkLegacyMacro(ReverseIterator rEnd());
+  itkLegacyMacro(ReverseIterator rEnd();)
 
   /** Get an end ConstReverseIterator. */
-  itkLegacyMacro(ConstReverseIterator rEnd() const);
+  itkLegacyMacro(ConstReverseIterator rEnd() const;)
 
   constexpr const_iterator
   cbegin() const noexcept
@@ -427,7 +446,7 @@ public:
   Fill(const ValueType &);
 
   void
-  swap(FixedArray & other)
+  swap(FixedArray & other) noexcept
   {
     std::swap(m_InternalArray, other.m_InternalArray);
   }
@@ -452,7 +471,7 @@ operator<<(std::ostream & os, const FixedArray<TValue, VLength> & arr);
 
 template <typename TValue, unsigned int VLength>
 inline void
-swap(FixedArray<TValue, VLength> & a, FixedArray<TValue, VLength> & b)
+swap(FixedArray<TValue, VLength> & a, FixedArray<TValue, VLength> & b) noexcept
 {
   a.swap(b);
 }

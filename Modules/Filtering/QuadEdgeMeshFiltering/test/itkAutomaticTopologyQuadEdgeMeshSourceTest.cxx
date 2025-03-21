@@ -35,9 +35,7 @@ itkAutomaticTopologyQuadEdgeMeshSourceTest(int, char *[])
   using IdentifierType = MeshSourceType::IdentifierType;
   using IdentifierArrayType = MeshSourceType::IdentifierArrayType;
 
-  MeshSourceType::Pointer meshSource;
-
-  meshSource = MeshSourceType::New();
+  MeshSourceType::Pointer meshSource = MeshSourceType::New();
 
   // Begin using various AddPoint functions to add the vertices of a
   // cube.
@@ -214,8 +212,8 @@ itkAutomaticTopologyQuadEdgeMeshSourceTest(int, char *[])
   std::cout << mesh->GetNumberOfPoints() << " points:" << std::endl;
   for (i = 0; i < mesh->GetNumberOfPoints(); ++i)
   {
-    PointType point;
-    bool      dummy = mesh->GetPoint(i, &point);
+    PointType  point;
+    const bool dummy = mesh->GetPoint(i, &point);
     if (dummy)
     {
       std::cout << i << ": " << point << std::endl;

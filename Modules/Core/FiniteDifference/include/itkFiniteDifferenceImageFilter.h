@@ -178,8 +178,7 @@ public:
   itkGetConstReferenceObjectMacro(DifferenceFunction, FiniteDifferenceFunctionType);
 
   /** This method sets the pointer to a FiniteDifferenceFunction object that
-   * will be used by the filter to calculate updates at image pixels.
-   * \returns A FiniteDifferenceObject pointer. */
+   * will be used by the filter to calculate updates at image pixels. */
   itkSetObjectMacro(DifferenceFunction, FiniteDifferenceFunctionType);
 
   /** Set/Get the number of iterations that the filter will run. */
@@ -222,11 +221,7 @@ public:
     this->SetIsInitialized(true);
   }
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputPixelIsFloatingPointCheck, (Concept::IsFloatingPoint<OutputPixelValueType>));
-  // End concept checking
-#endif
 
 protected:
   FiniteDifferenceImageFilter();

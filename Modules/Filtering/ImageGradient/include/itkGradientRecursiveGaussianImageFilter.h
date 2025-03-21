@@ -171,13 +171,9 @@ public:
   itkGetConstMacro(UseImageDirection, bool);
   itkBooleanMacro(UseImageDirection);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   // Does not seem to work with wrappings, disabled
   // itkConceptMacro( InputHasNumericTraitsCheck,
   //                 ( Concept::HasNumericTraits< PixelType > ) );
-  // End concept checking
-#endif
 
 protected:
   GradientRecursiveGaussianImageFilter();
@@ -202,7 +198,7 @@ private:
   TransformOutputPixel(ImageRegionIterator<VectorImage<TValue, ImageDimension>> & it)
   {
     // To transform Variable length vector we need to convert to and
-    // fro the CovariantVectorType
+    // from the CovariantVectorType
     const CovariantVectorType gradient(it.Get().GetDataPointer());
     CovariantVectorType       physicalGradient;
     it.GetImage()->TransformLocalVectorToPhysicalVector(gradient, physicalGradient);

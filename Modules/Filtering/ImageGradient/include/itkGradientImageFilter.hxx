@@ -53,8 +53,8 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  InputImagePointer  inputPtr = const_cast<InputImageType *>(this->GetInput());
-  OutputImagePointer outputPtr = this->GetOutput();
+  const InputImagePointer  inputPtr = const_cast<InputImageType *>(this->GetInput());
+  const OutputImagePointer outputPtr = this->GetOutput();
 
   if (!inputPtr || !outputPtr)
   {
@@ -75,21 +75,19 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
     inputPtr->SetRequestedRegion(inputRequestedRegion);
     return;
   }
-  else
-  {
-    // Couldn't crop the region (requested region is outside the largest
-    // possible region).  Throw an exception.
 
-    // store what we tried to request (prior to trying to crop)
-    inputPtr->SetRequestedRegion(inputRequestedRegion);
+  // Couldn't crop the region (requested region is outside the largest
+  // possible region).  Throw an exception.
 
-    // build an exception
-    InvalidRequestedRegionError e(__FILE__, __LINE__);
-    e.SetLocation(ITK_LOCATION);
-    e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
-    e.SetDataObject(inputPtr);
-    throw e;
-  }
+  // store what we tried to request (prior to trying to crop)
+  inputPtr->SetRequestedRegion(inputRequestedRegion);
+
+  // build an exception
+  InvalidRequestedRegionError e(__FILE__, __LINE__);
+  e.SetLocation(ITK_LOCATION);
+  e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
+  e.SetDataObject(inputPtr);
+  throw e;
 }
 
 template <typename TInputImage, typename TOperatorValueType, typename TOutputValueType, typename TOutputImageType>
@@ -98,7 +96,7 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
   const OutputImageRegionType & outputRegionForThread)
 {
 
-  NeighborhoodInnerProduct<InputImageType, OperatorValueType, OutputValueType> SIP;
+  const NeighborhoodInnerProduct<InputImageType, OperatorValueType, OutputValueType> SIP;
 
   OutputImageType *      outputImage = this->GetOutput();
   const InputImageType * inputImage = this->GetInput();
@@ -208,8 +206,8 @@ GradientImageFilter<TInputImage, TOperatorValueType, TOutputValueType, TOutputIm
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "UseImageSpacing: " << (m_UseImageSpacing ? "On" : "Off") << std::endl;
-  os << indent << "UseImageDirection: " << (m_UseImageDirection ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(UseImageSpacing);
+  itkPrintSelfBooleanMacro(UseImageDirection);
 
   os << indent << "BoundaryCondition: ";
   if (m_BoundaryCondition != nullptr)

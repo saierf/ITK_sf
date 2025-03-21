@@ -39,6 +39,7 @@ namespace itk
 /** \class MINCTransformAdapter
  * \ingroup  ITKIOTransformMINC
  * \brief ITK wrapper around MINC general transform functions, supports all the transformations that MINC XFM supports
+ *        note, this wrapper does not take into account RAS to LPS conversion flag, and always assumes MINC convention
  *
  * \author Vladimir S. FONOV
  *         Brain Imaging Center, Montreal Neurological Institute, McGill University, Montreal Canada 2012
@@ -128,9 +129,9 @@ public:
   void
   estimate_local_jacobian(const InputPointType & orig, vnl_matrix_fixed<double, 3, 3> & m)
   {
-    double       u1, v1, w1;
-    double       u2, v2, w2;
-    const double delta = 1e-4;
+    double           u1, v1, w1;
+    double           u2, v2, w2;
+    constexpr double delta = 1e-4;
 
     general_transform_point((m_Invert ? &m_Xfm_inv : &m_Xfm), orig[0] - delta, orig[1], orig[2], &u1, &v1, &w1);
     general_transform_point((m_Invert ? &m_Xfm_inv : &m_Xfm), orig[0] + delta, orig[1], orig[2], &u2, &v2, &w2);

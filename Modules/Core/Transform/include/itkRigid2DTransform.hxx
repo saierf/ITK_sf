@@ -73,7 +73,7 @@ Rigid2DTransform<TParametersValueType>::SetMatrix(const MatrixType & matrix, con
   itkDebugMacro("setting  m_Matrix  to " << matrix);
   // The matrix must be orthogonal otherwise it is not
   // representing a valid rotation in 2D space
-  typename MatrixType::InternalMatrixType test = matrix.GetVnlMatrix() * matrix.GetTranspose();
+  const typename MatrixType::InternalMatrixType test = matrix.GetVnlMatrix() * matrix.GetTranspose();
 
   if (!test.is_identity(tolerance))
   {
@@ -101,7 +101,7 @@ Rigid2DTransform<TParametersValueType>::ComputeMatrixParameters()
   m_Angle = std::acos(r[0][0]);
   if (r[1][0] < 0.0)
   {
-    m_Angle = -m_Angle;
+    m_Angle *= -1;
   }
 
   if (r[1][0] - std::sin(m_Angle) > 0.000001)
@@ -292,7 +292,7 @@ Rigid2DTransform<TParametersValueType>::ComputeJacobianWithRespectToParameters(c
   j[1][0] = ca * (p[0] - cx) - sa * (p[1] - cy);
 
   // compute derivatives for the translation part
-  unsigned int blockOffset = 1;
+  constexpr unsigned int blockOffset = 1;
   for (unsigned int dim = 0; dim < OutputSpaceDimension; ++dim)
   {
     j[dim][blockOffset + dim] = 1.0;

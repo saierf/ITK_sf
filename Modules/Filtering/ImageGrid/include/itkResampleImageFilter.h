@@ -49,7 +49,7 @@ namespace itk
  * number of tissue types.  For such an image, one does not want to
  * interpolate between different pixel values, and so
  * NearestNeighborInterpolateImageFunction< InputImageType,
- * TCoordRep > would be a better choice.
+ * TCoordinate > would be a better choice.
  *
  * If an sample is taken from outside the image domain, the default behavior is
  * to use a default pixel value.  If different behavior is desired, an
@@ -270,11 +270,7 @@ public:
   itkBooleanMacro(UseReferenceImage);
   itkGetConstMacro(UseReferenceImage, bool);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<PixelComponentType>));
-  // End concept checking
-#endif
 
 protected:
   ResampleImageFilter();
@@ -344,10 +340,12 @@ protected:
   virtual void
   LinearThreadedGenerateData(const OutputImageRegionType & outputRegionForThread);
 
+#if !defined(ITK_LEGACY_REMOVE)
   /** Cast pixel from interpolator output to PixelType. */
   itkLegacyMacro(virtual PixelType CastPixelWithBoundsChecking(const InterpolatorOutputType value,
                                                                const ComponentType          minComponent,
-                                                               const ComponentType          maxComponent) const);
+                                                               const ComponentType          maxComponent) const;)
+#endif
 
 private:
   static PixelComponentType

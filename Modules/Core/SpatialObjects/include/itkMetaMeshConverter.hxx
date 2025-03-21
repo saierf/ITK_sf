@@ -156,7 +156,7 @@ MetaMeshConverter<VDimension, PixelType, TMeshTraits>::MetaObjectToSpatialObject
   {
     typename MeshType::PointCellLinksContainer pcl;
 
-    std::list<int>::const_iterator it_link = (*it_links)->m_Links.begin();
+    auto it_link = (*it_links)->m_Links.begin();
     while (it_link != (*it_links)->m_Links.end())
     {
       pcl.insert(*it_link);
@@ -214,7 +214,7 @@ MetaMeshConverter<VDimension, PixelType, TMeshTraits>::SpatialObjectToMetaObject
   }
   auto * metamesh = new MeshMetaObjectType(VDimension);
 
-  typename MeshType::ConstPointer mesh = meshSO->GetMesh();
+  const typename MeshType::ConstPointer mesh = meshSO->GetMesh();
 
   if (!mesh)
   {
@@ -249,8 +249,8 @@ MetaMeshConverter<VDimension, PixelType, TMeshTraits>::SpatialObjectToMetaObject
 
   while (it_cells != cells->End())
   {
-    unsigned int celldim = (*it_cells)->Value()->GetNumberOfPoints();
-    auto *       cell = new MeshCell(celldim);
+    const unsigned int celldim = (*it_cells)->Value()->GetNumberOfPoints();
+    auto *             cell = new MeshCell(celldim);
 
     typename MeshType::CellTraits::PointIdConstIterator itptids = (*it_cells)->Value()->GetPointIds();
     unsigned int                                        i = 0;
@@ -261,7 +261,7 @@ MetaMeshConverter<VDimension, PixelType, TMeshTraits>::SpatialObjectToMetaObject
     }
     cell->m_Id = (*it_cells)->Index();
 
-    CellGeometryEnum geom = (*it_cells)->Value()->GetType();
+    const CellGeometryEnum geom = (*it_cells)->Value()->GetType();
 
     switch (geom)
     {

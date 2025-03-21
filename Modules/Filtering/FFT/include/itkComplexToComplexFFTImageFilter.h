@@ -34,9 +34,7 @@ class ComplexToComplexFFTImageFilterEnums
 {
 public:
   /**
-   * \class TransformDirection
    * \ingroup ITKFFT
-   * \ingroup FourierTransform
    * */
   enum class TransformDirection : uint8_t
   {
@@ -46,7 +44,7 @@ public:
 };
 // Define how to print enumeration
 extern ITKFFT_EXPORT std::ostream &
-                     operator<<(std::ostream & out, const ComplexToComplexFFTImageFilterEnums::TransformDirection value);
+operator<<(std::ostream & out, const ComplexToComplexFFTImageFilterEnums::TransformDirection value);
 
 /**
  * \class ComplexToComplexFFTImageFilter
@@ -64,7 +62,7 @@ extern ITKFFT_EXPORT std::ostream &
  * official view of NCRR or NIH.
  *
  * This class was taken from the Insight Journal paper:
- * https://www.insight-journal.org/browse/publication/128
+ * https://doi.org/10.54294/h4j7t7
  *
  * \ingroup FourierTransform
  * \ingroup ITKFFT

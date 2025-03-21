@@ -38,7 +38,7 @@ public:
 };
 } // namespace
 
-#define MAXRUNS 5 // maximum number of runs
+constexpr unsigned int MAXRUNS = 5; // maximum number of runs
 
 template <unsigned int VImageDimension>
 int
@@ -62,23 +62,15 @@ testMinMaxCurvatureFlow(itk::Size<VImageDimension> & size,
 int
 itkMinMaxCurvatureFlowImageFilterTest(int, char *[])
 {
-
-  double        radius;
-  int           numberOfRuns;
-  unsigned int  niter[MAXRUNS];
-  unsigned long radii[MAXRUNS];
-
   itk::Size<2> size2D;
   size2D[0] = 32;
   size2D[1] = 32;
-  radius = 10.0;
+  double radius = 10.0;
   // numberOfRuns = 2;  /* reduced to speedup purify */
-  numberOfRuns = 1;
-  niter[0] = 100;
-  niter[1] = 100;
-  radii[0] = 1;
-  radii[1] = 3;
-  int err2D = testMinMaxCurvatureFlow(size2D, radius, numberOfRuns, niter, radii);
+  int           numberOfRuns = 1;
+  unsigned int  niter[MAXRUNS] = { 100, 100 };
+  unsigned long radii[MAXRUNS] = { 1, 3 };
+  const int     err2D = testMinMaxCurvatureFlow(size2D, radius, numberOfRuns, niter, radii);
 
 
   /* Dummy tests to test 3D and ND.
@@ -96,7 +88,7 @@ itkMinMaxCurvatureFlowImageFilterTest(int, char *[])
   // niter[0] = 20;  /* reduced to speedup purify */
   niter[0] = 1;
   radii[1] = 1;
-  int err3D = testMinMaxCurvatureFlow(size3D, radius, numberOfRuns, niter, radii);
+  const int err3D = testMinMaxCurvatureFlow(size3D, radius, numberOfRuns, niter, radii);
 
   itk::Size<4> size4D;
   size4D[0] = 8;
@@ -108,7 +100,7 @@ itkMinMaxCurvatureFlowImageFilterTest(int, char *[])
   numberOfRuns = 1;
   niter[0] = 1;
   radii[1] = 1;
-  int err4D = testMinMaxCurvatureFlow(size4D, radius, numberOfRuns, niter, radii);
+  const int err4D = testMinMaxCurvatureFlow(size4D, radius, numberOfRuns, niter, radii);
 
   std::cout << "2D Test passed: " << !err2D << std::endl;
   std::cout << "3D Test passed: " << !err3D << std::endl;
@@ -148,10 +140,10 @@ testMinMaxCurvatureFlow(itk::Size<VImageDimension> & size,         // ND image s
    * Create an image containing a circle/sphere with intensity of 0
    * and background of 255 with added salt and pepper noise.
    */
-  double    sqrRadius = itk::Math::sqr(radius); // radius of the circle/sphere
-  double    fractionNoise = 0.30;               // salt & pepper noise fraction
-  PixelType foreground = 0.0;                   // intensity value of the foreground
-  PixelType background = 255.0;                 // intensity value of the background
+  const double        sqrRadius = itk::Math::sqr(radius); // radius of the circle/sphere
+  constexpr double    fractionNoise = 0.30;               // salt & pepper noise fraction
+  constexpr PixelType foreground = 0.0;                   // intensity value of the foreground
+  constexpr PixelType background = 255.0;                 // intensity value of the background
 
   std::cout << "Create an image of circle/sphere with noise" << std::endl;
   auto circleImage = ImageType::New();
@@ -205,9 +197,9 @@ testMinMaxCurvatureFlow(itk::Size<VImageDimension> & size,         // ND image s
   denoiser->SetTimeStep(0.05);
 
   // attach a progress watcher to the denoiser
-  ShowProgressObject                                    progressWatch(denoiser);
-  itk::SimpleMemberCommand<ShowProgressObject>::Pointer command;
-  command = itk::SimpleMemberCommand<ShowProgressObject>::New();
+  ShowProgressObject                                          progressWatch(denoiser);
+  const itk::SimpleMemberCommand<ShowProgressObject>::Pointer command =
+    itk::SimpleMemberCommand<ShowProgressObject>::New();
   command->SetCallbackFunction(&progressWatch, &ShowProgressObject::ShowProgress);
   denoiser->AddObserver(itk::ProgressEvent(), command);
 
@@ -248,14 +240,14 @@ testMinMaxCurvatureFlow(itk::Size<VImageDimension> & size,         // ND image s
 
   IteratorType outIter(swapPointer, swapPointer->GetBufferedRegion());
 
-  PixelType tolerance = itk::Math::abs(foreground - background) * 0.1;
+  const PixelType tolerance = itk::Math::abs(foreground - background) * 0.1;
 
   unsigned long numPixelsWrong = 0;
 
   for (; !outIter.IsAtEnd(); ++outIter)
   {
     typename ImageType::IndexType index = outIter.GetIndex();
-    PixelType                     value = outIter.Get();
+    const PixelType               value = outIter.Get();
 
     double lhs = 0.0;
     for (j = 0; j < ImageDimension; ++j)
@@ -275,7 +267,7 @@ testMinMaxCurvatureFlow(itk::Size<VImageDimension> & size,         // ND image s
     }
   }
 
-  double fractionWrong = static_cast<double>(numPixelsWrong) / static_cast<double>(region.GetNumberOfPixels());
+  const double fractionWrong = static_cast<double>(numPixelsWrong) / static_cast<double>(region.GetNumberOfPixels());
 
   std::cout << "Noise reduced from " << fractionNoise << " to ";
   std::cout << fractionWrong << std::endl;

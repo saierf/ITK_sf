@@ -27,13 +27,12 @@ ComputeAreaError(const SEType & k, unsigned int thickness = 0);
 int
 itkFlatStructuringElementTest(int, char *[])
 {
-  int  scalarRadius = 5;
-  int  scalarThickness = 2;
-  bool radiusIsParametric = true;
+  constexpr int  scalarRadius = 5;
+  constexpr int  scalarThickness = 2;
+  constexpr bool radiusIsParametric = true;
 
   using SE2Type = itk::FlatStructuringElement<2>;
-  SE2Type::RadiusType r2;
-  r2.Fill(scalarRadius);
+  auto r2 = itk::MakeFilled<SE2Type::RadiusType>(scalarRadius);
 
   SE2Type::Self result2{};
   result2.RadiusIsParametricOn();
@@ -223,7 +222,7 @@ ComputeAreaError(const SEType & k, unsigned int thickness)
     expectedInnerForegroundArea *= (k.GetRadius()[i] - thickness);
   }
 
-  float expectedForegroundArea = expectedOuterForegroundArea - expectedInnerForegroundArea;
+  const float expectedForegroundArea = expectedOuterForegroundArea - expectedInnerForegroundArea;
 
   // Show the neighborhood if it is 2D.
   typename SEType::ConstIterator SEIt;

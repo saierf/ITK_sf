@@ -57,7 +57,7 @@ public:
 };
 // Define how to print enumeration
 extern ITKRegistrationMethodsv4_EXPORT std::ostream &
-                                       operator<<(std::ostream & out, const ImageRegistrationMethodv4Enums::MetricSamplingStrategy value);
+operator<<(std::ostream & out, const ImageRegistrationMethodv4Enums::MetricSamplingStrategy value);
 
 /** \class ImageRegistrationMethodv4
  * \brief Interface method for the current registration framework.
@@ -384,8 +384,7 @@ public:
   {
     for (unsigned int level = 0; level < factors.Size(); ++level)
     {
-      ShrinkFactorsPerDimensionContainerType shrinkFactors;
-      shrinkFactors.Fill(factors[level]);
+      auto shrinkFactors = MakeFilled<ShrinkFactorsPerDimensionContainerType>(factors[level]);
       this->SetShrinkFactorsPerDimension(level, shrinkFactors);
     }
   }

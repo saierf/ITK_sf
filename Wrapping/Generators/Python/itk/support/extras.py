@@ -18,7 +18,8 @@
 
 import enum
 import re
-from typing import Optional, Union, Dict, Any, List, Tuple, Sequence, TYPE_CHECKING
+from typing import Optional, Union, Any, TYPE_CHECKING
+from collections.abc import Sequence
 from sys import stderr as system_error_stream
 
 import numpy as np
@@ -39,6 +40,7 @@ import itk.support.types as itkt
 from .helpers import wasm_type_from_image_type, image_type_from_wasm_type
 from .helpers import wasm_type_from_mesh_type, mesh_type_from_wasm_type, python_to_js
 from .helpers import wasm_type_from_pointset_type, pointset_type_from_wasm_type
+from .helpers import snake_to_camel_case
 
 from .xarray import xarray_from_image, image_from_xarray
 
@@ -47,7 +49,6 @@ if TYPE_CHECKING:
         import vtk
     except ImportError:
         pass
-
 
 __all__ = [
     "output",
@@ -363,8 +364,13 @@ def GetArrayViewFromImage(
 array_view_from_image = GetArrayViewFromImage
 
 
-def _GetImageFromArray(arr: ArrayLike, function_name: str, is_vector: bool,
-        ttype, need_contiguous:bool = True):
+def _GetImageFromArray(
+    arr: ArrayLike,
+    function_name: str,
+    is_vector: bool,
+    ttype,
+    need_contiguous: bool = True,
+):
     """Get an ITK image from a Python array."""
     import itk
 
@@ -421,7 +427,6 @@ Please specify an output type via the 'ttype' keyword parameter."""
         return templatedFunction(arr, is_vector)
 
 
-
 def GetImageFromArray(
     arr: ArrayLike, is_vector: bool = False, ttype=None
 ) -> "itkt.ImageBase":
@@ -473,8 +478,9 @@ def GetImageViewFromArray(
     array, since a copy is performed and care must be taken to keep a reference
     to the copied array. This warning can be suppressed with need_contiguous=False
     """
-    return _GetImageFromArray(arr, "GetImageViewFromArray", is_vector, ttype,
-            need_contiguous=need_contiguous)
+    return _GetImageFromArray(
+        arr, "GetImageViewFromArray", is_vector, ttype, need_contiguous=need_contiguous
+    )
 
 
 image_view_from_array = GetImageViewFromArray
@@ -754,7 +760,7 @@ def image_from_vtk_image(vtk_image: "vtk.vtkImageData") -> "itkt.ImageBase":
         dims = dims[:-1]  # 2D, not 3D
     dims.reverse()
     if is_vector:
-      dims.append(number_of_components)
+        dims.append(number_of_components)
     array.shape = tuple(dims)
     l_image = itk.image_view_from_array(array, is_vector)
 
@@ -785,14 +791,17 @@ def image_from_vtk_image(vtk_image: "vtk.vtkImageData") -> "itkt.ImageBase":
     return l_image
 
 
-def dict_from_image(image: "itkt.Image") -> Dict:
+def dict_from_image(image: "itkt.Image") -> dict:
     """Serialize a Python itk.Image object to a pickable Python dictionary."""
     import itk
 
     pixel_arr = itk.array_from_image(image)
     imageType = wasm_type_from_image_type(image)
     buffered_region = image.GetBufferedRegion()
-    bufferedRegion = { "index": tuple(buffered_region.GetIndex()), "size": tuple(buffered_region.GetSize())}
+    bufferedRegion = {
+        "index": tuple(buffered_region.GetIndex()),
+        "size": tuple(buffered_region.GetSize()),
+    }
     return dict(
         imageType=imageType,
         name=image.GetObjectName(),
@@ -805,7 +814,7 @@ def dict_from_image(image: "itkt.Image") -> Dict:
     )
 
 
-def image_from_dict(image_dict: Dict) -> "itkt.Image":
+def image_from_dict(image_dict: dict) -> "itkt.Image":
     """Deserialize an dictionary representing an itk.Image object."""
     import itk
 
@@ -834,7 +843,7 @@ def image_from_dict(image_dict: Dict) -> "itkt.Image":
     return image
 
 
-def mesh_from_dict(mesh_dict: Dict) -> "itkt.Mesh":
+def mesh_from_dict(mesh_dict: dict) -> "itkt.Mesh":
     """Deserialize an dictionary representing an itk.Mesh object."""
     import itk
 
@@ -862,7 +871,7 @@ def mesh_from_dict(mesh_dict: Dict) -> "itkt.Mesh":
     return mesh
 
 
-def dict_from_mesh(mesh: "itkt.Mesh") -> Dict:
+def dict_from_mesh(mesh: "itkt.Mesh") -> dict:
     """Serialize a Python itk.Mesh object to a pickable Python dictionary."""
     import itk
 
@@ -930,7 +939,7 @@ def dict_from_mesh(mesh: "itkt.Mesh") -> Dict:
     )
 
 
-def pointset_from_dict(pointset_dict: Dict) -> "itkt.PointSet":
+def pointset_from_dict(pointset_dict: dict) -> "itkt.PointSet":
     """Deserialize an dictionary representing an itk.PointSet object."""
     import itk
 
@@ -949,7 +958,7 @@ def pointset_from_dict(pointset_dict: Dict) -> "itkt.PointSet":
     return mesh
 
 
-def dict_from_pointset(pointset: "itkt.PointSet") -> Dict:
+def dict_from_pointset(pointset: "itkt.PointSet") -> dict:
     """Serialize a Python itk.PointSet object to a pickable Python dictionary."""
     import itk
 
@@ -961,9 +970,7 @@ def dict_from_pointset(pointset: "itkt.PointSet") -> Dict:
     if number_of_points == 0:
         points_array = np.array([], np.float32)
     else:
-        points_array = itk.array_from_vector_container(
-            pointset.GetPoints()
-        ).flatten()
+        points_array = itk.array_from_vector_container(pointset.GetPoints()).flatten()
 
     point_data = pointset.GetPointData()
     if point_data.Size() == 0:
@@ -995,7 +1002,8 @@ def dict_from_pointset(pointset: "itkt.PointSet") -> Dict:
         pointData=point_data_numpy,
     )
 
-def polyline_from_dict(polyline_dict: Dict) -> "itkt.PolylineParametricPath":
+
+def polyline_from_dict(polyline_dict: dict) -> "itkt.PolylineParametricPath":
     """Deserialize an dictionary representing an itk.PolylineParametricPath object."""
     import itk
 
@@ -1008,7 +1016,8 @@ def polyline_from_dict(polyline_dict: Dict) -> "itkt.PolylineParametricPath":
 
     return polyline
 
-def dict_from_polyline(polyline: "itkt.PolylineParametricPath") -> Dict:
+
+def dict_from_polyline(polyline: "itkt.PolylineParametricPath") -> dict:
     """Serialize a Python itk.PolylineParametricPath object to a pickable Python dictionary."""
     import itk
 
@@ -1019,7 +1028,10 @@ def dict_from_polyline(polyline: "itkt.PolylineParametricPath") -> Dict:
         vertexList=vertex_list_array,
     )
 
-def dict_from_transform(transform: Union["itkt.TransformBase", List["itkt.TransformBase"]]) -> Union[List[Dict], Dict]:
+
+def dict_from_transform(
+    transform: Union["itkt.TransformBase", list["itkt.TransformBase"]]
+) -> Union[list[dict], dict]:
     """Serialize a Python itk.Transform object to a pickable Python dictionary.
 
     If the transform is a list of transforms, then a list of dictionaries is returned.
@@ -1027,6 +1039,7 @@ def dict_from_transform(transform: Union["itkt.TransformBase", List["itkt.Transf
     Composite transforms and nested composite transforms are flattened into a list of dictionaries.
     """
     import itk
+
     datatype_dict = {"double": itk.D, "float": itk.F}
 
     def update_transform_dict(current_transform):
@@ -1034,7 +1047,9 @@ def dict_from_transform(transform: Union["itkt.TransformBase", List["itkt.Transf
         current_transform_type_split = current_transform_type.split("_")
 
         transform_type = dict()
-        transform_parameterization = current_transform_type_split[0].replace("Transform", "")
+        transform_parameterization = current_transform_type_split[0].replace(
+            "Transform", ""
+        )
         transform_type["transformParameterization"] = transform_parameterization
 
         transform_type["parametersValueType"] = python_to_js(
@@ -1044,7 +1059,7 @@ def dict_from_transform(transform: Union["itkt.TransformBase", List["itkt.Transf
         transform_type["outputDimension"] = int(current_transform_type_split[3])
 
         transform_dict = dict()
-        transform_dict['transformType'] = transform_type
+        transform_dict["transformType"] = transform_type
         transform_dict["name"] = current_transform.GetObjectName()
 
         transform_dict["inputSpaceName"] = current_transform.GetInputSpaceName()
@@ -1066,6 +1081,7 @@ def dict_from_transform(transform: Union["itkt.TransformBase", List["itkt.Transf
 
     dict_array = []
     multi = False
+
     def add_transform_dict(transform):
         transform_type = transform.GetTransformTypeAsString()
         if "CompositeTransform" in transform_type:
@@ -1078,6 +1094,7 @@ def dict_from_transform(transform: Union["itkt.TransformBase", List["itkt.Transf
         else:
             dict_array.append(update_transform_dict(transform))
             return False
+
     if isinstance(transform, list):
         multi = True
         for t in transform:
@@ -1090,13 +1107,19 @@ def dict_from_transform(transform: Union["itkt.TransformBase", List["itkt.Transf
     else:
         return dict_array[0]
 
-def transform_from_dict(transform_dict: Union[Dict, List[Dict]]) -> "itkt.TransformBase":
+
+def transform_from_dict(
+    transform_dict: Union[dict, list[dict]]
+) -> "itkt.TransformBase":
     """Deserialize a dictionary representing an itk.Transform object.
 
-    If the dictionary represents a list of transforms, then a Composite Transform is returned."""
+    If the dictionary represents a list of transforms, then a Composite Transform is returned.
+    """
     import itk
 
-    def set_parameters(transform, transform_parameters, transform_fixed_parameters, data_type):
+    def set_parameters(
+        transform, transform_parameters, transform_fixed_parameters, data_type
+    ):
         # First set fixed parameters then parameters
         o1 = itk.OptimizerParameters[data_type](list(transform_fixed_parameters))
         transform.SetFixedParameters(o1)
@@ -1126,7 +1149,9 @@ def transform_from_dict(transform_dict: Union[Dict, List[Dict]]) -> "itkt.Transf
         transform_type = transform_dict[i]["transformType"]
         data_type = parametersValueType_dict[transform_type["parametersValueType"]]
 
-        transform_parameterization = transform_type["transformParameterization"] + 'Transform'
+        transform_parameterization = (
+            transform_type["transformParameterization"] + "Transform"
+        )
 
         # No template parameter needed for transforms having 2D or 3D name
         # Also for some selected transforms
@@ -1147,7 +1172,9 @@ def transform_from_dict(transform_dict: Union[Dict, List[Dict]]) -> "itkt.Transf
             transform_template = getattr(itk, transform_parameterization)
             if len(transform_template.items()[0][0]) > 2:
                 transform = transform_template[
-                    data_type, transform_type["inputDimension"], transform_type["outputDimension"]
+                    data_type,
+                    transform_type["inputDimension"],
+                    transform_type["outputDimension"],
                 ].New()
             else:
                 transform = transform_template[
@@ -1162,7 +1189,7 @@ def transform_from_dict(transform_dict: Union[Dict, List[Dict]]) -> "itkt.Transf
             transform,
             transform_dict[i]["parameters"],
             transform_dict[i]["fixedParameters"],
-            data_type
+            data_type,
         )
         transforms_list.append(transform)
 
@@ -1170,8 +1197,12 @@ def transform_from_dict(transform_dict: Union[Dict, List[Dict]]) -> "itkt.Transf
     if len(transforms_list) > 1:
         # Create a Composite Transform object
         # and add all the transforms in it.
-        data_type = parametersValueType_dict[transform_dict[0]["transformType"]["parametersValueType"]]
-        transform = itk.CompositeTransform[data_type, transforms_list[0]["transformType"]['inputDimension']].New()
+        data_type = parametersValueType_dict[
+            transform_dict[0]["transformType"]["parametersValueType"]
+        ]
+        transform = itk.CompositeTransform[
+            data_type, transforms_list[0]["transformType"]["inputDimension"]
+        ].New()
         for current_transform in transforms_list:
             transform.AddTransform(current_transform)
     else:
@@ -1389,7 +1420,10 @@ def imread(
 
 
 def meshwrite(
-    mesh: "itkt.Mesh", filename: fileiotype, compression: bool = False
+    mesh: "itkt.Mesh",
+    filename: fileiotype,
+    compression: bool = False,
+    binary: bool = False,
 ) -> None:
     """Write a mesh to a file.
 
@@ -1404,6 +1438,8 @@ def meshwrite(
     writer = itk.MeshFileWriter[type(mesh)].New(
         Input=mesh, FileName=f"{filename}", UseCompression=compression
     )
+    if binary:
+        writer.SetFileTypeAsBINARY()
     auto_pipeline.current = tmp_auto_pipeline
     writer.Update()
 
@@ -1460,7 +1496,7 @@ def meshread(
     return reader.GetOutput()
 
 
-def transformread(filename: fileiotype) -> List["itkt.TransformBase"]:
+def transformread(filename: fileiotype) -> list["itkt.TransformBase"]:
     """Read an itk Transform file.
 
     Parameters
@@ -1491,7 +1527,7 @@ def transformread(filename: fileiotype) -> List["itkt.TransformBase"]:
 
 
 def transformwrite(
-    transforms: Union["itkt.TransformBase", List["itkt.TransformBase"]],
+    transforms: Union["itkt.TransformBase", list["itkt.TransformBase"]],
     filename: fileiotype,
     compression: bool = False,
 ) -> None:
@@ -1521,7 +1557,7 @@ def transformwrite(
     writer.Update()
 
 
-def search(s: str, case_sensitive: bool = False) -> List[str]:  # , fuzzy=True):
+def search(s: str, case_sensitive: bool = False) -> list[str]:  # , fuzzy=True):
     """Search for a class name in the itk module."""
     s = s.replace(" ", "")
     if not case_sensitive:
@@ -1552,23 +1588,10 @@ def search(s: str, case_sensitive: bool = False) -> List[str]:  # , fuzzy=True):
     return res
 
 
-def _snake_to_camel(keyword: str):
-    # Helpers for set_inputs snake case to CamelCase keyword argument conversion
-    _snake_underscore_re = re.compile("(_)([a-z0-9A-Z])")
-
-    def _underscore_upper(match_obj):
-        return match_obj.group(2).upper()
-
-    camel = keyword[0].upper()
-    if _snake_underscore_re.search(keyword[1:]):
-        return camel + _snake_underscore_re.sub(_underscore_upper, keyword[1:])
-    return camel + keyword[1:]
-
-
 def set_inputs(
     new_itk_object,
     inargs: Optional[Sequence[Any]] = None,
-    inkargs: Optional[Dict[str, Any]] = None,
+    inkargs: Optional[dict[str, Any]] = None,
 ):
     """Set the inputs of the given objects, according to the non named or the
     named parameters in args and kargs
@@ -1591,8 +1614,8 @@ def set_inputs(
 
     # Fix bug with Mutable Default Arguments
     # https://docs.python-guide.org/writing/gotchas/
-    args: List[Any] = inargs if inargs else []
-    kargs: Dict[str, Any] = inkargs if inkargs else {}
+    args: list[Any] = inargs if inargs else []
+    kargs: dict[str, Any] = inkargs if inkargs else {}
 
     # try to get the images from the filters in args
     args = [output(arg) for arg in args]
@@ -1656,7 +1679,7 @@ def set_inputs(
         # (Ex: itk.ImageFileReader.UC2.New(SetFileName='image.png'))
         if attribName not in ["auto_progress", "template_parameters"]:
             if attribName.islower():
-                attribName = _snake_to_camel(attribName)
+                attribName = snake_to_camel_case(attribName)
             attrib = getattr(new_itk_object, "Set" + attribName)
 
             # Do not use try-except mechanism as this leads to
@@ -1676,7 +1699,6 @@ def set_inputs(
 
 
 class templated_class:
-
     """This class is used to mimic the behavior of the templated C++ classes.
 
     It is used this way:
@@ -1769,7 +1791,6 @@ class templated_class:
                 self.add_template(name, tuple(parameters))
 
     class __templated_class_and_parameters__:
-
         """Inner class used to store the pair class-template parameters ready
         to instantiate.
         """
@@ -1827,7 +1848,6 @@ class templated_class:
 
 
 class pipeline:
-
     """A convenient class to store the reference to the filters of a pipeline
 
     With this class, a method can create a pipeline of several filters and
@@ -1839,7 +1859,7 @@ class pipeline:
     def __init__(self, *args, **kargs) -> None:
         self.clear()
         self.input = None
-        self.filters: List[Any] = []
+        self.filters: list[Any] = []
         set_inputs(self, args, kargs)
 
     def connect(self, l_filter) -> None:
@@ -2012,7 +2032,7 @@ def attribute_list(inputobject, name: str):
     )
     relabel.UpdateLargestPossibleRegion()
     r = relabel.GetOutput()
-    l_list: List[Any] = []
+    l_list: list[Any] = []
     # required because range is overloaded in this module
     import sys
     from builtins import range
@@ -2022,7 +2042,7 @@ def attribute_list(inputobject, name: str):
     return l_list
 
 
-def attributes_list(inputObject, names: List[str]):
+def attributes_list(inputObject, names: list[str]):
     """Returns a list of the specified attributes for the objects in the image.
 
     i: the input LabelImage
@@ -2036,7 +2056,7 @@ def attributes_list(inputObject, names: List[str]):
     )
     relabel.UpdateLargestPossibleRegion()
     r = relabel.GetOutput()
-    l_list: List[Any] = []
+    l_list: list[Any] = []
     # required because range is overloaded in this module
     from builtins import range
 
@@ -2162,7 +2182,7 @@ def ipython_kw_matches(text: str):
             namespace = split_name_parts[:-1]
             function_name = split_name_parts[-1]
             # Find corresponding object name
-            object_name = _snake_to_camel(function_name)
+            object_name = snake_to_camel_case(function_name)
             # Check that this object actually exists
             try:
                 object_callable_match = ".".join(namespace + [object_name])
@@ -2326,7 +2346,8 @@ or
         python_input_type = tuple_to_string_type(input_type)
         type_list = "\n".join([python_type(x[0]) for x in template_type.keys()])
         eg_type = ", ".join([python_type(x) for x in list(template_type.keys())[0]])
-        msg: str = """{template_type} is not wrapped for input type `{input_type}`.
+        msg: str = (
+            """{template_type} is not wrapped for input type `{input_type}`.
 
 To limit the size of the package, only a limited number of
 types are available in ITK Python. To print the supported
@@ -2355,11 +2376,12 @@ Supported input types:
 
 {type_list}
 """.format(
-            template_type=python_template_type,
-            input_type=python_input_type,
-            type_list=type_list,
-            eg_type=eg_type,
-            extra_eg=extra_eg,
+                template_type=python_template_type,
+                input_type=python_input_type,
+                type_list=type_list,
+                eg_type=eg_type,
+                extra_eg=extra_eg,
+            )
         )
         TypeError.__init__(self, msg)
 

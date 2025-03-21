@@ -54,8 +54,7 @@ itkHessianRecursiveGaussianFilterTest(int argc, char * argv[])
   size[1] = 8;
   size[2] = 8;
 
-  myIndexType start;
-  start.Fill(0);
+  myIndexType start{};
 
   myRegionType region{ start, size };
 
@@ -125,7 +124,7 @@ itkHessianRecursiveGaussianFilterTest(int argc, char * argv[])
   // It is important to do it AFTER the filter is Updated
   // Because the object connected to the output may be changed
   // by another during GenerateData() call
-  myHessianImageType::Pointer outputImage = filter->GetOutput();
+  const myHessianImageType::Pointer outputImage = filter->GetOutput();
 
   // Declare Iterator type for the output image
   using myOutputIteratorType = itk::ImageRegionIteratorWithIndex<myHessianImageType>;

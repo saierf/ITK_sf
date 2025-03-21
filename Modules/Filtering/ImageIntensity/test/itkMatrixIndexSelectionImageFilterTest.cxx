@@ -47,11 +47,9 @@ itkMatrixIndexSelectionImageFilterTest(int argc, char * argv[])
   auto                       image = InputImageType::New();
   InputImageType::RegionType region;
 
-  InputImageType::SizeType size;
-  size.Fill(100);
+  auto size = InputImageType::SizeType::Filled(100);
 
-  InputImageType::IndexType index;
-  index.Fill(0);
+  InputImageType::IndexType index{};
 
   region.SetSize(size);
   region.SetIndex(index);
@@ -60,8 +58,8 @@ itkMatrixIndexSelectionImageFilterTest(int argc, char * argv[])
 
   size = region.GetSize();
   index = region.GetIndex();
-  unsigned int width = size[0];
-  unsigned int height = size[1];
+  const unsigned int width = size[0];
+  const unsigned int height = size[1];
 
   size[0] = width;
   size[1] = height / 2;
@@ -116,8 +114,8 @@ itkMatrixIndexSelectionImageFilterTest(int argc, char * argv[])
 
   filter->SetInput(image);
 
-  unsigned int indexA = 0;
-  unsigned int indexB = 1;
+  constexpr unsigned int indexA = 0;
+  constexpr unsigned int indexB = 1;
   filter->SetIndices(indexA, indexB);
 
   unsigned int testIndexA;

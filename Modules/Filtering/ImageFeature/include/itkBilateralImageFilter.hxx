@@ -25,6 +25,8 @@
 #include "itkTotalProgressReporter.h"
 #include "itkStatisticsImageFilter.h"
 
+#include <cmath> // For abs.
+
 namespace itk
 {
 template <typename TInputImage, typename TOutputImage>
@@ -61,7 +63,7 @@ BilateralImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
   Superclass::GenerateInputRequestedRegion();
 
   // get pointers to the input and output
-  typename Superclass::InputImagePointer inputPtr = const_cast<TInputImage *>(this->GetInput());
+  const typename Superclass::InputImagePointer inputPtr = const_cast<TInputImage *>(this->GetInput());
 
   if (!inputPtr)
   {
@@ -90,8 +92,7 @@ BilateralImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
 
   // get a copy of the input requested region (should equal the output
   // requested region)
-  typename TInputImage::RegionType inputRequestedRegion;
-  inputRequestedRegion = inputPtr->GetRequestedRegion();
+  typename TInputImage::RegionType inputRequestedRegion = inputPtr->GetRequestedRegion();
 
   // pad the input requested region by the operator radius
   inputRequestedRegion.PadByRadius(radius);
@@ -102,21 +103,19 @@ BilateralImageFilter<TInputImage, TOutputImage>::GenerateInputRequestedRegion()
     inputPtr->SetRequestedRegion(inputRequestedRegion);
     return;
   }
-  else
-  {
-    // Couldn't crop the region (requested region is outside the largest
-    // possible region).  Throw an exception.
 
-    // store what we tried to request (prior to trying to crop)
-    inputPtr->SetRequestedRegion(inputRequestedRegion);
+  // Couldn't crop the region (requested region is outside the largest
+  // possible region).  Throw an exception.
 
-    // build an exception
-    InvalidRequestedRegionError e(__FILE__, __LINE__);
-    e.SetLocation(ITK_LOCATION);
-    e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
-    e.SetDataObject(inputPtr);
-    throw e;
-  }
+  // store what we tried to request (prior to trying to crop)
+  inputPtr->SetRequestedRegion(inputRequestedRegion);
+
+  // build an exception
+  InvalidRequestedRegionError e(__FILE__, __LINE__);
+  e.SetLocation(ITK_LOCATION);
+  e.SetDescription("Requested region is (at least partially) outside the largest possible region.");
+  e.SetDataObject(inputPtr);
+  throw e;
 }
 
 template <typename TInputImage, typename TOutputImage>
@@ -198,7 +197,7 @@ BilateralImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateData()
   localInput->Graft(this->GetInput());
 
   // First, determine the min and max intensity range
-  typename StatisticsImageFilter<TInputImage>::Pointer statistics = StatisticsImageFilter<TInputImage>::New();
+  auto statistics = StatisticsImageFilter<TInputImage>::New();
 
   statistics->SetInput(localInput);
   statistics->Update();
@@ -206,11 +205,10 @@ BilateralImageFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateData()
   // Now create the lookup table whose domain runs from 0.0 to
   // (max-min) and range is gaussian evaluated at
   // that point
-  double rangeVariance = m_RangeSigma * m_RangeSigma;
+  const double rangeVariance = m_RangeSigma * m_RangeSigma;
 
   // denominator (normalization factor) for Gaussian used for range
-  double rangeGaussianDenom;
-  rangeGaussianDenom = m_RangeSigma * std::sqrt(2.0 * itk::Math::pi);
+  const double rangeGaussianDenom = m_RangeSigma * std::sqrt(2.0 * itk::Math::pi);
 
   // Maximum delta for the dynamic range
   double tableDelta;
@@ -235,69 +233,61 @@ void
 BilateralImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread)
 {
-  typename TInputImage::ConstPointer   input = this->GetInput();
-  typename TOutputImage::Pointer       output = this->GetOutput();
-  typename TInputImage::IndexValueType i;
-  const double                         rangeDistanceThreshold = m_DynamicRangeUsed;
+  const typename TInputImage::ConstPointer input = this->GetInput();
+  const typename TOutputImage::Pointer     output = this->GetOutput();
 
-  ZeroFluxNeumannBoundaryCondition<TInputImage> BC;
+  const double rangeDistanceThreshold = m_DynamicRangeUsed;
 
   // Find the boundary "faces"
-  NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>                        fC;
-  typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>::FaceListType faceList =
+  NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>                              fC;
+  const typename NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<InputImageType>::FaceListType faceList =
     fC(this->GetInput(), outputRegionForThread, m_GaussianKernel.GetRadius());
-
-  OutputPixelRealType centerPixel;
-  OutputPixelRealType val, tableArg, normFactor, rangeGaussian, rangeDistance, pixel, gaussianProduct;
 
   const double distanceToTableIndex = static_cast<double>(m_NumberOfRangeGaussianSamples) / m_DynamicRangeUsed;
 
   // Process all the faces, the NeighborhoodIterator will determine
   // whether a specified region needs to use the boundary conditions or
   // not.
-  NeighborhoodIteratorType             b_iter;
-  ImageRegionIterator<OutputImageType> o_iter;
-  KernelConstIteratorType              k_it;
-  KernelConstIteratorType              kernelEnd = m_GaussianKernel.End();
+
+
+  KernelConstIteratorType kernelEnd = m_GaussianKernel.End();
 
   TotalProgressReporter progress(this, output->GetRequestedRegion().GetNumberOfPixels());
 
+  ZeroFluxNeumannBoundaryCondition<TInputImage> BC;
   for (const auto & face : faceList)
   {
     // walk the boundary face and the corresponding section of the output
-    b_iter = NeighborhoodIteratorType(m_GaussianKernel.GetRadius(), this->GetInput(), face);
+    NeighborhoodIteratorType b_iter = NeighborhoodIteratorType(m_GaussianKernel.GetRadius(), this->GetInput(), face);
     b_iter.OverrideBoundaryCondition(&BC);
-    o_iter = ImageRegionIterator<OutputImageType>(this->GetOutput(), face);
+    ImageRegionIterator<OutputImageType> o_iter = ImageRegionIterator<OutputImageType>(this->GetOutput(), face);
 
     while (!b_iter.IsAtEnd())
     {
       // Setup
-      centerPixel = static_cast<OutputPixelRealType>(b_iter.GetCenterPixel());
-      val = 0.0;
-      normFactor = 0.0;
+      const auto          centerPixel = static_cast<OutputPixelRealType>(b_iter.GetCenterPixel());
+      OutputPixelRealType val = 0.0;
+      OutputPixelRealType normFactor = 0.0;
 
       // Walk the neighborhood of the input and the kernel
-      for (i = 0, k_it = m_GaussianKernel.Begin(); k_it < kernelEnd; ++k_it, ++i)
+      KernelConstIteratorType k_it = m_GaussianKernel.Begin();
+      for (typename TInputImage::IndexValueType i = 0; k_it < kernelEnd; ++k_it, ++i)
       {
         // range distance between neighborhood pixel and neighborhood center
-        pixel = static_cast<OutputPixelRealType>(b_iter.GetPixel(i));
-        rangeDistance = pixel - centerPixel;
+        const auto pixel = static_cast<OutputPixelRealType>(b_iter.GetPixel(i));
         // flip sign if needed
-        if (rangeDistance < 0.0)
-        {
-          rangeDistance *= -1.0;
-        }
+        const OutputPixelRealType rangeDistance = std::abs(pixel - centerPixel);
 
         // if the range distance is close enough, then use the pixel
         if (rangeDistance < rangeDistanceThreshold)
         {
           // look up the range gaussian in a table
-          tableArg = rangeDistance * distanceToTableIndex;
-          rangeGaussian = m_RangeGaussianTable[Math::Floor<SizeValueType>(tableArg)];
+          const OutputPixelRealType tableArg = rangeDistance * distanceToTableIndex;
+          const OutputPixelRealType rangeGaussian = m_RangeGaussianTable[Math::Floor<SizeValueType>(tableArg)];
 
           // normalization factor so filter integrates to one
           // (product of the domain and the range gaussian)
-          gaussianProduct = (*k_it) * rangeGaussian;
+          const OutputPixelRealType gaussianProduct = (*k_it) * rangeGaussian;
           normFactor += gaussianProduct;
 
           // Input Image * Domain Gaussian * Range Gaussian

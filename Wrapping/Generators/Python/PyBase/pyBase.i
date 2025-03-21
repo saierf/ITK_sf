@@ -322,18 +322,10 @@ str = str
 
     %pythonprepend itkObject::AddObserver %{
         import itk
-        if len(args) == 3 and not issubclass(args[2].__class__, itk.Command) and callable(args[2]):
-            args = list(args)
+        if not issubclass(cmd.__class__, itk.Command) and callable(cmd):
             pycommand = itk.PyCommand.New()
-            pycommand.SetCommandCallable( args[2] )
-            args[2] = pycommand
-            args = tuple(args)
-        elif len(args) == 2 and not issubclass(args[1].__class__, itk.Command) and callable(args[1]):
-            args = list(args)
-            pycommand = itk.PyCommand.New()
-            pycommand.SetCommandCallable( args[1] )
-            args[1] = pycommand
-            args = tuple(args)
+            pycommand.SetCommandCallable( cmd )
+            cmd = pycommand
     %}
 
 %enddef
@@ -691,6 +683,32 @@ str = str
               return np.asarray(array, dtype=dtype)
       }
   }
+%enddef
+
+%define DECL_PYTHON_POINTSETBASE_CLASS(swig_name)
+    %rename(__SetPointsByCoordinates_orig__) swig_name::SetPointsByCoordinates;
+    %extend swig_name {
+        %pythoncode %{
+            def SetPointsByCoordinates(self, points):
+                """Set the points of the pointset by providing their coordinates
+                as a NumPy array."""
+                import numpy as np
+                if hasattr(points, 'ndim') and points.ndim != 1:
+                    self.__SetPointsByCoordinates_orig__(points.ravel())
+                else:
+                    self.__SetPointsByCoordinates_orig__(points)
+
+            def GetPointsByCoordinates(self):
+                """Get the points of the pointset by providing their coordinates
+                as a NumPy array. The array will have a shape of (n_points, dimension)."""
+                import itk
+                points = self.GetPoints()
+                points_array = itk.array_from_vector_container(points)
+                points_array = points_array.reshape(-1, self.GetPointDimension())
+                return points_array
+            %}
+    }
+
 %enddef
 
 %define DECL_PYTHON_POINTSET_CLASS(swig_name)

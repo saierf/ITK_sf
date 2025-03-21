@@ -90,10 +90,18 @@ public:
   itkOverrideGetNameOfClassMacro(ValarrayImageContainer);
 
   /** Index operator. This version can be an lvalue. */
-  TElement & operator[](const ElementIdentifier id) { return this->ValarrayType::operator[](id); }
+  TElement &
+  operator[](const ElementIdentifier id)
+  {
+    return this->ValarrayType::operator[](id);
+  }
 
   /** Index operator. This version can only be an rvalue */
-  const TElement & operator[](const ElementIdentifier id) const { return this->ValarrayType::operator[](id); }
+  const TElement &
+  operator[](const ElementIdentifier id) const
+  {
+    return this->ValarrayType::operator[](id);
+  }
 
   /** Return a pointer to the beginning of the buffer.  This is used by
    * the image iterator class. */
@@ -104,10 +112,8 @@ public:
     {
       return &(this->ValarrayType::operator[](0));
     }
-    else
-    {
-      return nullptr;
-    }
+
+    return nullptr;
   }
 
   /** Get the number of elements currently stored in the container. */

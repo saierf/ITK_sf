@@ -47,7 +47,7 @@ public:
 };
 /** Define how to print enumeration values. */
 extern ITKFastMarching_EXPORT std::ostream &
-                              operator<<(std::ostream & out, const FastMarchingUpwindGradientImageFilterEnums::TargetCondition value);
+operator<<(std::ostream & out, const FastMarchingUpwindGradientImageFilterEnums::TargetCondition value);
 
 
 /**
@@ -230,14 +230,10 @@ public:
    */
   itkGetConstReferenceMacro(TargetValue, double);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(LevelSetDoubleDivisionOperatorsCheck,
                   (Concept::DivisionOperators<typename TLevelSet::PixelType, double>));
   itkConceptMacro(LevelSetDoubleDivisionAndAssignOperatorsCheck,
                   (Concept::DivisionAndAssignOperators<typename TLevelSet::PixelType, double>));
-  // End concept checking
-#endif
 
 protected:
   FastMarchingUpwindGradientImageFilter();
@@ -245,7 +241,7 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
-  virtual void
+  void
   VerifyPreconditions() const override;
 
   void
@@ -273,10 +269,8 @@ protected:
     {
       return false;
     }
-    else
-    {
-      return true;
-    }
+
+    return true;
   }
 
   /** Check that the conditions to set the target reached mode are satisfied.
@@ -289,7 +283,7 @@ protected:
   void
   VerifyTargetReachedModeConditions(unsigned int targetModeMinPoints = 1) const
   {
-    bool targetPointsExist = this->IsTargetPointsExistenceConditionSatisfied();
+    const bool targetPointsExist = this->IsTargetPointsExistenceConditionSatisfied();
 
     if (!targetPointsExist)
     {
@@ -297,7 +291,7 @@ protected:
     }
     else
     {
-      SizeValueType availableNumberOfTargets = m_TargetPoints->Size();
+      const SizeValueType availableNumberOfTargets = m_TargetPoints->Size();
       if (targetModeMinPoints > availableNumberOfTargets)
       {
         itkExceptionMacro("Not enough target points: Available: " << availableNumberOfTargets

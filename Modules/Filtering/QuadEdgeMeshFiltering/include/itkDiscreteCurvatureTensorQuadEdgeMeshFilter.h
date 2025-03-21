@@ -47,20 +47,16 @@ public:
   /** New macro for creation of through a Smart Pointer   */
   itkNewMacro(Self);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
-//  itkConceptMacro( OutputIsFloatingPointCheck,
-//                   ( Concept::IsFloatingPoint< OutputCurvatureType > ) );
-// End concept checking
-#endif
+  // itkConceptMacro( OutputIsFloatingPointCheck,
+  //                  ( Concept::IsFloatingPoint< OutputCurvatureType > ) );
 
 protected:
   DiscreteCurvatureTensorQuadEdgeMeshFilter() = default;
-  ~DiscreteCurvatureTensorQuadEdgeMeshFilter() = default;
+  ~DiscreteCurvatureTensorQuadEdgeMeshFilter() override = default;
 
   /// TODO to be implemented
-  virtual void
-  GenerateData()
+  void
+  GenerateData() override
   {}
 };
 } // namespace itk

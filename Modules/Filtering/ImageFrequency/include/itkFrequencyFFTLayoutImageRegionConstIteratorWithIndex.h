@@ -141,8 +141,8 @@ public:
     this->Init();
   }
 
-  /** Constructor establishes an iterator to walk a particular image and a
-   * particular region of that image. */
+  /** Constructor establishes an iterator to walk a particular image and a particular region of that image. Initializes
+   * the iterator at the begin of the region. */
   FrequencyFFTLayoutImageRegionConstIteratorWithIndex(const TImage * ptr, const RegionType & region)
     : ImageRegionConstIteratorWithIndex<TImage>(ptr, region)
   {
@@ -169,9 +169,7 @@ public:
   IndexType
   GetFrequencyBin() const
   {
-    IndexType freqInd;
-
-    freqInd.Fill(0);
+    IndexType freqInd{};
     for (unsigned int dim = 0; dim < TImage::ImageDimension; ++dim)
     {
       if (this->m_PositionIndex[dim] <= m_LargestPositiveFrequencyIndex[dim])
@@ -263,7 +261,7 @@ public:
   SetActualXDimensionIsOdd(bool value)
   {
     this->m_ActualXDimensionIsOdd = value;
-  };
+  }
   itkGetMacro(ActualXDimensionIsOdd, bool);
   itkBooleanMacro(ActualXDimensionIsOdd);
 

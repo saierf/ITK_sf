@@ -91,7 +91,7 @@ template <unsigned int VDimension>
 auto
 MetaSurfaceConverter<VDimension>::SpatialObjectToMetaObject(const SpatialObjectType * so) -> MetaObjectType *
 {
-  SurfaceSpatialObjectConstPointer surfaceSO = dynamic_cast<const SurfaceSpatialObjectType *>(so);
+  const SurfaceSpatialObjectConstPointer surfaceSO = dynamic_cast<const SurfaceSpatialObjectType *>(so);
 
   if (surfaceSO.IsNull())
   {
@@ -100,8 +100,7 @@ MetaSurfaceConverter<VDimension>::SpatialObjectToMetaObject(const SpatialObjectT
   auto * surfaceMO = new MetaSurface(VDimension);
 
   // fill in the Surface information
-  typename SurfaceSpatialObjectType::SurfacePointListType::const_iterator it;
-  for (it = surfaceSO->GetPoints().begin(); it != surfaceSO->GetPoints().end(); ++it)
+  for (auto it = surfaceSO->GetPoints().begin(); it != surfaceSO->GetPoints().end(); ++it)
   {
     auto * pnt = new SurfacePnt(VDimension);
 

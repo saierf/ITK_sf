@@ -63,10 +63,8 @@ protected:
     {
       return true;
     }
-    else
-    {
-      return false;
-    }
+
+    return false;
   }
 
   void
@@ -77,9 +75,9 @@ protected:
     typename ImageType::IndexType  tl = this->GetInput()->GetRequestedRegion().GetIndex();
     typename Superclass::IndexType in;
 
-    for (in [0] = 32 + tl[0]; in[0] < tl[0] + static_cast<long>(sz[0]); in[0]++)
+    for (in[0] = 32 + tl[0]; in[0] < tl[0] + static_cast<long>(sz[0]); in[0]++)
     {
-      for (in [1] = tl[1] + 32; in[1] < tl[1] + static_cast<long>(sz[1]); in[1]++)
+      for (in[1] = tl[1] + 32; in[1] < tl[1] + static_cast<long>(sz[1]); in[1]++)
       {
         this->InsertNarrowBandNode(in);
       }
@@ -95,9 +93,8 @@ template <typename TPoint>
 double
 SimpleSignedDistance(const TPoint & p)
 {
-  TPoint center;
-  center.Fill(32);
-  double radius = 19.5;
+  auto             center = itk::MakeFilled<TPoint>(32);
+  constexpr double radius = 19.5;
 
   double accum = 0.0;
   for (unsigned int j = 0; j < TPoint::PointDimension; ++j)
@@ -126,9 +123,9 @@ itkNarrowBandImageFilterBaseTest(int argc, char * argv[])
   using WriterImageType = itk::Image<WriterPixelType, ImageDimension>;
   using PointType = itk::Point<double, ImageDimension>;
 
-  ImageType::SizeType   size = { { 64, 64 } };
-  ImageType::IndexType  index = { { 0, 0 } };
-  ImageType::RegionType region{ index, size };
+  constexpr ImageType::SizeType  size = { { 64, 64 } };
+  constexpr ImageType::IndexType index = { { 0, 0 } };
+  const ImageType::RegionType    region{ index, size };
 
   auto inputImage = ImageType::New();
   inputImage->SetRegions(region);

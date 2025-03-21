@@ -117,10 +117,14 @@ public:
   using ExpandFactorsArrayType = FixedArray<ExpandFactorsType, ImageDimension>;
 
   /** Typedef support for the interpolation function */
-  using CoordRepType = double;
-  using InterpolatorType = VectorInterpolateImageFunction<InputImageType, CoordRepType>;
+  using CoordinateType = double;
+#  ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#  endif
+  using InterpolatorType = VectorInterpolateImageFunction<InputImageType, CoordinateType>;
   using InterpolatorPointer = typename InterpolatorType::Pointer;
-  using DefaultInterpolatorType = VectorLinearInterpolateImageFunction<InputImageType, CoordRepType>;
+  using DefaultInterpolatorType = VectorLinearInterpolateImageFunction<InputImageType, CoordinateType>;
 
   /** Get/Set the interpolator function. */
   itkSetObjectMacro(Interpolator, InterpolatorType);
@@ -153,12 +157,8 @@ public:
   void
   GenerateInputRequestedRegion() override;
 
-#  ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<InputValueType>));
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputValueType>));
-  // End concept checking
-#  endif
 
 protected:
   VectorExpandImageFilter();

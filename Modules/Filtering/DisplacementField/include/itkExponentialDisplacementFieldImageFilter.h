@@ -54,7 +54,7 @@ namespace itk
  * \author Tom Vercauteren, INRIA & Mauna Kea Technologies
  *
  * This implementation was taken from the Insight Journal paper:
- * https://www.insight-journal.org/browse/publication/154
+ * https://doi.org/10.54294/ux2obj
  *
  * \ingroup ITKDisplacementField
  */
@@ -114,14 +114,10 @@ public:
   static constexpr unsigned int PixelDimension = InputPixelType::Dimension;
   static constexpr unsigned int OutputPixelDimension = OutputPixelType::Dimension;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<typename OutputPixelType::ValueType>));
   itkConceptMacro(SameDimensionCheck1, (Concept::SameDimension<ImageDimension, OutputImageDimension>));
   itkConceptMacro(SameDimensionCheck2, (Concept::SameDimension<ImageDimension, PixelDimension>));
   itkConceptMacro(SameDimensionCheck3, (Concept::SameDimension<ImageDimension, OutputPixelDimension>));
-  // End concept checking
-#endif
 
 protected:
   ExponentialDisplacementFieldImageFilter();

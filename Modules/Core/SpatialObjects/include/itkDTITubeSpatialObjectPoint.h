@@ -32,10 +32,10 @@ class DTITubeSpatialObjectPointEnums
 {
 public:
   /**
-* \class DTITubeSpatialObjectPointField
-* \ingroup ITKSpatialObjects
-* If you add a type here you need to modify the TranslateEnumToChar
-to translate the enum to a string */
+  *
+  * \ingroup ITKSpatialObjects
+  * If you add a type here you need to modify the TranslateEnumToChar
+  to translate the enum to a string */
   enum class DTITubeSpatialObjectPointField : uint8_t
   {
     FA = 0,
@@ -45,7 +45,7 @@ to translate the enum to a string */
 };
 // Define how to print enumeration
 extern ITKSpatialObjects_EXPORT std::ostream &
-                                operator<<(std::ostream & out, const DTITubeSpatialObjectPointEnums::DTITubeSpatialObjectPointField value);
+operator<<(std::ostream & out, const DTITubeSpatialObjectPointEnums::DTITubeSpatialObjectPointField value);
 /**
  * \class DTITubeSpatialObjectPoint
  * \brief Point used for a tube definition
@@ -60,6 +60,8 @@ template <unsigned int TPointDimension = 3>
 class ITK_TEMPLATE_EXPORT DTITubeSpatialObjectPoint : public TubeSpatialObjectPoint<TPointDimension>
 {
 public:
+  ITK_DEFAULT_COPY_AND_MOVE(DTITubeSpatialObjectPoint);
+
   using Self = DTITubeSpatialObjectPoint;
   using Superclass = TubeSpatialObjectPoint<TPointDimension>;
   using PointType = Point<double, TPointDimension>;
@@ -82,9 +84,6 @@ public:
   /** Constructor. This one defines the number of dimensions in the
    * DTITubeSpatialObjectPoint */
   DTITubeSpatialObjectPoint();
-
-  /** Copy Constructor */
-  DTITubeSpatialObjectPoint(const DTITubeSpatialObjectPoint & other);
 
   /** Default destructor. */
   ~DTITubeSpatialObjectPoint() override = default;
@@ -116,10 +115,6 @@ public:
   {
     return m_TensorMatrix;
   }
-
-  /** Copy one DTITubeSpatialObjectPoint to another. */
-  Self &
-  operator=(const DTITubeSpatialObjectPoint & rhs);
 
   /** Add a field to the point list. */
   void

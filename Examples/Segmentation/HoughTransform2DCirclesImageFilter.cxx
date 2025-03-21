@@ -88,12 +88,10 @@ main(int argc, char * argv[])
   //
   //  Software Guide : EndLatex
   // Software Guide : BeginCodeSnippet
-  using ReaderType = itk::ImageFileReader<ImageType>;
-  auto reader = ReaderType::New();
-  reader->SetFileName(argv[1]);
+  ImageType::Pointer localImage;
   try
   {
-    reader->Update();
+    localImage = itk::ReadImage<ImageType>(argv[1]);
   }
   catch (const itk::ExceptionObject & excep)
   {
@@ -101,7 +99,6 @@ main(int argc, char * argv[])
     std::cerr << excep << std::endl;
     return EXIT_FAILURE;
   }
-  ImageType::Pointer localImage = reader->GetOutput();
   // Software Guide : EndCodeSnippet
 
 
@@ -146,7 +143,7 @@ main(int argc, char * argv[])
   //  Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  houghFilter->SetInput(reader->GetOutput());
+  houghFilter->SetInput(localImage);
 
   houghFilter->SetNumberOfCircles(std::stoi(argv[3]));
   houghFilter->SetMinimumRadius(std::stod(argv[4]));
@@ -170,7 +167,8 @@ main(int argc, char * argv[])
   }
 
   houghFilter->Update();
-  AccumulatorImageType::Pointer localAccumulator = houghFilter->GetOutput();
+  const AccumulatorImageType::Pointer localAccumulator =
+    houghFilter->GetOutput();
   // Software Guide : EndCodeSnippet
 
   //  Software Guide : BeginLatex
@@ -245,7 +243,7 @@ main(int argc, char * argv[])
       localIndex[1] = itk::Math::Round<IndexValueType>(
         centerPoint[1] +
         (*itCircles)->GetRadiusInObjectSpace()[0] * std::sin(angle));
-      OutputImageType::RegionType outputRegion =
+      const OutputImageType::RegionType outputRegion =
         localOutputImage->GetLargestPossibleRegion();
 
       if (outputRegion.IsInside(localIndex))
@@ -253,7 +251,7 @@ main(int argc, char * argv[])
         localOutputImage->SetPixel(localIndex, 255);
       }
     }
-    itCircles++;
+    ++itCircles;
   }
   // Software Guide : EndCodeSnippet
 
@@ -264,15 +262,10 @@ main(int argc, char * argv[])
   //  Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  using WriterType = itk::ImageFileWriter<ImageType>;
-  auto writer = WriterType::New();
-
-  writer->SetFileName(argv[2]);
-  writer->SetInput(localOutputImage);
 
   try
   {
-    writer->Update();
+    itk::WriteImage(localOutputImage, argv[2]);
   }
   catch (const itk::ExceptionObject & excep)
   {

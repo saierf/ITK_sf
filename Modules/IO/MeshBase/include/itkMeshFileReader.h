@@ -97,7 +97,11 @@ public:
 
   /** Define output mesh types */
   using OutputMeshType = TOutputMesh;
-  using OutputCoordRepType = typename OutputMeshType::CoordRepType;
+  using OutputCoordinateType = typename OutputMeshType::CoordinateType;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using OutputCoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `OutputCoordRepType`. Please use `OutputCoordinateType` instead!") = OutputCoordinateType;
+#endif
   using OutputPointPixelType = typename OutputMeshType::PixelType;
   using OutputCellPixelType = typename OutputMeshType::CellPixelType;
   using OutputPointType = typename OutputMeshType::PointType;

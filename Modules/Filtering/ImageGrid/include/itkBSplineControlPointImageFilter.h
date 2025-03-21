@@ -46,10 +46,8 @@ namespace itk
  * domain, origin, direction, spacing).  The output of the filter is the sampled
  * B-spline object.
  *
- * This code was contributed in the Insight Journal paper:
- * "N-D C^k B-Spline Scattered Data Approximation"
- * by Nicholas J. Tustison, James C. Gee
- * https://www.insight-journal.org/browse/publication/57
+ * This code was contributed in the Insight Journal paper
+ * \cite Tustison_2005.
  *
  * \author Nicholas J. Tustison
  * \ingroup ITKImageGrid

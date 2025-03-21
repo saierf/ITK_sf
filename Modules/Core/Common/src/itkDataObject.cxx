@@ -39,12 +39,8 @@ DataObjectError::DataObjectError() noexcept
   : ExceptionObject()
 {}
 
-DataObjectError::DataObjectError(const char * file, unsigned int lineNumber)
-  : ExceptionObject(file, lineNumber)
-{}
-
-DataObjectError::DataObjectError(const std::string & file, unsigned int lineNumber)
-  : ExceptionObject(file, lineNumber)
+DataObjectError::DataObjectError(std::string file, unsigned int lineNumber)
+  : ExceptionObject(std::move(file), lineNumber)
 {}
 
 DataObjectError::DataObjectError(const DataObjectError & orig) noexcept
@@ -98,12 +94,8 @@ InvalidRequestedRegionError::InvalidRequestedRegionError() noexcept
   : DataObjectError()
 {}
 
-InvalidRequestedRegionError::InvalidRequestedRegionError(const char * file, unsigned int lineNumber)
-  : DataObjectError(file, lineNumber)
-{}
-
-InvalidRequestedRegionError::InvalidRequestedRegionError(const std::string & file, unsigned int lineNumber)
-  : DataObjectError(file, lineNumber)
+InvalidRequestedRegionError::InvalidRequestedRegionError(std::string file, unsigned int lineNumber)
+  : DataObjectError(std::move(file), lineNumber)
 {}
 
 InvalidRequestedRegionError::InvalidRequestedRegionError(const InvalidRequestedRegionError &) noexcept = default;
@@ -215,11 +207,9 @@ DataObject::DisconnectSource(ProcessObject * arg, const DataObjectIdentifierType
     this->Modified();
     return true;
   }
-  else
-  {
-    itkDebugMacro("could not disconnect source  " << arg << ", source output name " << name);
-    return false;
-  }
+
+  itkDebugMacro("could not disconnect source  " << arg << ", source output name " << name);
+  return false;
 }
 
 bool
@@ -234,12 +224,10 @@ DataObject::ConnectSource(ProcessObject * arg, const DataObjectIdentifierType & 
     this->Modified();
     return true;
   }
-  else
-  {
-    itkDebugMacro("could not connect source  " << arg << ", source output name " << name);
 
-    return false;
-  }
+  itkDebugMacro("could not connect source  " << arg << ", source output name " << name);
+
+  return false;
 }
 
 //----------------------------------------------------------------------------

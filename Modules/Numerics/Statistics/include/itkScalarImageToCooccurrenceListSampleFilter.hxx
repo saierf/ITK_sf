@@ -65,7 +65,7 @@ ScalarImageToCooccurrenceListSampleFilter<TImage>::GetOutput() const -> const Sa
 
 template <typename TImage>
 typename ScalarImageToCooccurrenceListSampleFilter<TImage>::DataObjectPointer
-  ScalarImageToCooccurrenceListSampleFilter<TImage>::MakeOutput(DataObjectPointerArraySizeType)
+ScalarImageToCooccurrenceListSampleFilter<TImage>::MakeOutput(DataObjectPointerArraySizeType)
 {
   return SampleType::New().GetPointer();
 }
@@ -74,8 +74,7 @@ template <typename TImage>
 void
 ScalarImageToCooccurrenceListSampleFilter<TImage>::GenerateData()
 {
-  typename ShapedNeighborhoodIteratorType::RadiusType radius;
-  radius.Fill(1);
+  constexpr auto radius = MakeFilled<typename ShapedNeighborhoodIteratorType::RadiusType>(1);
 
   using FaceCalculatorType = itk::NeighborhoodAlgorithm::ImageBoundaryFacesCalculator<ImageType>;
 
@@ -96,10 +95,9 @@ ScalarImageToCooccurrenceListSampleFilter<TImage>::GenerateData()
 
   output->SetMeasurementVectorSize(measurementVectorSize);
 
-  typename FaceCalculatorType::FaceListType faceList = faceCalculator(input, input->GetRequestedRegion(), radius);
+  const typename FaceCalculatorType::FaceListType faceList = faceCalculator(input, input->GetRequestedRegion(), radius);
 
-  OffsetType center_offset;
-  center_offset.Fill(0);
+  constexpr OffsetType center_offset{};
 
   bool isInside;
 

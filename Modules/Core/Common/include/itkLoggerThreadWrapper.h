@@ -37,7 +37,7 @@ namespace itk
 class LoggerThreadWrapperEnums
 {
 public:
-  /** \class Operation
+  /**
    * \ingroup ITKCommon
    * Definition of types of operations for LoggerThreadWrapper.
    */
@@ -129,7 +129,7 @@ public:
   AddLogOutput(OutputType * output) override;
 
   void
-  Write(PriorityLevelEnum level, std::string const & content) override;
+  Write(PriorityLevelEnum level, const std::string & content) override;
 
   void
   Flush() override;

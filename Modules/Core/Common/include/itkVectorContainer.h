@@ -21,10 +21,13 @@
 #include "itkObject.h"
 #include "itkObjectFactory.h"
 
+#include <type_traits> // For is_void_v.
 #include <utility>
 #include <vector>
 
 namespace itk
+{
+namespace detail
 {
 /** \class VectorContainer
  *  \brief Define a front-end to the STL "vector" container that conforms to the
@@ -162,8 +165,16 @@ public:
       : m_Pos(d)
       , m_Iter(i)
     {}
-    Iterator & operator*() { return *this; }
-    Iterator * operator->() { return this; }
+    Iterator &
+    operator*()
+    {
+      return *this;
+    }
+    Iterator *
+    operator->()
+    {
+      return this;
+    }
     Iterator &
     operator++()
     {
@@ -244,7 +255,7 @@ public:
       m_Pos += n;
       m_Iter += n;
       return *this;
-    };
+    }
 
     /** Get the index into the VectorContainer associated with this iterator.
      */
@@ -290,8 +301,16 @@ public:
       : m_Pos(r.m_Pos)
       , m_Iter(r.m_Iter)
     {}
-    ConstIterator & operator*() { return *this; }
-    ConstIterator * operator->() { return this; }
+    ConstIterator &
+    operator*()
+    {
+      return *this;
+    }
+    ConstIterator *
+    operator->()
+    {
+      return this;
+    }
     ConstIterator &
     operator++()
     {
@@ -335,7 +354,7 @@ public:
       m_Pos += n;
       m_Iter += n;
       return *this;
-    };
+    }
 
     difference_type
     operator-(const ConstIterator & r) const
@@ -530,7 +549,8 @@ public:
    * with other containers in the toolkit.
    */
   void
-  Squeeze();
+  Squeeze()
+  {}
 
   /**
    * Clear the elements. The final size will be zero.
@@ -561,6 +581,34 @@ protected:
     , VectorType(first, last)
   {}
 };
+} // namespace detail
+
+
+/** Alias template, allowing to use `itk::VectorContainer<TElement>` without having to explicitly specify its
+ * `ElementIdentifier` type.
+ *
+ * The template parameters `T1` and `T2` allow specifying the index type and the element type, as follows:
+ *
+ * \tparam T1 The index type OR (when `T2` is `void`) the element type.
+ *
+ * \tparam T2 The element type OR `void`. When `T2` is `void`, the element type is specified by the first template
+ * argument (T1), and the index type will be `SizeValueType`.
+ */
+template <typename T1, typename T2 = void>
+using VectorContainer = detail::VectorContainer<std::conditional_t<std::is_void_v<T2>, SizeValueType, T1>,
+                                                std::conditional_t<std::is_void_v<T2>, T1, T2>>;
+
+
+/** Makes a VectorContainer that has a copy of the specified `std::vector`. */
+template <typename TElement>
+auto
+MakeVectorContainer(std::vector<TElement> stdVector)
+{
+  auto vectorContainer = VectorContainer<TElement>::New();
+  vectorContainer->CastToSTLContainer() = std::move(stdVector);
+  return vectorContainer;
+}
+
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION

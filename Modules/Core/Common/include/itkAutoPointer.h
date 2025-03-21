@@ -73,7 +73,11 @@ public:
   ~AutoPointer() { this->Reset(); }
 
   /** Overload operator ->.  */
-  ObjectType * operator->() const { return m_Pointer; }
+  ObjectType *
+  operator->() const
+  {
+    return m_Pointer;
+  }
 
   /** Clear the AutoPointer. If it had a pointer the object
       is deleted and the pointer is set to null. */
@@ -156,7 +160,7 @@ public:
   bool
   operator==(const AutoPointer & r) const
   {
-    return (void *)m_Pointer == (void *)r.m_Pointer;
+    return m_Pointer == r.m_Pointer;
   }
 
   ITK_UNEQUAL_OPERATOR_MEMBER_FUNCTION(Self);
@@ -165,28 +169,28 @@ public:
   bool
   operator<(const AutoPointer & r) const
   {
-    return (void *)m_Pointer < (void *)r.m_Pointer;
+    return m_Pointer < r.m_Pointer;
   }
 
   /** Comparison of pointers. Greater than comparison.  */
   bool
   operator>(const AutoPointer & r) const
   {
-    return (void *)m_Pointer > (void *)r.m_Pointer;
+    return m_Pointer > r.m_Pointer;
   }
 
   /** Comparison of pointers. Less than or equal to comparison.  */
   bool
   operator<=(const AutoPointer & r) const
   {
-    return (void *)m_Pointer <= (void *)r.m_Pointer;
+    return m_Pointer <= r.m_Pointer;
   }
 
   /** Comparison of pointers. Greater than or equal to comparison.  */
   bool
   operator>=(const AutoPointer & r) const
   {
-    return (void *)m_Pointer >= (void *)r.m_Pointer;
+    return m_Pointer >= r.m_Pointer;
   }
 
   /** Overload operator assignment.  */
@@ -250,6 +254,7 @@ TransferAutoPointer(TAutoPointerBase & pa, TAutoPointerDerived & pb)
     pb.ReleaseOwnership(); // pb Release Ownership and clears
   }
 }
+
 } // end namespace itk
 
 #endif

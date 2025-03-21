@@ -44,8 +44,7 @@ FloodFilledFunctionConditionalConstIterator<TImage, TFunction>::FloodFilledFunct
 {
   this->m_Image = imagePtr;
   m_Function = fnPtr;
-  unsigned int i;
-  for (i = 0; i < startIndex.size(); ++i)
+  for (unsigned int i = 0; i < startIndex.size(); ++i)
   {
     m_Seeds.push_back(startIndex[i]);
   }
@@ -80,7 +79,7 @@ FloodFilledFunctionConditionalConstIterator<TImage, TFunction>::InitializeIterat
 
   // Build a temporary image of chars for use in the flood algorithm
   m_TemporaryPointer = TTempImage::New();
-  typename TTempImage::RegionType tempRegion = this->m_Image->GetBufferedRegion();
+  const typename TTempImage::RegionType tempRegion = this->m_Image->GetBufferedRegion();
 
   m_TemporaryPointer->SetRegions(tempRegion);
   m_TemporaryPointer->AllocateInitialized();
@@ -205,7 +204,7 @@ FloodFilledFunctionConditionalConstIterator<TImage, TFunction>::DoFloodStep()
         }
       }
     } // end left/right neighbor loop
-  }   // end check all neighbors
+  } // end check all neighbors
 
   // Now that all the potential neighbors have been
   // inserted we can get rid of the pixel in the front

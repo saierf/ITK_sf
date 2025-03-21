@@ -106,20 +106,10 @@ namespace itk
  *
  * \author Nicholas J. Tustison
  *
- * This code was contributed in the Insight Journal paper:
- * "N-D C^k B-Spline Scattered Data Approximation"
- * by Nicholas J. Tustison, James C. Gee
- * https://www.insight-journal.org/browse/publication/57
+ * This code was contributed in the Insight Journal paper
+ * \cite Tustison_2005.
  *
- *
- * \par REFERENCE
- * S. Lee, G. Wolberg, and S. Y. Shin, "Scattered Data Interpolation
- * with Multilevel B-Splines", IEEE Transactions on Visualization and
- * Computer Graphics, 3(3):228-244, 1997.
- *
- * \par REFERENCE
- * N.J. Tustison and J.C. Gee, "Generalized n-D C^k Scattered Data Approximation
- * with Confidence Values", Proceedings of the MIAR conference, August 2006.
+ * For additional information see \cite lee1997 and \cite tustison2006.
  *
  * \ingroup ITKImageGrid
  *

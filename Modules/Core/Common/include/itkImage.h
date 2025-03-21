@@ -207,7 +207,7 @@ public:
   void
   SetPixel(const IndexType & index, const TPixel & value)
   {
-    OffsetValueType offset = this->FastComputeOffset(index);
+    const OffsetValueType offset = this->FastComputeOffset(index);
     (*m_Buffer)[offset] = value;
   }
 
@@ -218,7 +218,7 @@ public:
   const TPixel &
   GetPixel(const IndexType & index) const
   {
-    OffsetValueType offset = this->FastComputeOffset(index);
+    const OffsetValueType offset = this->FastComputeOffset(index);
     return ((*m_Buffer)[offset]);
   }
 
@@ -229,7 +229,7 @@ public:
   TPixel &
   GetPixel(const IndexType & index)
   {
-    OffsetValueType offset = this->FastComputeOffset(index);
+    const OffsetValueType offset = this->FastComputeOffset(index);
     return ((*m_Buffer)[offset]);
   }
 
@@ -237,13 +237,21 @@ public:
    *
    * For efficiency, this function does not check that the
    * image has actually been allocated yet. */
-  TPixel & operator[](const IndexType & index) { return this->GetPixel(index); }
+  TPixel &
+  operator[](const IndexType & index)
+  {
+    return this->GetPixel(index);
+  }
 
   /** \brief Access a pixel. This version can only be an rvalue.
    *
    * For efficiency, this function does not check that the
    * image has actually been allocated yet. */
-  const TPixel & operator[](const IndexType & index) const { return this->GetPixel(index); }
+  const TPixel &
+  operator[](const IndexType & index) const
+  {
+    return this->GetPixel(index);
+  }
 
   /** Return a pointer to the beginning of the buffer.  This is used by
    * the image iterator class. */

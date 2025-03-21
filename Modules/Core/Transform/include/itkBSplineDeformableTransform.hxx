@@ -404,8 +404,7 @@ BSplineDeformableTransform<TParametersValueType, VDimension, VSplineOrder>::SetC
   }
   else
   {
-    itkExceptionMacro("SetCoefficientImage() requires that an array of "
-                      << "correctly sized images be supplied.");
+    itkExceptionMacro("SetCoefficientImage() requires that an array of correctly sized images be supplied.");
   }
 }
 
@@ -556,8 +555,7 @@ BSplineDeformableTransform<TParametersValueType, VDimension, VSplineOrder>::Comp
   // Zero all components of jacobian
   jacobian.SetSize(SpaceDimension, this->GetNumberOfParameters());
   jacobian.Fill(0.0);
-  SizeType supportSize;
-  supportSize.Fill(SplineOrder + 1);
+  constexpr auto supportSize = SizeType::Filled(SplineOrder + 1);
 
   ContinuousIndexType index =
     this->m_CoefficientImages[0]
@@ -579,7 +577,7 @@ BSplineDeformableTransform<TParametersValueType, VDimension, VSplineOrder>::Comp
 
   const RegionType supportRegion(supportIndex, supportSize);
 
-  IndexType startIndex = this->m_CoefficientImages[0]->GetLargestPossibleRegion().GetIndex();
+  const IndexType startIndex = this->m_CoefficientImages[0]->GetLargestPossibleRegion().GetIndex();
 
   const SizeType & MeshGridSize = this->m_GridRegion.GetSize();
   SizeType         cumulativeGridSizes;
@@ -589,7 +587,7 @@ BSplineDeformableTransform<TParametersValueType, VDimension, VSplineOrder>::Comp
     cumulativeGridSizes[d] = cumulativeGridSizes[d - 1] * MeshGridSize[d];
   }
 
-  SizeValueType numberOfParametersPerDimension = this->GetNumberOfParametersPerDimension();
+  const SizeValueType numberOfParametersPerDimension = this->GetNumberOfParametersPerDimension();
 
   unsigned long counter = 0;
   for (ImageRegionConstIteratorWithIndex<ImageType> It(this->m_CoefficientImages[0], supportRegion); !It.IsAtEnd();

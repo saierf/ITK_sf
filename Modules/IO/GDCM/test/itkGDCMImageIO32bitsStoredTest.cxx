@@ -41,8 +41,8 @@ itkGDCMImageIO32bitsStoredTest(int argc, char * argv[])
   using ReaderType = itk::ImageFileReader<InputImageType>;
   using ImageIOType = itk::GDCMImageIO;
 
-  auto dcmImageIO = ImageIOType::New();
-  bool canRead = dcmImageIO->CanReadFile(argv[1]);
+  auto       dcmImageIO = ImageIOType::New();
+  const bool canRead = dcmImageIO->CanReadFile(argv[1]);
   std::cerr << "GDCM can read file: " << (canRead ? "yes" : "no") << std::endl;
   if (canRead)
   {
@@ -65,8 +65,7 @@ itkGDCMImageIO32bitsStoredTest(int argc, char * argv[])
     return EXIT_FAILURE;
   }
 
-  InputImageType::SizeType extentSize;
-  extentSize = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
+  InputImageType::SizeType extentSize = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
   std::cout << "Read image dimensions: (" << extentSize[0] << ", " << extentSize[1] << ", " << extentSize[2] << ')'
             << std::endl;
   if (extentSize[0] == 0 || extentSize[1] == 0 || extentSize[2] == 0)

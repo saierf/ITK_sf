@@ -117,12 +117,8 @@ namespace itk
  * 3D solver is), so it cannot multithread for data other than 3D in
  * UsePrincipleComponents=On mode.
  *
- * \par References
+ * For algorithmic details see \cite sapiro1996.
  *
- * [1] G. Sapiro and D. Ringach, "Anisotropic Diffusion of Multivalued Images
- * with Application to Color Filtering," IEEE Transactions on Image Processing,
- * Vol 5, No. 11 pp. 1582-1586, 1996
-
  * \ingroup GradientFilters
  *
  * \sa Image
@@ -273,13 +269,9 @@ public:
   static int
   CubicSolver(const double *, double *);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(SameDimensionCheck, (Concept::SameDimension<InputImageDimension, ImageDimension>));
   itkConceptMacro(InputHasNumericTraitsCheck, (Concept::HasNumericTraits<typename InputPixelType::ValueType>));
   itkConceptMacro(RealTypeHasNumericTraitsCheck, (Concept::HasNumericTraits<RealType>));
-  // End concept checking
-#endif
 
 protected:
   VectorGradientMagnitudeImageFilter();
@@ -317,10 +309,11 @@ protected:
   TRealType
   NonPCEvaluateAtNeighborhood(const ConstNeighborhoodIteratorType & it) const
   {
-    unsigned int i, j;
-    TRealType    dx, sum, accum;
-
-    accum = TRealType{};
+    unsigned int i;
+    unsigned int j;
+    TRealType    dx;
+    TRealType    sum;
+    auto         accum = TRealType{};
     for (i = 0; i < ImageDimension; ++i)
     {
       sum = TRealType{};
@@ -338,7 +331,8 @@ protected:
   EvaluateAtNeighborhood3D(const ConstNeighborhoodIteratorType & it) const
   {
     // WARNING:  ONLY CALL THIS METHOD WHEN PROCESSING A 3D IMAGE
-    unsigned int i, j;
+    unsigned int i;
+    unsigned int j;
     double       Lambda[3];
     double       CharEqn[3];
     double       ans;
@@ -378,7 +372,7 @@ protected:
                  g[2][0] * (g[1][1] * g[0][2] - g[0][1] * g[1][2]);
 
     // Find the eigenvalues of g
-    int numberOfDistinctRoots = this->CubicSolver(CharEqn, Lambda);
+    const int numberOfDistinctRoots = this->CubicSolver(CharEqn, Lambda);
 
     // Define gradient magnitude as the difference between two largest
     // eigenvalues.  Other definitions may be appropriate here as well.
@@ -451,7 +445,8 @@ protected:
   TRealType
   EvaluateAtNeighborhood(const ConstNeighborhoodIteratorType & it) const
   {
-    unsigned int i, j;
+    unsigned int i;
+    unsigned int j;
 
     vnl_matrix<TRealType>                        g(ImageDimension, ImageDimension);
     vnl_vector_fixed<TRealType, VectorDimension> d_phi_du[TInputImage::ImageDimension];
@@ -477,7 +472,7 @@ protected:
     }
 
     // Find the eigenvalues of g
-    vnl_symmetric_eigensystem<TRealType> E(g);
+    const vnl_symmetric_eigensystem<TRealType> E(g);
 
     // Return the difference in length between the first two principle axes.
     // Note that other edge strength metrics may be appropriate here instead..

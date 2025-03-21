@@ -40,7 +40,7 @@ namespace itk
  * INRA de Jouy-en-Josas, France.
  *
  * This class was contributed to the Insight Journal
- * https://www.insight-journal.org/browse/publication/79
+ * https://doi.org/10.54294/xr1bvx
  *
  * \sa LabelToRGBImageFilter
  * \sa LabelMapOverlayImageFilter, LabelOverlayFunctor
@@ -101,13 +101,9 @@ public:
   itkSetMacro(BackgroundValue, LabelPixelType);
   itkGetConstReferenceMacro(BackgroundValue, LabelPixelType);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputPixelShouldHaveValueType, (Concept::HasValueType<OutputPixelType>));
   itkConceptMacro(OutputPixelShouldHaveBracketOperator,
                   (Concept::BracketOperator<OutputPixelType, unsigned int, typename OutputPixelType::ValueType>));
-  // End concept checking
-#endif
 
   /** Empty the color LUT container. */
   void

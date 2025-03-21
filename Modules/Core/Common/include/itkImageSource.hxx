@@ -41,7 +41,7 @@ ImageSource<TOutputImage>::ImageSource()
 {
   // Create the output. We use static_cast<> here because we know the default
   // output must be of type TOutputImage
-  typename TOutputImage::Pointer output = static_cast<TOutputImage *>(this->MakeOutput(0).GetPointer());
+  const typename TOutputImage::Pointer output = static_cast<TOutputImage *>(this->MakeOutput(0).GetPointer());
   this->ProcessObject::SetNumberOfRequiredOutputs(1);
   this->ProcessObject::SetNthOutput(0, output.GetPointer());
 
@@ -52,7 +52,8 @@ ImageSource<TOutputImage>::ImageSource()
 }
 
 template <typename TOutputImage>
-ProcessObject::DataObjectPointer ImageSource<TOutputImage>::MakeOutput(ProcessObject::DataObjectPointerArraySizeType)
+ProcessObject::DataObjectPointer
+ImageSource<TOutputImage>::MakeOutput(ProcessObject::DataObjectPointerArraySizeType)
 {
   return TOutputImage::New().GetPointer();
 }
@@ -268,15 +269,15 @@ ITK_THREAD_RETURN_FUNCTION_CALL_CONVENTION
 ImageSource<TOutputImage>::ThreaderCallback(void * arg)
 {
   using WorkUnitInfo = MultiThreaderBase::WorkUnitInfo;
-  auto *       workUnitInfo = static_cast<WorkUnitInfo *>(arg);
-  ThreadIdType workUnitID = workUnitInfo->WorkUnitID;
-  ThreadIdType workUnitCount = workUnitInfo->NumberOfWorkUnits;
-  auto *       str = (ThreadStruct *)(workUnitInfo->UserData);
+  auto *             workUnitInfo = static_cast<WorkUnitInfo *>(arg);
+  const ThreadIdType workUnitID = workUnitInfo->WorkUnitID;
+  const ThreadIdType workUnitCount = workUnitInfo->NumberOfWorkUnits;
+  auto *             str = (ThreadStruct *)(workUnitInfo->UserData);
 
   // execute the actual method with appropriate output region
   // first find out how many pieces extent can be split into.
   typename TOutputImage::RegionType splitRegion;
-  ThreadIdType                      total = str->Filter->SplitRequestedRegion(workUnitID, workUnitCount, splitRegion);
+  const ThreadIdType                total = str->Filter->SplitRequestedRegion(workUnitID, workUnitCount, splitRegion);
 
   if (workUnitID < total)
   {
@@ -291,7 +292,7 @@ void
 ImageSource<TOutputImage>::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
-  os << indent << "DynamicMultiThreading: " << (m_DynamicMultiThreading ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(DynamicMultiThreading);
 }
 
 } // end namespace itk

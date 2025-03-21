@@ -77,7 +77,7 @@ protected:
       const typename TOutputImage::PixelType pixel(idx[2] * 100 + idx[1] * 10 + idx[0]);
       it.Set(pixel);
     }
-  };
+  }
 
 private:
   typename TOutputImage::PixelType m_Value;
@@ -97,7 +97,7 @@ HDF5ReadWriteTest2(const char * fileName)
   size[2] = 5;
   size[1] = 5;
   size[0] = 5;
-  typename itk::DemoImageSource<ImageType>::Pointer imageSource = itk::DemoImageSource<ImageType>::New();
+  const typename itk::DemoImageSource<ImageType>::Pointer imageSource = itk::DemoImageSource<ImageType>::New();
   imageSource->SetValue(static_cast<TPixel>(23)); // Not used.
   imageSource->SetSize(size);
 
@@ -131,9 +131,8 @@ HDF5ReadWriteTest2(const char * fileName)
   expectedRegion.SetSize(0, 5);
   expectedRegion.SetSize(1, 5);
   expectedRegion.SetSize(2, 1);
-  typename MonitorFilterType::RegionVectorType   writerRegionVector = writerMonitor->GetUpdatedBufferedRegions();
-  typename ImageType::RegionType::IndexValueType iRegion;
-  for (iRegion = 0; iRegion < 5; ++iRegion)
+  typename MonitorFilterType::RegionVectorType writerRegionVector = writerMonitor->GetUpdatedBufferedRegions();
+  for (typename ImageType::RegionType::IndexValueType iRegion = 0; iRegion < 5; ++iRegion)
   {
     expectedRegion.SetIndex(2, iRegion);
     if (writerRegionVector[iRegion] != expectedRegion)
@@ -215,7 +214,7 @@ HDF5ReadWriteTest2(const char * fileName)
   expectedRegion.SetSize(0, 5);
   expectedRegion.SetSize(1, 5);
   expectedRegion.SetSize(2, 1);
-  for (iRegion = 0; iRegion < 5; ++iRegion)
+  for (typename ImageType::RegionType::IndexValueType iRegion = 0; iRegion < 5; ++iRegion)
   {
     expectedRegion.SetIndex(2, iRegion);
     if (readerRegionVector[iRegion] != expectedRegion)
@@ -240,7 +239,7 @@ itkHDF5ImageIOStreamingReadWriteTest(int argc, char * argv[])
   {
     prefix = *++argv;
     --argc;
-    itksys::SystemTools::ChangeDirectory(prefix.c_str());
+    itksys::SystemTools::ChangeDirectory(prefix);
   }
   itk::ObjectFactoryBase::RegisterFactory(itk::HDF5ImageIOFactory::New());
 

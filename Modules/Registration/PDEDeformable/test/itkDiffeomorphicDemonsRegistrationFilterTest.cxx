@@ -59,7 +59,7 @@ FillWithCircle(TImage *                   image,
   it.GoToBegin();
 
   typename TImage::IndexType index;
-  double                     r2 = itk::Math::sqr(radius);
+  const double               r2 = itk::Math::sqr(radius);
 
   for (; !it.IsAtEnd(); ++it)
   {
@@ -136,10 +136,9 @@ itkDiffeomorphicDemonsRegistrationFilterTest(int argc, char * argv[])
   SizeType                 size;
   size.SetSize(sizeArray);
 
-  IndexType index;
-  index.Fill(0);
+  constexpr IndexType index{};
 
-  RegionType region{ index, size };
+  const RegionType region{ index, size };
 
   DirectionType direction;
   direction.SetIdentity();
@@ -164,15 +163,14 @@ itkDiffeomorphicDemonsRegistrationFilterTest(int argc, char * argv[])
   initField->Allocate();
   initField->SetDirection(direction);
 
-  double    center[ImageDimension];
-  double    radius;
-  PixelType fgnd = 250;
-  PixelType bgnd = 15;
+  double              center[ImageDimension];
+  constexpr PixelType fgnd = 250;
+  constexpr PixelType bgnd = 15;
 
   // fill moving with circle
   center[0] = 64;
   center[1] = 64;
-  radius = 30;
+  double radius = 30;
   FillWithCircle<ImageType>(moving, center, radius, fgnd, bgnd);
 
   // fill fixed with circle
@@ -182,8 +180,7 @@ itkDiffeomorphicDemonsRegistrationFilterTest(int argc, char * argv[])
   FillWithCircle<ImageType>(fixed, center, radius, fgnd, bgnd);
 
   // fill initial deformation with zero vectors
-  VectorType zeroVec;
-  zeroVec.Fill(0.0);
+  constexpr VectorType zeroVec{};
   initField->FillBuffer(zeroVec);
 
   using CasterType = itk::CastImageFilter<FieldType, FieldType>;
@@ -251,8 +248,7 @@ itkDiffeomorphicDemonsRegistrationFilterTest(int argc, char * argv[])
   registrator->InPlaceOn();
 
 
-  FunctionType * fptr;
-  fptr = dynamic_cast<FunctionType *>(registrator->GetDifferenceFunction().GetPointer());
+  auto * fptr = dynamic_cast<FunctionType *>(registrator->GetDifferenceFunction().GetPointer());
   fptr->Print(std::cout);
 
   // exercise other member variables
@@ -269,9 +265,8 @@ itkDiffeomorphicDemonsRegistrationFilterTest(int argc, char * argv[])
 
   using ProgressType = DiffeomorphicDemonsShowProgressObject<RegistrationType>;
 
-  ProgressType                                    progressWatch(registrator);
-  itk::SimpleMemberCommand<ProgressType>::Pointer command;
-  command = itk::SimpleMemberCommand<ProgressType>::New();
+  ProgressType                                          progressWatch(registrator);
+  const itk::SimpleMemberCommand<ProgressType>::Pointer command = itk::SimpleMemberCommand<ProgressType>::New();
   command->SetCallbackFunction(&progressWatch, &ProgressType::ShowProgress);
   registrator->AddObserver(itk::ProgressEvent(), command);
 
@@ -279,8 +274,8 @@ itkDiffeomorphicDemonsRegistrationFilterTest(int argc, char * argv[])
   using WarperType = itk::WarpImageFilter<ImageType, ImageType, FieldType>;
   auto warper = WarperType::New();
 
-  using CoordRepType = WarperType::CoordRepType;
-  using InterpolatorType = itk::NearestNeighborInterpolateImageFunction<ImageType, CoordRepType>;
+  using CoordinateType = WarperType::CoordinateType;
+  using InterpolatorType = itk::NearestNeighborInterpolateImageFunction<ImageType, CoordinateType>;
   auto interpolator = InterpolatorType::New();
 
 

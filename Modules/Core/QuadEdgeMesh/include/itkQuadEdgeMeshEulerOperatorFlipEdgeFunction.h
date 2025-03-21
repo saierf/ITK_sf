@@ -32,7 +32,7 @@ namespace itk
 class QuadEdgeMeshEulerOperatorFlipEdgeFunctionEnums
 {
 public:
-  /*** \class EdgeStatusType
+  /**
    * \ingroup ITKQuadEdgeMesh
    * Status of edge
    */
@@ -49,7 +49,7 @@ public:
 };
 // Define how to print enumerations
 extern ITKQuadEdgeMesh_EXPORT std::ostream &
-                              operator<<(std::ostream & out, QuadEdgeMeshEulerOperatorFlipEdgeFunctionEnums::EdgeStatusType value);
+operator<<(std::ostream & out, QuadEdgeMeshEulerOperatorFlipEdgeFunctionEnums::EdgeStatusType value);
 
 /**
  * \class QuadEdgeMeshEulerOperatorFlipEdgeFunction

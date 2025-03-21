@@ -37,7 +37,7 @@
 #include <string>
 #include <list>
 /** Set built-in type.  Creates member Set"name"() (e.g., SetVisibility()); */
-#define IPLSetMacroDeclaration(name, type) virtual void Set##name(const type _arg);
+#define IPLSetMacroDeclaration(name, type) virtual void Set##name(const type _arg)
 
 #define IPLSetMacroDefinition(class, name, type) \
   void class ::Set##name(const type _arg)        \
@@ -49,14 +49,15 @@
       this->m_##name = _arg;                     \
     }                                            \
     ITK_GCC_PRAGMA_POP                           \
-  }
+  }                                              \
+  ITK_MACROEND_NOOP_STATEMENT
 
 /** Get built-in type.  Creates member Get"name"() (e.g., GetVisibility()); */
-#define IPLGetMacroDeclaration(name, type) virtual type Get##name();
+#define IPLGetMacroDeclaration(name, type) virtual type Get##name()
 
-#define IPLGetMacroDefinition(class, name, type) \
-  type class ::Get##name() { return this->m_##name; }
-
+#define IPLGetMacroDefinition(class, name, type)      \
+  type class ::Get##name() { return this->m_##name; } \
+  ITK_MACROEND_NOOP_STATEMENT
 namespace itk
 {
 /**
@@ -162,7 +163,8 @@ public:
     return m_List.end();
   }
 
-  IPLFileSortInfo * operator[](unsigned int __n)
+  IPLFileSortInfo *
+  operator[](unsigned int __n)
   {
     auto it = begin();
     auto itend = end();
@@ -184,7 +186,7 @@ public:
   }
 
   bool
-  AddElementToList(char const * const filename,
+  AddElementToList(const char * const filename,
                    const float        sliceLocation,
                    const int          offset,
                    const int          XDim,
@@ -239,9 +241,8 @@ public:
   {
     auto it = m_List.begin();
     auto itend = m_List.end();
-    int  i = 0;
 
-    for (i = 0; it != itend; i++, it++)
+    for (int i = 0; it != itend; i++, it++)
     {
       if (i != ElementToRemove)
       {

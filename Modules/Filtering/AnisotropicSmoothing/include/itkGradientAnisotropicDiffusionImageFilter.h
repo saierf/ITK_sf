@@ -72,17 +72,12 @@ public:
   /** Extract information from the superclass. */
   static constexpr unsigned int ImageDimension = Superclass::ImageDimension;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(UpdateBufferHasNumericTraitsCheck, (Concept::HasNumericTraits<typename UpdateBufferType::PixelType>));
-  // End concept checking
-#endif
 
 protected:
   GradientAnisotropicDiffusionImageFilter()
   {
-    typename GradientNDAnisotropicDiffusionFunction<UpdateBufferType>::Pointer p =
-      GradientNDAnisotropicDiffusionFunction<UpdateBufferType>::New();
+    auto p = GradientNDAnisotropicDiffusionFunction<UpdateBufferType>::New();
     this->SetDifferenceFunction(p);
   }
 

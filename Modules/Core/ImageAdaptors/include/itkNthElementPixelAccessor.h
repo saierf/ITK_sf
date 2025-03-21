@@ -144,7 +144,7 @@ public:
   }
 
   inline void
-  Set(InternalType & output, const ExternalType & input, const unsigned long offset) const
+  Set(InternalType & output, const ExternalType & input, const SizeValueType offset) const
   {
     // note: v is a reference to the internal buffer, this method of
     // access relies on return value optimization to work
@@ -156,9 +156,7 @@ public:
   inline ExternalType
   Get(const ActualPixelType & input) const
   {
-    ExternalType output;
-
-    output = static_cast<ExternalType>(input[m_ElementNumber]);
+    const auto output = static_cast<ExternalType>(input[m_ElementNumber]);
     return output;
   }
 

@@ -323,7 +323,7 @@ void
 MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::ComputeFixedImageParzenWindowIndices(
   FixedImageSampleContainer & samples)
 {
-  const typename FixedImageSampleContainer::const_iterator end = samples.end();
+  const auto end = samples.end();
   for (auto iter = samples.begin(); iter != end; ++iter)
   {
     // Determine parzen window arguments (see eqn 6 of Mattes paper [2]).
@@ -381,7 +381,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueTh
   {
     return false;
   }
-  else if (movingImageValue > this->m_MovingImageTrueMax)
+  if (movingImageValue > this->m_MovingImageTrueMax)
   {
     return false;
   }
@@ -449,9 +449,9 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueTh
   for (unsigned int t = 1; t < this->m_NumberOfWorkUnits; ++t)
   {
     JointPDFValueType *       pdfPtr = pdfPtrStart;
-    JointPDFValueType const * tPdfPtr =
+    const JointPDFValueType * tPdfPtr =
       this->m_MMIMetricPerThreadVariables[t].JointPDF->GetBufferPointer() + tPdfPtrOffset;
-    JointPDFValueType const * const tPdfPtrEnd = tPdfPtr + maxI;
+    const JointPDFValueType * const tPdfPtrEnd = tPdfPtr + maxI;
     // for(i=0; i < maxI; i++)
     while (tPdfPtr < tPdfPtrEnd)
     {
@@ -475,7 +475,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueTh
   // this->m_MMIMetricPerThreadVariables[].JointPDFSum
   // that covers that part of the domain.
   this->m_MMIMetricPerThreadVariables[threadId].JointPDFSum = 0.0;
-  JointPDFValueType const * pdfPtr = pdfPtrStart;
+  const JointPDFValueType * pdfPtr = pdfPtrStart;
   for (int i = 0; i < maxI; ++i)
   {
     this->m_MMIMetricPerThreadVariables[threadId].JointPDFSum += *(pdfPtr++);
@@ -533,8 +533,8 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValue(c
           sum += jointPDFValue * (pRatio - std::log(fixedImagePDFValue));
         }
       } // end if-block to check non-zero bin contribution
-    }   // end for-loop over moving index
-  }     // end for-loop over fixed index
+    } // end for-loop over moving index
+  } // end for-loop over fixed index
 
   return static_cast<MeasureType>(-1.0 * sum);
 }
@@ -572,13 +572,13 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
   {
     return false;
   }
-  else if (movingImageValue > this->m_MovingImageTrueMax)
+  if (movingImageValue > this->m_MovingImageTrueMax)
   {
     return false;
   }
 
   // Determine parzen window arguments (see eqn 6 of Mattes paper [2]).
-  PDFValueType movingImageParzenWindowTerm =
+  const PDFValueType movingImageParzenWindowTerm =
     movingImageValue / this->m_MovingImageBinSize - this->m_MovingImageNormalizedMin;
   auto movingImageParzenWindowIndex = static_cast<OffsetValueType>(movingImageParzenWindowTerm);
 
@@ -669,9 +669,9 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
     for (unsigned int t = 1; t < this->m_NumberOfWorkUnits; ++t)
     {
       JointPDFDerivativesValueType *       pdfDPtr = pdfDPtrStart;
-      JointPDFDerivativesValueType const * tPdfDPtr =
+      const JointPDFDerivativesValueType * tPdfDPtr =
         this->m_MMIMetricPerThreadVariables[t].JointPDFDerivatives->GetBufferPointer() + tPdfDPtrOffset;
-      JointPDFDerivativesValueType const * const tPdfDPtrEnd = tPdfDPtr + maxI;
+      const JointPDFDerivativesValueType * const tPdfDPtrEnd = tPdfDPtr + maxI;
       // for(i = 0; i < maxI; i++)
       while (tPdfDPtr < tPdfDPtrEnd)
       {
@@ -682,7 +682,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
     const PDFValueType nFactor = 1.0 / (this->m_MovingImageBinSize * this->m_NumberOfPixelsCounted);
 
     JointPDFDerivativesValueType *             pdfDPtr = pdfDPtrStart;
-    JointPDFDerivativesValueType const * const tPdfDPtrEnd = pdfDPtrStart + maxI;
+    const JointPDFDerivativesValueType * const tPdfDPtrEnd = pdfDPtrStart + maxI;
     // for(int i = 0; i < maxI; i++)
     while (pdfDPtr < tPdfDPtrEnd)
     {
@@ -773,7 +773,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
         if (this->m_UseExplicitPDFDerivatives)
         {
           // move joint pdf derivative pointer to the right position
-          JointPDFValueType const * derivPtr =
+          const JointPDFValueType * derivPtr =
             this->m_MMIMetricPerThreadVariables[0].JointPDFDerivatives->GetBufferPointer() +
             (fixedIndex * this->m_MMIMetricPerThreadVariables[0].JointPDFDerivatives->GetOffsetTable()[2]) +
             (movingIndex * this->m_MMIMetricPerThreadVariables[0].JointPDFDerivatives->GetOffsetTable()[1]);
@@ -788,8 +788,8 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
           this->m_PRatioArray[fixedIndex][movingIndex] = pRatio * nFactor;
         }
       } // end if-block to check non-zero bin contribution
-    }   // end for-loop over moving index
-  }     // end for-loop over fixed index
+    } // end for-loop over moving index
+  } // end for-loop over fixed index
 
   if (!(this->m_UseExplicitPDFDerivatives))
   {
@@ -807,7 +807,7 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::GetValueAn
     // derivative.
     for (ThreadIdType workUnitID = 1; workUnitID < this->m_NumberOfWorkUnits; ++workUnitID)
     {
-      DerivativeType const * const source = &(this->m_MMIMetricPerThreadVariables[workUnitID].MetricDerivative);
+      const DerivativeType * const source = &(this->m_MMIMetricPerThreadVariables[workUnitID].MetricDerivative);
       for (unsigned int pp = 0; pp < this->m_NumberOfParameters; ++pp)
       {
         this->m_MMIMetricPerThreadVariables[0].MetricDerivative[pp] += (*source)[pp];
@@ -1029,8 +1029,8 @@ MattesMutualInformationImageToImageMetric<TFixedImage, TMovingImage>::ComputePDF
             precomputedWeight * derivativeContribution;
         }
       } // end mu for loop
-    }   // end dim for loop
-  }     // end if-block transform is BSpline
+    } // end dim for loop
+  } // end if-block transform is BSpline
 }
 
 } // end namespace itk

@@ -114,19 +114,14 @@ main(int argc, char * argv[])
 
   // Software Guide : BeginLatex
   //
-  // Using the image type we proceed to instantiate the readers for both input
-  // images. Then, we take their filenames from the command line arguments.
+  // Using the image type we proceed to read in the input images
+  // taking their filenames from the command line arguments.
   //
   // Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  using ReaderType = itk::ImageFileReader<ImageType>;
-
-  auto reader1 = ReaderType::New();
-  auto reader2 = ReaderType::New();
-
-  reader1->SetFileName(argv[1]);
-  reader2->SetFileName(argv[2]);
+  const auto input1 = itk::ReadImage<ImageType>(argv[1]);
+  const auto input2 = itk::ReadImage<ImageType>(argv[2]);
   // Software Guide : EndCodeSnippet
 
 
@@ -142,8 +137,8 @@ main(int argc, char * argv[])
 
   auto joinFilter = JoinFilterType::New();
 
-  joinFilter->SetInput1(reader1->GetOutput());
-  joinFilter->SetInput2(reader2->GetOutput());
+  joinFilter->SetInput1(input1);
+  joinFilter->SetInput2(input2);
   // Software Guide : EndCodeSnippet
 
 
@@ -419,7 +414,7 @@ main(int argc, char * argv[])
   // Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  double MutualInformation = Entropy1 + Entropy2 - JointEntropy;
+  const double MutualInformation = Entropy1 + Entropy2 - JointEntropy;
   // Software Guide : EndCodeSnippet
 
   std::cout << "Mutual Information = " << MutualInformation << " bits "
@@ -434,7 +429,7 @@ main(int argc, char * argv[])
   // Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  double NormalizedMutualInformation1 =
+  const double NormalizedMutualInformation1 =
     2.0 * MutualInformation / (Entropy1 + Entropy2);
   // Software Guide : EndCodeSnippet
 
@@ -450,7 +445,8 @@ main(int argc, char * argv[])
   // Software Guide : EndLatex
 
   // Software Guide : BeginCodeSnippet
-  double NormalizedMutualInformation2 = (Entropy1 + Entropy2) / JointEntropy;
+  const double NormalizedMutualInformation2 =
+    (Entropy1 + Entropy2) / JointEntropy;
   // Software Guide : EndCodeSnippet
 
 

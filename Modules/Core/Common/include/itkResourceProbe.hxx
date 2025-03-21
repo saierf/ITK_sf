@@ -125,7 +125,7 @@ template <typename ValueType, typename MeanType>
 void
 ResourceProbe<ValueType, MeanType>::Start()
 {
-  this->m_NumberOfStarts++;
+  ++(this->m_NumberOfStarts);
   this->m_StartValue = this->GetInstantValue();
 }
 
@@ -143,7 +143,7 @@ ResourceProbe<ValueType, MeanType>::Stop()
   this->UpdateMinimumMaximumMeasuredValue(probevalue);
   this->m_TotalValue += probevalue;
   this->m_ProbeValueList.push_back(probevalue);
-  this->m_NumberOfStops++;
+  ++(this->m_NumberOfStops);
   this->m_NumberOfIteration = static_cast<CountType>(this->m_ProbeValueList.size());
 }
 
@@ -402,7 +402,7 @@ ResourceProbe<ValueType, MeanType>::PrintJSONvar(std::ostream & os,
                                                  unsigned int   indent,
                                                  bool           comma)
 {
-  bool varIsNumber = mpl::IsNumber<T>::Value;
+  const bool varIsNumber = mpl::IsNumber<T>::Value;
   while (indent > 0)
   {
     os << ' ';
@@ -427,8 +427,6 @@ template <typename ValueType, typename MeanType>
 void
 ResourceProbe<ValueType, MeanType>::JSONReport(std::ostream & os)
 {
-  std::stringstream ss;
-
   ValueType ratioOfMeanToMinimum;
   if (Math::ExactlyEquals(this->GetMinimum(), 0.0))
   {
@@ -585,10 +583,9 @@ ResourceProbe<ValueType, MeanType>::PrintJSONSystemInformation(std::ostream & os
   PrintJSONvar(os, "Bitness", (systeminfo.Is64Bits() ? "64 bit" : "32 bit"), 6, false);
   os << "    },\n";
 
-  std::ostringstream itkVersionStringStream;
-  itkVersionStringStream << ITK_VERSION_STRING << '.' << ITK_VERSION_PATCH;
+  const std::string itkVersionString = ITK_VERSION_STRING "." + std::to_string(ITK_VERSION_PATCH);
 
-  PrintJSONvar(os, "ITKVersion", itkVersionStringStream.str(), 4, false);
+  PrintJSONvar(os, "ITKVersion", itkVersionString, 4, false);
   os << "  }";
 }
 

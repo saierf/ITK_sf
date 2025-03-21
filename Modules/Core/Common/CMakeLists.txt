@@ -11,13 +11,10 @@ test_big_endian(CMAKE_WORDS_BIGENDIAN)
 include(FindThreads)
 set(ITK_USE_WIN32_THREADS 0)
 set(ITK_USE_PTHREADS 0)
-set(ITK_HP_PTHREADS 0)
 if(CMAKE_USE_WIN32_THREADS_INIT)
   set(ITK_USE_WIN32_THREADS 1)
 elseif(CMAKE_USE_PTHREADS_INIT AND NOT EMSCRIPTEN)
   set(ITK_USE_PTHREADS 1)
-elseif(CMAKE_HP_PTHREADS_INIT)
-  set(ITK_HP_PTHREADS 1)
 endif()
 set(CMAKE_THREAD_LIBS
     "${CMAKE_THREAD_LIBS_INIT}"
@@ -101,6 +98,10 @@ try_compile(
   ${CMAKE_CURRENT_SOURCE_DIR}/CMake/itkCheckHasFenvtStructMember.cxx
   COMPILE_DEFINITIONS -DITK_CHECK_FENV_T_CW)
 
+try_compile(
+        ITK_HAS_SCHED_GETAFFINITY ${ITK_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/CMake/itkCheckHasSchedGetAffinity.cxx)
+
 #-----------------------------------------------------------------------------
 # Make default visibility as an option for generated export header
 
@@ -130,6 +131,10 @@ set(ITK_USE_TBB ${Module_ITKTBB})
 configure_file(src/itkConfigure.h.in itkConfigure.h)
 configure_file(src/itkConfigurePrivate.h.in itkConfigurePrivate.h)
 
+if(ITK_WRAP_PYTHON)
+  set(ITKCommon_SYSTEM_INCLUDE_DIRS "${Python3_INCLUDE_DIRS}")
+  set(ITKCommon_SYSTEM_LIBRARY_DIRS "${Python3_LIBRARY_DIRS}")
+endif()
 set(ITKCommon_INCLUDE_DIRS ${ITKCommon_BINARY_DIR})
 set(ITKCommon_LIBRARIES ITKCommon)
 

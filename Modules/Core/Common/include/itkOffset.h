@@ -239,9 +239,9 @@ public:
   alignas(OffsetValueType) OffsetValueType m_InternalArray[VDimension];
 
   /** Copy values from a FixedArray by rounding each one of the components */
-  template <typename TCoordRep>
+  template <typename TCoordinate>
   inline void
-  CopyWithRound(const FixedArray<TCoordRep, VDimension> & point)
+  CopyWithRound(const FixedArray<TCoordinate, VDimension> & point)
   {
     for (unsigned int i = 0; i < VDimension; ++i)
     {
@@ -250,9 +250,9 @@ public:
   }
 
   /** Copy values from a FixedArray by casting each one of the components */
-  template <typename TCoordRep>
+  template <typename TCoordinate>
   inline void
-  CopyWithCast(const FixedArray<TCoordRep, VDimension> & point)
+  CopyWithCast(const FixedArray<TCoordinate, VDimension> & point)
   {
     for (unsigned int i = 0; i < VDimension; ++i)
     {
@@ -294,7 +294,7 @@ public:
   }
 
   void
-  swap(Offset & other)
+  swap(Offset & other) noexcept
   {
     std::swap(m_InternalArray, other.m_InternalArray);
   }
@@ -377,9 +377,17 @@ public:
     return false;
   }
 
-  reference operator[](size_type pos) { return m_InternalArray[pos]; }
+  reference
+  operator[](size_type pos)
+  {
+    return m_InternalArray[pos];
+  }
 
-  const_reference operator[](size_type pos) const { return m_InternalArray[pos]; }
+  const_reference
+  operator[](size_type pos) const
+  {
+    return m_InternalArray[pos];
+  }
 
   reference
   at(size_type pos)
@@ -447,9 +455,7 @@ template <unsigned int VDimension>
 Offset<VDimension>
 Offset<VDimension>::GetBasisOffset(unsigned int dim)
 {
-  Self ind;
-
-  memset(ind.m_InternalArray, 0, sizeof(OffsetValueType) * VDimension);
+  Self ind{};
   ind.m_InternalArray[dim] = 1;
   return ind;
 }
@@ -459,7 +465,7 @@ std::ostream &
 operator<<(std::ostream & os, const Offset<VDimension> & ind)
 {
   os << '[';
-  unsigned int dimlim = VDimension - 1;
+  const unsigned int dimlim = VDimension - 1;
   for (unsigned int i = 0; i < dimlim; ++i)
   {
     os << ind[i] << ", ";
@@ -519,7 +525,7 @@ operator>=(const Offset<VDimension> & one, const Offset<VDimension> & two)
 // Specialized algorithms [6.2.2.2].
 template <unsigned int VDimension>
 inline void
-swap(Offset<VDimension> & one, Offset<VDimension> & two)
+swap(Offset<VDimension> & one, Offset<VDimension> & two) noexcept
 {
   std::swap(one.m_InternalArray, two.m_InternalArray);
 }

@@ -133,21 +133,17 @@ ChiSquareDistribution::InverseCDF(double p, SizeValueType degreesOfFreedom)
   {
     return 0.0;
   }
-  else if (p >= 1.0)
+  if (p >= 1.0)
   {
     return itk::NumericTraits<double>::max();
   }
 
-  double x;
-  double dof;
-  double nx;
-
   // Based on Abramowitz and Stegun 26.4.17
-  dof = static_cast<double>(degreesOfFreedom);
-  nx = GaussianDistribution::InverseCDF(p);
+  auto         dof = static_cast<double>(degreesOfFreedom);
+  const double nx = GaussianDistribution::InverseCDF(p);
 
-  double f = 2.0 / (9.0 * dof);
-  x = dof * std::pow(1.0 - f + nx * std::sqrt(f), 3.0);
+  const double f = 2.0 / (9.0 * dof);
+  double       x = dof * std::pow(1.0 - f + nx * std::sqrt(f), 3.0);
 
   // The approximation above is only accurate for large degrees of
   // freedom. We'll improve the approximation by a few Newton iterations.
@@ -178,10 +174,10 @@ ChiSquareDistribution::InverseCDF(double p, SizeValueType degreesOfFreedom)
   //
   // Note that f'(x) = - chisquarepdf(x)
   //
-  double delta;
   for (unsigned int newt = 0; newt < 10; ++newt)
   {
-    delta = (p - ChiSquareDistribution::CDF(x, degreesOfFreedom)) / ChiSquareDistribution::PDF(x, degreesOfFreedom);
+    const double delta =
+      (p - ChiSquareDistribution::CDF(x, degreesOfFreedom)) / ChiSquareDistribution::PDF(x, degreesOfFreedom);
     x += delta;
   }
 

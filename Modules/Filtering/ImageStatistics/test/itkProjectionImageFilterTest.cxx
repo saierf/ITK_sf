@@ -35,9 +35,7 @@ template <typename TInputPixel, typename TOutputPixel>
 class BinaryAccumulator
 {
 public:
-  BinaryAccumulator(unsigned long)
-    : m_IsForeground(false)
-  {}
+  BinaryAccumulator(unsigned long) {}
   ~BinaryAccumulator() = default;
 
   inline void
@@ -62,13 +60,11 @@ public:
     {
       return 100;
     }
-    else
-    {
-      return 0;
-    }
+
+    return 0;
   }
 
-  bool m_IsForeground;
+  bool m_IsForeground{ false };
 };
 } // end namespace Function
 
@@ -133,7 +129,7 @@ itkProjectionImageFilterTest(int argc, char * argv[])
   ITK_TEST_SET_GET_VALUE(projectionDimension, filter->GetProjectionDimension());
 
 
-  itk::SimpleFilterWatcher watcher(filter, "filter");
+  const itk::SimpleFilterWatcher watcher(filter, "filter");
 
   using WriterType = itk::ImageFileWriter<ImageType>;
   auto writer = WriterType::New();

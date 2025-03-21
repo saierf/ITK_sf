@@ -43,7 +43,7 @@ BinaryImageToStatisticsLabelMapFilter<TInputImage, TFeatureImage, TOutputImage>:
   Superclass::GenerateInputRequestedRegion();
 
   // We need all the input.
-  InputImagePointer input = const_cast<InputImageType *>(this->GetInput());
+  const InputImagePointer input = const_cast<InputImageType *>(this->GetInput());
   if (input)
   {
     input->SetRequestedRegion(input->GetLargestPossibleRegion());
@@ -100,7 +100,7 @@ BinaryImageToStatisticsLabelMapFilter<TInputImage, TFeatureImage, TOutputImage>:
 {
   Superclass::PrintSelf(os, indent);
 
-  os << indent << "FullyConnected: " << (m_FullyConnected ? "On" : "Off") << std::endl;
+  itkPrintSelfBooleanMacro(FullyConnected);
   os << indent << "OutputBackgroundValue: "
      << static_cast<typename NumericTraits<OutputImagePixelType>::PrintType>(m_OutputBackgroundValue) << std::endl;
   os << indent << "InputForegroundValue: "

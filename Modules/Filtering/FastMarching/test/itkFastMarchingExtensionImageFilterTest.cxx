@@ -58,9 +58,9 @@ itkFastMarchingExtensionImageFilterTest(int, char *[])
   auto marcher = MarcherType::New();
   marcher->SetStoppingCriterion(criterion);
 
-  ShowProgressObject                                    progressWatch(marcher);
-  itk::SimpleMemberCommand<ShowProgressObject>::Pointer command;
-  command = itk::SimpleMemberCommand<ShowProgressObject>::New();
+  ShowProgressObject                                          progressWatch(marcher);
+  const itk::SimpleMemberCommand<ShowProgressObject>::Pointer command =
+    itk::SimpleMemberCommand<ShowProgressObject>::New();
   command->SetCallbackFunction(&progressWatch, &ShowProgressObject::ShowProgress);
   marcher->AddObserver(itk::ProgressEvent(), command);
 
@@ -74,10 +74,9 @@ itkFastMarchingExtensionImageFilterTest(int, char *[])
   // setup alive points
   auto AlivePoints = NodePairContainerType::New();
 
-  FloatImageType::OffsetType offset0 = { { 28, 35 } };
+  constexpr FloatImageType::OffsetType offset0 = { { 28, 35 } };
 
-  itk::Index<2> index;
-  index.Fill(0);
+  itk::Index<2> index{};
 
   AlivePoints->push_back(NodePairType(index + offset0, 0.));
 
@@ -114,7 +113,7 @@ itkFastMarchingExtensionImageFilterTest(int, char *[])
   marcher->SetTrialPoints(TrialPoints);
 
   // specify the size of the output image
-  FloatImageType::SizeType size = { { 64, 64 } };
+  constexpr FloatImageType::SizeType size = { { 64, 64 } };
   marcher->SetOutputSize(size);
 
   // setup a speed image of ones
@@ -251,11 +250,11 @@ itkFastMarchingExtensionImageFilterTest(int, char *[])
 
   // check the results
   passed = true;
-  FloatImageType::Pointer                  output = marcher->GetOutput();
+  const FloatImageType::Pointer            output = marcher->GetOutput();
   itk::ImageRegionIterator<FloatImageType> iterator(output, output->GetBufferedRegion());
 
   using AuxImageType = MarcherType::AuxImageType;
-  AuxImageType::Pointer                  auxImage = marcher->GetAuxiliaryImage(0);
+  const AuxImageType::Pointer            auxImage = marcher->GetAuxiliaryImage(0);
   itk::ImageRegionIterator<AuxImageType> auxIterator(auxImage, auxImage->GetBufferedRegion());
 
   while (!iterator.IsAtEnd())

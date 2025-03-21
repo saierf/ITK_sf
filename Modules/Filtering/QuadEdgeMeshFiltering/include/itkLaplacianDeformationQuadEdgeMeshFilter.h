@@ -48,7 +48,7 @@ public:
 };
 // Define how to print enumeration
 extern ITKQuadEdgeMeshFiltering_EXPORT std::ostream &
-                                       operator<<(std::ostream & out, const LaplacianDeformationQuadEdgeMeshFilterEnums::Area value);
+operator<<(std::ostream & out, const LaplacianDeformationQuadEdgeMeshFilterEnums::Area value);
 
 /** \class LaplacianDeformationQuadEdgeMeshFilter
  *
@@ -107,7 +107,7 @@ extern ITKQuadEdgeMeshFiltering_EXPORT std::ostream &
  * \tparam TOutputMesh Output Mesh Type
  * \tparam TSolverTraits Linear Sparse Solver Traits see VNLIterativeSparseSolverTraits and VNLSparseLUSolverTraits
  *
- *  For details, see https://www.insight-journal.org/browse/publication/890
+ *  For details, see https://doi.org/10.54294/s91axg
  *
  *  \ingroup ITKQuadEdgeMeshFiltering
  */
@@ -134,7 +134,7 @@ public:
 
   /** Output types. */
   using OutputMeshType = TOutputMesh;
-  using typename Superclass::OutputCoordRepType;
+  using typename Superclass::OutputCoordinateType;
   using typename Superclass::OutputPointType;
   using typename Superclass::OutputPointIdentifier;
   using typename Superclass::OutputQEPrimal;
@@ -193,10 +193,8 @@ public:
   itkSetEnumMacro(AreaComputationType, AreaEnum);
   itkGetMacro(AreaComputationType, AreaEnum);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
   itkConceptMacro(SameDimensionCheck1, (Concept::SameDimension<InputPointDimension, OutputPointDimension>));
   itkConceptMacro(SameDimensionCheck2, (Concept::SameDimension<InputPointDimension, 3>));
-#endif
 
 protected:
   /** Default constructor*/
@@ -219,13 +217,13 @@ protected:
     }
   };
 
-  using CoefficientMapType = std::unordered_map<OutputQEPrimal *, OutputCoordRepType, HashOutputQEPrimal>;
+  using CoefficientMapType = std::unordered_map<OutputQEPrimal *, OutputCoordinateType, HashOutputQEPrimal>;
   using CoefficientMapConstIterator = typename CoefficientMapType::const_iterator;
 
-  using AreaMapType = std::unordered_map<OutputPointIdentifier, OutputCoordRepType>;
+  using AreaMapType = std::unordered_map<OutputPointIdentifier, OutputCoordinateType>;
   using AreaMapConstIterator = typename AreaMapType::const_iterator;
 
-  using RowType = std::unordered_map<OutputPointIdentifier, OutputCoordRepType>;
+  using RowType = std::unordered_map<OutputPointIdentifier, OutputCoordinateType>;
   using RowIterator = typename RowType::iterator;
   using RowConstIterator = typename RowType::const_iterator;
 
@@ -242,9 +240,9 @@ protected:
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
-  OutputCoordRepType
+  OutputCoordinateType
   ComputeMixedAreaForGivenVertex(OutputPointIdentifier iId);
-  OutputCoordRepType
+  OutputCoordinateType
   ComputeMixedArea(OutputQEPrimal * iQE1, OutputQEPrimal * iQE2);
 
   virtual void
@@ -254,7 +252,7 @@ protected:
   ComputeLaplacianMatrix(MatrixType & ioL);
 
   void
-  FillMatrixRow(OutputPointIdentifier iId, unsigned int iDegree, OutputCoordRepType iWeight, RowType & ioRow);
+  FillMatrixRow(OutputPointIdentifier iId, unsigned int iDegree, OutputCoordinateType iWeight, RowType & ioRow);
 
   /**
    *  \brief Fill matrix iM and vectors Bx, m_By and m_Bz depending on if one
@@ -289,14 +287,14 @@ private:
   struct Triple
   {
     Triple() = default;
-    Triple(OutputPointIdentifier iV, OutputCoordRepType iWeight, unsigned int iDegree)
+    Triple(OutputPointIdentifier iV, OutputCoordinateType iWeight, unsigned int iDegree)
       : m_Id(iV)
       , m_Weight(iWeight)
       , m_Degree(iDegree)
     {}
 
     OutputPointIdentifier m_Id;
-    OutputCoordRepType    m_Weight;
+    OutputCoordinateType  m_Weight;
     unsigned int          m_Degree;
   };
 };

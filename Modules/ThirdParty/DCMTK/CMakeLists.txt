@@ -78,8 +78,10 @@ else(DCMTK_USE_ICU)
      )
 endif()
 
-set(_ITKDCMTK_LIB_NAMES dcmdata dcmimage dcmimgle dcmjpeg dcmjpls
-    dcmnet dcmpstat dcmqrdb dcmsr dcmtls ijg12 ijg16 ijg8 oflog ofstd oficonv)
+set(_ITKDCMTK_LIB_NAMES dcmdata dcmpstat dcmsr dcmqrdb dcmimgle
+  dcmimage dcmjpeg dcmjpls dcmnet
+  dcmwlm dcmrt dcmiod dcmfg
+  dcmseg dcmpmap ijg12 ijg16 ijg8 oflog ofstd oficonv)
 if(WIN32)
   set(ITKDCMTK_LIBDEP_WIN iphlpapi ws2_32 netapi32 wsock32)
 endif()
@@ -91,7 +93,14 @@ if(ITK_USE_SYSTEM_DCMTK)
   set(ITKDCMTK_SYSTEM_INCLUDE_DIRS ${DCMTK_INCLUDE_DIRS})
 
   # Module standard library var
-  set(ITKDCMTK_LIBRARIES ${DCMTK_LIBRARIES})
+  set(ITKDCMTK_LIBRARIES)
+  foreach(lib IN LISTS DCMTK_LIBRARIES)
+    if(TARGET DCMTK::${lib})
+      list(APPEND ITKDCMTK_LIBRARIES DCMTK::${lib})
+    else()
+      list(APPEND ITKDCMTK_LIBRARIES ${lib})
+    endif()
+  endforeach()
 
   # When this module is loaded by an app, load DCMTK too.
   set(ITKDCMTK_EXPORT_CODE_INSTALL "

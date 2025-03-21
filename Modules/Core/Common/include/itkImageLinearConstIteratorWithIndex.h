@@ -135,8 +135,8 @@ public:
 
   {}
 
-  /** Constructor establishes an iterator to walk a particular image and a
-   * particular region of that image. */
+  /** Constructor establishes an iterator to walk a particular image and a particular region of that image. Initializes
+   * the iterator at the begin of the region. */
   ImageLinearConstIteratorWithIndex(const ImageType * ptr, const RegionType & region);
 
   /** Constructor that can be used to cast from an ImageIterator to an
@@ -262,11 +262,9 @@ ImageLinearConstIteratorWithIndex<TImage>::NextLine()
       this->m_Remaining = true;
       break;
     }
-    else
-    {
-      this->m_Position -= this->m_OffsetTable[n] * (this->m_Region.GetSize()[n] - 1);
-      this->m_PositionIndex[n] = this->m_BeginIndex[n];
-    }
+
+    this->m_Position -= this->m_OffsetTable[n] * (this->m_Region.GetSize()[n] - 1);
+    this->m_PositionIndex[n] = this->m_BeginIndex[n];
   }
 }
 
@@ -298,11 +296,9 @@ ImageLinearConstIteratorWithIndex<TImage>::PreviousLine()
       this->m_Remaining = true;
       break;
     }
-    else
-    {
-      this->m_Position += this->m_OffsetTable[n] * (this->m_Region.GetSize()[n] - 1);
-      this->m_PositionIndex[n] = this->m_EndIndex[n] - 1;
-    }
+
+    this->m_Position += this->m_OffsetTable[n] * (this->m_Region.GetSize()[n] - 1);
+    this->m_PositionIndex[n] = this->m_EndIndex[n] - 1;
   }
 }
 } // end namespace itk

@@ -31,10 +31,7 @@ OctreeNode::OctreeNode()
   m_Branch = nullptr;
 }
 
-OctreeNode::~OctreeNode()
-{
-  this->RemoveChildren();
-}
+OctreeNode::~OctreeNode() { this->RemoveChildren(); }
 
 OctreeNode &
 OctreeNode::GetChild(const LeafIdentifierEnum ChildID) const
@@ -98,10 +95,8 @@ OctreeNode::IsNodeColored() const
 
     return this->m_Branch >= first && this->m_Branch <= last;
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 void

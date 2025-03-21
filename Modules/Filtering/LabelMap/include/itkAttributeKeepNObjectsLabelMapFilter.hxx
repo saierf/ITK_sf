@@ -66,18 +66,18 @@ AttributeKeepNObjectsLabelMapFilter<TImage, TAttributeAccessor>::GenerateData()
     auto end = labelObjects.begin() + m_NumberOfObjects;
     if (m_ReverseOrdering)
     {
-      ReverseComparator comparator;
+      const ReverseComparator comparator;
       std::nth_element(labelObjects.begin(), end, labelObjects.end(), comparator);
     }
     else
     {
-      Comparator comparator;
+      const Comparator comparator;
       std::nth_element(labelObjects.begin(), end, labelObjects.end(), comparator);
     }
     //   progress.CompletedPixel();
 
     // and move the last objects to the second output
-    for (typename VectorType::const_iterator it = end; it != labelObjects.end(); ++it)
+    for (auto it = end; it != labelObjects.end(); ++it)
     {
       output->RemoveLabelObject(*it);
       output2->AddLabelObject(*it);

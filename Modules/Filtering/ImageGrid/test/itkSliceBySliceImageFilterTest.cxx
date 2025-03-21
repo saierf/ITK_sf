@@ -44,8 +44,7 @@ sliceCallBack(itk::Object * object, const itk::EventObject &, void *)
   // std::cout << "callback! slice: " << filter->GetSliceIndex() << std::endl;
 
   // set half of the slice number as radius
-  MedianType::InputSizeType radius;
-  radius.Fill(filter->GetSliceIndex() / 2);
+  auto radius = MedianType::InputSizeType::Filled(filter->GetSliceIndex() / 2);
   median->SetRadius(radius);
 }
 
@@ -90,12 +89,12 @@ itkSliceBySliceImageFilterTest(int argc, char * argv[])
   using MonitorType = itk::PipelineMonitorImageFilter<FilterType::InternalOutputImageType>;
   auto monitor = MonitorType::New();
 
-  itk::CStyleCommand::Pointer command = itk::CStyleCommand::New();
+  const itk::CStyleCommand::Pointer command = itk::CStyleCommand::New();
   command->SetCallback(*sliceCallBack);
 
   filter->AddObserver(itk::IterationEvent(), command);
 
-  itk::SimpleFilterWatcher watcher(filter, "filter");
+  const itk::SimpleFilterWatcher watcher(filter, "filter");
 
   using WriterType = itk::ImageFileWriter<ImageType>;
 

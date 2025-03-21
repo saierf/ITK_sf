@@ -47,11 +47,11 @@ itk_fetch_module(
   "Run-length encoded memory compression scheme for an itk::Image.
 
 Insight Journal article:
-https://www.insight-journal.org/browse/publication/978
+https://doi.org/10.54294/t82x76
 
 This work is supported by NIH grant R01 EB014346
 'Continued development and maintenance of the ITK-SNAP 3D image segmentation software'."
   MODULE_COMPLIANCE_LEVEL 3
   GIT_REPOSITORY https://github.com/KitwareMedical/ITKRLEImage.git
-  GIT_TAG 85559c99ece93d695889dbc908c52efbc2bf50a9
+  GIT_TAG 3ab10cda40977e4a39f9c46f1858f2fddcda8030
   )

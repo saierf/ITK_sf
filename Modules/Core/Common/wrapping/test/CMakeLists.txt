@@ -44,12 +44,17 @@ if(ITK_WRAP_PYTHON)
     ${CMAKE_CURRENT_SOURCE_DIR}/itkVariableLengthVectorTest.py)
   itk_python_add_test(
     NAME
-    itkPointSetSerializationTest
+    itkPointSetSerializationPythonTest
     COMMAND
     ${CMAKE_CURRENT_SOURCE_DIR}/itkPointSetSerializationTest.py)
   itk_python_add_test(
     NAME
-    itkSpatialOrientationAdapterTest
+    itkPointSetPythonTest
+    COMMAND
+    ${CMAKE_CURRENT_SOURCE_DIR}/itkPointSetTest.py)
+  itk_python_add_test(
+    NAME
+    itkSpatialOrientationAdapterPythonTest
     COMMAND
     ${CMAKE_CURRENT_SOURCE_DIR}/itkSpatialOrientationAdapterTest.py)
 endif()

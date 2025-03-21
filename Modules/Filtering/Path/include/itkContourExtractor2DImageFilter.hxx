@@ -147,8 +147,11 @@ ContourExtractor2DImageFilter<TInputImage>::CreateSingleContour(InputPixelType  
     // 01    is numbered as    45
     // 23                      78
 
-    InputPixelType v0, v1, v2, v3;
     unsigned char  squareCase{ 0 };
+    InputPixelType v0;
+    InputPixelType v1;
+    InputPixelType v2;
+    InputPixelType v3;
     if (m_LabelContours)
     {
       v0 = (neighborhoodRange[0] == label);
@@ -344,7 +347,7 @@ ContourExtractor2DImageFilter<TInputImage>::GenerateDataForLabels()
         inputRegion.GetIndex()[1] + static_cast<IndexValueType>(inputRegion.GetSize()[1]) - 1 }
     };
     std::unordered_map<InputPixelType, BoundingBoxType> labelBoundingBoxes;
-    for (InputPixelType label : allLabels)
+    for (const InputPixelType label : allLabels)
     {
       labelBoundingBoxes[label] = BoundingBoxType{ right_bot, left_top };
     }
@@ -359,7 +362,7 @@ ContourExtractor2DImageFilter<TInputImage>::GenerateDataForLabels()
       bbox.max[1] = std::max(bbox.max[1], inputIt.GetIndex()[1]);
     }
     // Build the extended regions from the bounding boxes
-    for (InputPixelType label : allLabels)
+    for (const InputPixelType label : allLabels)
     {
       const BoundingBoxType & bbox = labelBoundingBoxes[label];
       // Compute an extendedRegion that includes one-pixel border on all
@@ -371,7 +374,7 @@ ContourExtractor2DImageFilter<TInputImage>::GenerateDataForLabels()
       // all 9 pixels of the extended region.
       const InputIndexType  extendedIndex{ { bbox.min[0] - 1, bbox.min[1] - 1 } };
       const InputSizeType   extendedSize{ { static_cast<SizeValueType>(bbox.max[0] - bbox.min[0]) + 2,
-                                          static_cast<SizeValueType>(bbox.max[1] - bbox.min[1]) + 2 } };
+                                            static_cast<SizeValueType>(bbox.max[1] - bbox.min[1]) + 2 } };
       const InputRegionType extendedRegion{ extendedIndex, extendedSize };
       totalPixelCount += extendedRegion.GetNumberOfPixels();
       labelsRegions[label] = extendedRegion;
@@ -379,7 +382,7 @@ ContourExtractor2DImageFilter<TInputImage>::GenerateDataForLabels()
     }
   }
 
-  itk::MultiThreaderBase::Pointer mt = this->GetMultiThreader();
+  const itk::MultiThreaderBase::Pointer mt = this->GetMultiThreader();
   mt->ParallelizeArray(
     0,
     allLabels.size(),
@@ -435,9 +438,9 @@ ContourExtractor2DImageFilter<TInputImage>::AddSegment(VertexType from, VertexTy
   }
 
   // Try to find an existing contour that starts where the new segment ends.
-  const VertexToContourContainerIteratorMapIterator newTail(contourData.m_ContourStarts.find(to));
+  const auto newTail(contourData.m_ContourStarts.find(to));
   // Try to find an existing contour that ends where the new segment starts.
-  const VertexToContourContainerIteratorMapIterator newHead(contourData.m_ContourEnds.find(from));
+  const auto newHead(contourData.m_ContourEnds.find(from));
 
   if (newTail != contourData.m_ContourStarts.end() && newHead != contourData.m_ContourEnds.end())
   {
@@ -562,7 +565,7 @@ ContourExtractor2DImageFilter<TInputImage>::FillOutputs(
   std::unordered_map<InputPixelType, ContourContainerType> & labelsContoursOutput)
 {
   ContourContainerType allContours;
-  for (InputPixelType label : allLabels)
+  for (const InputPixelType label : allLabels)
   {
     allContours.splice(allContours.end(), labelsContoursOutput[label]);
   }
@@ -577,7 +580,7 @@ ContourExtractor2DImageFilter<TInputImage>::FillOutputs(
       output = dynamic_cast<OutputPathType *>(this->MakeOutput(NumberOutputsWritten).GetPointer());
       this->SetNthOutput(NumberOutputsWritten, output.GetPointer());
     }
-    typename VertexListType::Pointer path{ const_cast<VertexListType *>(output->GetVertexList()) };
+    const typename VertexListType::Pointer path{ const_cast<VertexListType *>(output->GetVertexList()) };
     path->Initialize();
     // use std::vector version of 'reserve()' instead of
     // VectorContainer::Reserve() to work around the fact that the latter is
@@ -640,7 +643,7 @@ template <typename TInputImage>
 void
 ContourExtractor2DImageFilter<TInputImage>::GenerateInputRequestedRegion()
 {
-  InputImageType * input = const_cast<InputImageType *>(this->GetInput());
+  auto * input = const_cast<InputImageType *>(this->GetInput());
 
   if (!input)
   {
@@ -655,21 +658,19 @@ ContourExtractor2DImageFilter<TInputImage>::GenerateInputRequestedRegion()
       input->SetRequestedRegion(requestedRegion);
       return;
     }
-    else
-    {
-      // Couldn't crop the region (requested region is outside the largest
-      // possible region).  Throw an exception.
 
-      // store what we tried to request (prior to trying to crop)
-      input->SetRequestedRegion(requestedRegion);
+    // Couldn't crop the region (requested region is outside the largest
+    // possible region).  Throw an exception.
 
-      // build an exception
-      InvalidRequestedRegionError e(__FILE__, __LINE__);
-      e.SetLocation(ITK_LOCATION);
-      e.SetDescription("Requested region is outside the largest possible region.");
-      e.SetDataObject(input);
-      throw e;
-    }
+    // store what we tried to request (prior to trying to crop)
+    input->SetRequestedRegion(requestedRegion);
+
+    // build an exception
+    InvalidRequestedRegionError e(__FILE__, __LINE__);
+    e.SetLocation(ITK_LOCATION);
+    e.SetDescription("Requested region is outside the largest possible region.");
+    e.SetDataObject(input);
+    throw e;
   }
   else
   {

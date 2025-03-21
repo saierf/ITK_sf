@@ -141,16 +141,16 @@ public:
    * coordinate direction i. Do not try to access image sizes beyond the
    * the ImageDimension. */
   SizeValueType
-  GetSize(unsigned long i) const;
+  GetSize(unsigned int i) const;
 
   IndexValueType
-  GetIndex(unsigned long i) const;
+  GetIndex(unsigned int i) const;
 
   void
-  SetSize(const unsigned long i, SizeValueType size);
+  SetSize(const unsigned int i, SizeValueType size);
 
   void
-  SetIndex(const unsigned long i, IndexValueType idx);
+  SetIndex(const unsigned int i, IndexValueType idx);
 
   /** Compare two regions. */
   bool
@@ -164,7 +164,7 @@ public:
 
   /** Test if a region (the argument) is completely inside of this region */
   bool
-  IsInside(const Self & region) const;
+  IsInside(const Self & otherRegion) const;
 
   /** Get the number of pixels contained in this region. This just
    * multiplies the size components. */
@@ -251,11 +251,8 @@ public:
           ImageRegionType &         outImageRegion,
           const ImageIndexType &    largestRegionIndex)
   {
-    ImageSizeType  size;
-    ImageIndexType index;
-
-    size.Fill(1); // initialize with default values
-    index.Fill(0);
+    auto           size = MakeFilled<ImageSizeType>(1); // initialize with default values
+    ImageIndexType index{};
 
     //
     // The ImageRegion and ImageIORegion objects may have different dimensions.

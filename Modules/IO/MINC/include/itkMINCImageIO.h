@@ -63,7 +63,7 @@ struct ITKIOMINC_HIDDEN MINCImageIOPImpl;
  * This code was contributed in the Insight Journal paper:
  * "MINC2.0 IO Support for ITK"
  * by Baghdadi L.
- * https://www.insight-journal.org/browse/publication/88
+ * https://doi.org/10.54294/j8lsa6
  *
  * \ingroup IOFilters
  *
@@ -123,6 +123,11 @@ public:
   void
   Write(const void * buffer) override;
 
+  /** Set to automatically convert from PositiveCoordinateOrientation RAS to PositiveCoordinateOrientation LPS*/
+  itkSetMacro(RAStoLPS, bool);
+  itkGetConstMacro(RAStoLPS, bool);
+  itkBooleanMacro(RAStoLPS);
+
 protected:
   MINCImageIO();
   ~MINCImageIO() override;
@@ -153,6 +158,7 @@ private:
 
   // complex type images, composed of complex numbers
   // int m_Complex;
+  bool m_RAStoLPS;
 };
 } // end namespace itk
 

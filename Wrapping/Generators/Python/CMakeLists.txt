@@ -77,16 +77,20 @@ endif()
 macro(WRAP_ITK_PYTHON_BINDINGS_INSTALL path wrapper_library_name)
   set(_component_module "")
   if(WRAP_ITK_INSTALL_COMPONENT_PER_MODULE)
-    if("${wrapper_library_name}" MATCHES "^ITK(PyUtils|PyBase)$")
+    if("${wrapper_library_name}" MATCHES "^ITKPyBase$")
       set(_component_module "ITKCommon")
     else()
       set(_component_module "${wrapper_library_name}")
     endif()
   endif()
+  set(_ORIG_DESTINATION "${PY_SITE_PACKAGES_PATH}/${path}")
+  cmake_path(NORMAL_PATH _ORIG_DESTINATION OUTPUT_VARIABLE _NORMALIZED_DESTINATION)
   install(
     FILES ${ARGN}
-    DESTINATION "${PY_SITE_PACKAGES_PATH}/${path}"
+    DESTINATION "${_NORMALIZED_DESTINATION}"
     COMPONENT ${_component_module}${WRAP_ITK_INSTALL_COMPONENT_IDENTIFIER}RuntimeLibraries)
+  unset(_ORIG_DESTINATION)
+  unset(_NORMALIZED_DESTINATION)
   unset(_component_module)
 endmacro()
 

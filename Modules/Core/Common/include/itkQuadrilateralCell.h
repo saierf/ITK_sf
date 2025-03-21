@@ -117,10 +117,10 @@ public:
 
   /** Evaluate the position inside the cell */
   bool
-  EvaluatePosition(CoordRepType *    x,
+  EvaluatePosition(CoordinateType *  x,
                    PointsContainer * points,
-                   CoordRepType *    closestPoint,
-                   CoordRepType[CellDimension],
+                   CoordinateType *  closestPoint,
+                   CoordinateType[CellDimension],
                    double *                  dist2,
                    InterpolationWeightType * weight) override;
 
@@ -129,17 +129,7 @@ public:
 
   /** Constructor and destructor */
   QuadrilateralCell() = default;
-
-#if defined(__GNUC__)
-  // A bug in some versions of the GCC and Clang compilers
-  // result in an ICE or linker error when "= default" is requested.
-  // This was observed in at least gcc 4.8 and 5.4.0, and
-  // AppleClang 7.0.2 and 8.0.0. Probably others too.
-  // "= default" doesn't gain us much, so just don't use it here.
-  ~QuadrilateralCell() override{};
-#else
   ~QuadrilateralCell() override = default;
-#endif
 
 protected:
   /** Store the number of points needed for a quadrilateral. */
@@ -147,15 +137,15 @@ protected:
     NumericTraits<PointIdentifier>::max()) };
 
   void
-  InterpolationDerivs(const CoordRepType pointCoords[CellDimension], CoordRepType derivs[NumberOfDerivatives]);
+  InterpolationDerivs(const CoordinateType pointCoords[CellDimension], CoordinateType derivs[NumberOfDerivatives]);
   void
-  InterpolationFunctions(const CoordRepType      pointCoords[CellDimension],
+  InterpolationFunctions(const CoordinateType    pointCoords[CellDimension],
                          InterpolationWeightType weights[NumberOfPoints]);
   void
   EvaluateLocation(int &                     itkNotUsed(subId),
                    const PointsContainer *   points,
-                   const CoordRepType        pointCoords[PointDimension],
-                   CoordRepType              x[PointDimension],
+                   const CoordinateType      pointCoords[PointDimension],
+                   CoordinateType            x[PointDimension],
                    InterpolationWeightType * weights);
 };
 } // end namespace itk

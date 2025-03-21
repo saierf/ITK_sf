@@ -23,10 +23,7 @@ namespace itk
  * Constructor sets up information for the image-type indepenedent
  * callbacks implemented in this superclass.
  */
-VTKImageExportBase::VTKImageExportBase()
-{
-  m_LastPipelineMTime = 0;
-}
+VTKImageExportBase::VTKImageExportBase() { m_LastPipelineMTime = 0; }
 
 void
 VTKImageExportBase::PrintSelf(std::ostream & os, Indent indent) const
@@ -136,7 +133,7 @@ VTKImageExportBase::UpdateInformationCallback()
 int
 VTKImageExportBase::PipelineModifiedCallback()
 {
-  DataObjectPointer input = this->GetInput(0);
+  const DataObjectPointer input = this->GetInput(0);
 
   if (!input)
   {
@@ -162,10 +159,8 @@ VTKImageExportBase::PipelineModifiedCallback()
     m_LastPipelineMTime = pipelineMTime;
     return 1;
   }
-  else
-  {
-    return 0;
-  }
+
+  return 0;
 }
 
 /**
@@ -176,7 +171,7 @@ void
 VTKImageExportBase::UpdateDataCallback()
 {
   // Get the input.
-  DataObjectPointer input = this->GetInput(0);
+  const DataObjectPointer input = this->GetInput(0);
 
   if (!input)
   {

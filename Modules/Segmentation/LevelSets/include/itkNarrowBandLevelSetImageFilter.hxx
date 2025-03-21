@@ -63,12 +63,10 @@ void
 NarrowBandLevelSetImageFilter<TInputImage, TFeatureImage, TOutputPixelType, TOutputImage>::SetSegmentationFunction(
   SegmentationFunctionType * s)
 {
-  unsigned int i;
-
   m_SegmentationFunction = s;
 
   typename SegmentationFunctionType::RadiusType r;
-  for (i = 0; i < Self::ImageDimension; ++i)
+  for (unsigned int i = 0; i < Self::ImageDimension; ++i)
   {
     r[i] = 1;
   }
@@ -120,7 +118,7 @@ template <typename TInputImage, typename TFeatureImage, typename TOutputPixelTyp
 void
 NarrowBandLevelSetImageFilter<TInputImage, TFeatureImage, TOutputPixelType, TOutputImage>::CreateNarrowBand()
 {
-  typename OutputImageType::Pointer levelset = this->GetOutput();
+  const typename OutputImageType::Pointer levelset = this->GetOutput();
 
   if (!this->m_NarrowBand->Empty())
   {

@@ -226,6 +226,7 @@ Wachowiak
 Wanlin
 Wdeprecated
 Wi
+Wmaybe
 Wtautological
 Xu
 Y'CbCr
@@ -277,6 +278,7 @@ btw
 buf
 bugfix
 bw
+byteswap
 byu
 bzip
 calc

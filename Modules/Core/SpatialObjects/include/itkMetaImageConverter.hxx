@@ -28,7 +28,7 @@ template <unsigned int VDimension, typename PixelType, typename TSpatialObjectTy
 auto
 MetaImageConverter<VDimension, PixelType, TSpatialObjectType>::CreateMetaObject() -> MetaObjectType *
 {
-  MetaObjectType * mo = dynamic_cast<MetaObjectType *>(new ImageMetaObjectType);
+  auto * mo = dynamic_cast<MetaObjectType *>(new ImageMetaObjectType);
   mo->APIVersion(1);
   mo->FileFormatVersion(1);
   return mo;
@@ -99,9 +99,9 @@ MetaImageConverter<VDimension, PixelType, TSpatialObjectType>::MetaObjectToSpati
     itkExceptionMacro("Can't convert MetaObject to MetaImage");
   }
 
-  ImageSpatialObjectPointer imageSO = ImageSpatialObjectType::New();
+  const ImageSpatialObjectPointer imageSO = ImageSpatialObjectType::New();
 
-  typename ImageType::Pointer myImage = this->AllocateImage(imageMO);
+  const typename ImageType::Pointer myImage = this->AllocateImage(imageMO);
 
   this->MetaObjectToSpatialObjectBase(imageMO, imageSO);
 
@@ -131,7 +131,7 @@ MetaImageConverter<VDimension, PixelType, TSpatialObjectType>::SpatialObjectToMe
   }
   using ImageConstPointer = typename ImageType::ConstPointer;
 
-  ImageConstPointer SOImage = imageSO->GetImage();
+  const ImageConstPointer SOImage = imageSO->GetImage();
 
   int    size[VDimension];
   double spacing[VDimension];

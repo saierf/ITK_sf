@@ -29,9 +29,8 @@ namespace itk
 /** \class MedianProjectionImageFilter
  * \brief Median projection
  *
- * This class was contributed to the Insight Journal by Gaetan Lehmann.
- * The original paper can be found at
- * https://www.insight-journal.org/browse/publication/71
+ * This class was contributed to the Insight Journal by Gaetan Lehmann
+ * \cite Lehmann_2006_a.
  *
  * \author Gaetan Lehmann. Biologie du Developpement et de la Reproduction,
  * INRA de Jouy-en-Josas, France.
@@ -99,11 +98,6 @@ public:
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
-
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
-  // End concept checking
-#endif
 
 protected:
   MedianProjectionImageFilter() = default;

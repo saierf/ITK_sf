@@ -99,7 +99,7 @@ public:
   /** Set the first file name to be processed. This deletes previous
    * filenames. */
   void
-  SetFileName(std::string const & name)
+  SetFileName(const std::string & name)
   {
     m_FileNames.clear();
     m_FileNames.push_back(name);
@@ -108,7 +108,7 @@ public:
 
   /** Add a single filename to the list of files. */
   void
-  AddFileName(std::string const & name)
+  AddFileName(const std::string & name)
   {
     m_FileNames.push_back(name);
     this->Modified();
@@ -178,7 +178,7 @@ protected:
     : m_ImageIO(nullptr)
 
   {}
-  ~ImageSeriesReader() override;
+  ~ImageSeriesReader() override = default;
   void
   PrintSelf(std::ostream & os, Indent indent) const override;
 
@@ -205,10 +205,6 @@ protected:
    */
   unsigned int m_NumberOfDimensionsInImage{ 0 };
 
-  /** Array of MetaDataDictionaries. This allows to hold information from the
-   * ImageIO objects after reading every sub image in the series */
-  DictionaryArrayType m_MetaDataDictionaryArray{};
-
   bool m_UseStreaming{ true };
 
   bool m_SpacingDefined{ false };
@@ -220,6 +216,13 @@ private:
 
   int
   ComputeMovingDimensionIndex(ReaderType * reader);
+
+  /** Array of MetaDataDictionaries. This allows to hold information from the
+   * ImageIO objects after reading every sub image in the series */
+  DictionaryArrayType m_MetaDataDictionaryArray{};
+
+  /** The internal storage of MetaDataDictionaries. */
+  std::vector<MetaDataDictionary> m_InternalMetaDataDictionaries{};
 
   /** Modified time of the MetaDataDictionaryArray */
   TimeStamp m_MetaDataDictionaryArrayMTime{};

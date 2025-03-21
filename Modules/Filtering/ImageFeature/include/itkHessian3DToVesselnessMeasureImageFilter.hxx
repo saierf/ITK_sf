@@ -43,7 +43,7 @@ Hessian3DToVesselnessMeasureImageFilter<TPixel>::GenerateData()
 
   m_SymmetricEigenValueFilter->SetInput(this->GetInput());
 
-  typename OutputImageType::Pointer output = this->GetOutput();
+  const typename OutputImageType::Pointer output = this->GetOutput();
 
   using EigenValueOutputImageType = typename EigenAnalysisFilterType::OutputImageType;
 
@@ -53,8 +53,8 @@ Hessian3DToVesselnessMeasureImageFilter<TPixel>::GenerateData()
 
   // walk the region of eigen values and get the vesselness measure
   EigenValueArrayType                                 eigenValue;
-  ImageRegionConstIterator<EigenValueOutputImageType> it;
-  it = ImageRegionConstIterator<EigenValueOutputImageType>(eigenImage, eigenImage->GetRequestedRegion());
+  ImageRegionConstIterator<EigenValueOutputImageType> it =
+    ImageRegionConstIterator<EigenValueOutputImageType>(eigenImage, eigenImage->GetRequestedRegion());
   ImageRegionIterator<OutputImageType> oit;
   this->AllocateOutputs();
   oit = ImageRegionIterator<OutputImageType>(output, output->GetRequestedRegion());
@@ -64,7 +64,7 @@ Hessian3DToVesselnessMeasureImageFilter<TPixel>::GenerateData()
     eigenValue = it.Get();
 
     // normalizeValue <= 0 for bright line structures
-    double normalizeValue = std::min(-1.0 * eigenValue[1], -1.0 * eigenValue[0]);
+    const double normalizeValue = std::min(-1.0 * eigenValue[1], -1.0 * eigenValue[0]);
 
     // Similarity measure to a line structure
     if (normalizeValue > 0)

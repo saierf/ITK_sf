@@ -92,7 +92,7 @@ public:
   inline TOutput
   operator()(const TInput & A) const
   {
-    const typename ChangeMapType::const_iterator it = m_ChangeMap.find(A);
+    const auto it = m_ChangeMap.find(A);
     if (it != m_ChangeMap.end())
     {
       return it->second;
@@ -150,12 +150,8 @@ public:
   void
   ClearChangeMap();
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputConvertibleToOutputCheck, (Concept::Convertible<InputPixelType, OutputPixelType>));
   itkConceptMacro(PixelTypeComparable, (Concept::Comparable<InputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   ChangeLabelImageFilter() = default;

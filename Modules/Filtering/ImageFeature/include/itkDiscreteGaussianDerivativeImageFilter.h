@@ -29,9 +29,8 @@ namespace itk
  * This filter calculates Gaussian derivative by separable convolution of an image
  * and a discrete Gaussian derivative operator (kernel).
  *
- * The Gaussian operators used here were described by Tony Lindeberg (Discrete
- * Scale-Space Theory and the Scale-Space Primal Sketch.  Dissertation. Royal
- * Institute of Technology, Stockholm, Sweden. May 1991.)
+ * The Gaussian operators used here were described by Tony Lindeberg
+ * \cite lindeberg1991.
  *
  * The variance or standard deviation (sigma) will be evaluated as pixel units
  * if SetUseImageSpacing is off (false) or as physical units if
@@ -44,7 +43,7 @@ namespace itk
  * \author Ivan Macia, Vicomtech, Spain, https://www.vicomtech.org/en
  *
  * This implementation was taken from the Insight Journal paper:
- * https://www.insight-journal.org/browse/publication/179
+ * https://doi.org/10.54294/mrg5is
  *
  * \sa GaussianDerivativeOperator
  * \sa Image
@@ -139,27 +138,21 @@ public:
   void
   SetOrder(const typename OrderArrayType::ValueType v)
   {
-    OrderArrayType a;
-
-    a.Fill(v);
+    auto a = MakeFilled<OrderArrayType>(v);
     this->SetOrder(a);
   }
 
   void
   SetVariance(const typename ArrayType::ValueType v)
   {
-    ArrayType a;
-
-    a.Fill(v);
+    auto a = MakeFilled<ArrayType>(v);
     this->SetVariance(a);
   }
 
   void
   SetMaximumError(const typename ArrayType::ValueType v)
   {
-    ArrayType a;
-
-    a.Fill(v);
+    auto a = MakeFilled<ArrayType>(v);
     this->SetMaximumError(a);
   }
 
@@ -178,11 +171,7 @@ public:
   itkGetConstMacro(NormalizeAcrossScale, bool);
   itkBooleanMacro(NormalizeAcrossScale);
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(OutputHasNumericTraitsCheck, (Concept::HasNumericTraits<OutputPixelType>));
-  // End concept checking
-#endif
 
 protected:
   DiscreteGaussianDerivativeImageFilter()

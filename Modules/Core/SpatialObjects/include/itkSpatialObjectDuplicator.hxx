@@ -36,13 +36,13 @@ SpatialObjectDuplicator<TInputSpatialObject>::CopyObject(const InternalSpatialOb
 {
   using SOType = itk::SpatialObject<TInputSpatialObject::ObjectDimension>;
 
-  typename SOType::Pointer newSO = source->Clone();
+  const typename SOType::Pointer newSO = source->Clone();
   destination->AddChild(newSO);
   destination->Update();
 
   using ChildrenListType = typename TInputSpatialObject::ChildrenListType;
-  ChildrenListType *                        children = source->GetChildren();
-  typename ChildrenListType::const_iterator it = children->begin();
+  ChildrenListType * children = source->GetChildren();
+  auto               it = children->begin();
   while (it != children->end())
   {
     this->CopyObject(*it, newSO);
@@ -61,10 +61,9 @@ SpatialObjectDuplicator<TInputSpatialObject>::Update()
   }
 
   // Update only if the input SpatialObject has been modified
-  ModifiedTimeType t, t1, t2;
-  t1 = m_Input->GetPipelineMTime();
-  t2 = m_Input->GetMTime();
-  t = (t1 > t2 ? t1 : t2);
+  const ModifiedTimeType t1 = m_Input->GetPipelineMTime();
+  const ModifiedTimeType t2 = m_Input->GetMTime();
+  const ModifiedTimeType t = (t1 > t2 ? t1 : t2);
 
   if (t == m_InternalSpatialObjectTime)
   {
@@ -79,8 +78,8 @@ SpatialObjectDuplicator<TInputSpatialObject>::Update()
 
   // Create the children
   using ChildrenListType = typename TInputSpatialObject::ChildrenListType;
-  ChildrenListType *                        children = m_Input->GetChildren();
-  typename ChildrenListType::const_iterator it = children->begin();
+  ChildrenListType * children = m_Input->GetChildren();
+  auto               it = children->begin();
   while (it != children->end())
   {
     this->CopyObject(*it, m_DuplicateSpatialObject);

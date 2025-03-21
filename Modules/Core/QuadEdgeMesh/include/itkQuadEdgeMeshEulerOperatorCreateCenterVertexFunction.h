@@ -54,7 +54,11 @@ public:
 
   using PointIdentifier = typename MeshType::PointIdentifier;
   using PointType = typename MeshType::PointType;
-  using CoordRepType = typename MeshType::CoordRepType;
+  using CoordinateType = typename MeshType::CoordinateType;
+#ifndef ITK_FUTURE_LEGACY_REMOVE
+  using CoordRepType ITK_FUTURE_DEPRECATED(
+    "ITK 6 discourages using `CoordRepType`. Please use `CoordinateType` instead!") = CoordinateType;
+#endif
   using VectorType = typename MeshType::VectorType;
 
   /** Evaluate at the specified input position */

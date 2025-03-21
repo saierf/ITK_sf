@@ -34,7 +34,6 @@ class ExtractSliceImageFilterEnums
 {
 public:
   /**
-   * \class TestExtractSliceImageFilterCollapseStrategy
    * \ingroup ITKTestKernel
    */
   enum class TestExtractSliceImageFilterCollapseStrategy : uint8_t
@@ -255,11 +254,7 @@ public:
   const TInputImage *
   GetInput() const;
 
-#ifdef ITK_USE_CONCEPT_CHECKING
-  // Begin concept checking
   itkConceptMacro(InputCovertibleToOutputCheck, (Concept::Convertible<InputImagePixelType, OutputImagePixelType>));
-  // End concept checking
-#endif
 
 protected:
   ExtractSliceImageFilter();
